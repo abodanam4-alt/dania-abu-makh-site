@@ -65,6 +65,7 @@ img{max-width:100%;display:block}
 .hub-card.coral .ic{background:var(--coral)}
 .hub-card.mint .ic{background:var(--mint)}
 .hub-card.purple .ic{background:#8b5cf6}
+.hub-card.teal .ic{background:#14b8a6}
 .hub-card h3{font-size:1.15rem}
 .hub-card p{color:var(--ink-soft);font-size:.92rem;flex:1}
 .hub-card .go{color:var(--indigo);font-weight:800;font-size:.88rem}
