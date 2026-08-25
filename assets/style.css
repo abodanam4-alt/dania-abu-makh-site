@@ -187,8 +187,5 @@ img{max-width:100%;display:block}
 /* ---------- تأثيرات Originkit ---------- */
 html.fx-ready body{background:transparent}
 #kinetic-bg{position:fixed;inset:0;z-index:-1;pointer-events:none}
-#axis-v{position:fixed;top:0;left:0;width:1px;height:100vh;background:linear-gradient(to bottom,transparent,rgba(76,95,213,.35) 12%,rgba(76,95,213,.35) 88%,transparent);z-index:9998;pointer-events:none}
-#axis-h{position:fixed;top:0;left:0;width:100vw;height:1px;background:linear-gradient(to right,transparent,rgba(76,95,213,.35) 12%,rgba(76,95,213,.35) 88%,transparent);z-index:9998;pointer-events:none}
-#axis-label{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;background:var(--navy-950);color:var(--gold);font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:7px;white-space:nowrap;opacity:0;transition:opacity .15s}
-#axis-label.show{opacity:.95}
-@media(max-width:860px){#axis-v,#axis-h,#axis-label{display:none}}
+#ribbon-trails{position:fixed;inset:0;width:100vw;height:100vh;z-index:9998;pointer-events:none}
+@media(max-width:860px){#ribbon-trails{display:none}}
