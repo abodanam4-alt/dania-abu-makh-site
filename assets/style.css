@@ -191,9 +191,10 @@ html.fx-ready body{background:transparent}
 #ribbon-trails{position:fixed;inset:0;width:100vw;height:100vh;z-index:9998;pointer-events:none}
 @media(max-width:860px){#ribbon-trails{display:none}}
 
-/* ---------- معرض صور الطلاب الدوّار (Sphere Gallery 3D) ---------- */
+/* ---------- معرض صور الطلاب الدوّار (Spin Carousel) ---------- */
 .student-gallery{background:var(--navy-950);padding:36px 0}
 .student-gallery .gallery-head{text-align:center;margin-bottom:18px}
 .student-gallery .gallery-head .eyebrow{color:var(--gold)}
 .student-gallery .gallery-head h2{color:#fff;font-size:1.5rem}
-.sphere-host{width:100%;height:60vh;min-height:340px;max-height:520px;border-radius:var(--radius);overflow:hidden}
+.carousel-host{width:100%;height:74vh;min-height:420px;max-height:640px;border-radius:var(--radius);overflow:hidden}
+@media(max-width:640px){.carousel-host{height:52vh;min-height:320px}}

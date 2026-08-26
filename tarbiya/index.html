@@ -25,23 +25,23 @@
   </div>
 </header>
 
-<section class="student-gallery">
-  <div class="container">
-    <div class="gallery-head">
-      <span class="eyebrow">صفّنا 💫</span>
-      <h2>طلاب السادس أ</h2>
-    </div>
-    <div id="student-sphere" class="sphere-host" aria-label="معرض صور دوّار لطلاب الصف"></div>
-  </div>
-</section>
-
 <section class="hero">
   <div class="starfield"></div>
   <div class="container hero-inner">
     <span class="hero-eyebrow">🧭 تربية السادس أ</span>
     <h1>أهلًا فيكم يا طاقم <span>السادس أ</span> 👋</h1>
     <p class="lead">كل ما يتعلّق بأول أسبوع إلنا سوا — قوانين صفّنا وكيف بدنا نبنيها.</p>
-    <div class="hero-actions" style="margin-top:24px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+  </div>
+</section>
+
+<section class="student-gallery">
+  <div class="container">
+    <div class="gallery-head">
+      <span class="eyebrow">صفّنا 💫</span>
+      <h2>طلاب السادس أ</h2>
+    </div>
+    <div id="student-carousel" class="carousel-host" aria-label="معرض صور دوّار لطلاب الصف"></div>
+    <div class="hero-actions" style="margin-top:28px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
       <a href="lesson1.html" class="btn btn-gold">🔍 الدرس الأول</a>
       <a href="constitution.html" class="btn btn-outline">📜 دستور الحصة</a>
     </div>
@@ -81,26 +81,21 @@
 </footer>
 
 <script src="../assets/effects.js" defer></script>
-<script src="../assets/sphere-gallery-3d.js" defer></script>
+<script src="../assets/spin-carousel.js" defer></script>
 <script defer>
 document.addEventListener('DOMContentLoaded', function () {
-  var host = document.getElementById('student-sphere');
-  if (!host || !window.createSphereGallery3D) return;
+  var host = document.getElementById('student-carousel');
+  if (!host || !window.createSpinCarousel) return;
   var files = ['s01.jpeg','s02.jpeg','s03.jpeg','s04.jpeg','s05.jpeg','s06.jpg','s07.png','s08.png','s09.jpeg','s10.jpeg','s11.jpeg','s12.jpeg','s13.jpeg','s14.jpeg','s15.jpeg','s16.jpeg','s17.jpeg','s18.jpeg','s19.jpeg','s20.jpeg','s21.jpeg','s22.jpeg','s23.jpeg','s24.jpeg','s25.jpg','s26.jpeg'];
-  var images = files.map(function (f) { return { image: 'students/' + f, link: '' }; });
+  var images = files.map(function (f) { return 'students/' + f; });
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  createSphereGallery3D(host, {
-    images: images,
-    branches: images.length,
+  createSpinCarousel(host, {
+    items: images,
     background: '#0d1130',
-    scale: 62,
-    size: 30,
-    scatter: 6,
-    speed: reduceMotion ? 0 : 10,
-    direction: 'counterclockwise',
-    hover: 160,
-    rounded: 22,
-    core: { coreSize: 20, coreColor: '#ffc93cb3', lineColor: '#4c5fd559' }
+    scale: 96,
+    aspect: 130,
+    rounded: 18,
+    speed: reduceMotion ? 0 : 45
   });
 });
 </script>
