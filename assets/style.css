@@ -198,3 +198,26 @@ html.fx-ready body{background:transparent}
 .student-gallery .gallery-head h2{color:#fff;font-size:1.5rem}
 .carousel-host{width:100%;height:74vh;min-height:420px;max-height:640px;border-radius:var(--radius);overflow:hidden}
 @media(max-width:640px){.carousel-host{height:52vh;min-height:320px}}
+
+/* ---------- دليل الحوسبة: نقاط زمنية، ورقة طباعة سريعة، روابط ---------- */
+.resource-link{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px 22px;box-shadow:var(--shadow);margin-bottom:14px;transition:.2s}
+.resource-link:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.resource-link .ic{width:48px;height:48px;border-radius:12px;background:#eef0fb;color:var(--indigo);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.resource-link h4{font-size:.98rem;margin-bottom:4px}
+.resource-link p{font-size:.84rem;color:var(--ink-soft)}
+.resource-link .go{margin-inline-start:auto;color:var(--indigo);font-weight:800;font-size:.85rem;flex-shrink:0}
+
+.quick-sheet{background:var(--card);border:2px dashed var(--indigo);border-radius:var(--radius);padding:34px}
+.quick-sheet .qs-goal{background:#eef0fb;border-radius:12px;padding:14px 18px;font-weight:700;margin-bottom:24px}
+.quick-sheet h3{font-size:1rem;color:var(--indigo);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.quick-sheet .qs-block{margin-bottom:22px}
+.quick-sheet ul li{display:flex;gap:8px;align-items:flex-start;padding:6px 0;font-size:.92rem}
+.quick-sheet ul li b{color:var(--ink)}
+.qs-check{background:var(--mint-bg);border-radius:12px;padding:14px 18px;font-weight:700;color:#1a8a56}
+.print-btn{display:inline-flex;margin-top:8px}
+@media print{
+  body *{visibility:hidden}
+  #quick-ref,#quick-ref *{visibility:visible}
+  #quick-ref{position:absolute;top:0;right:0;left:0;padding:0;margin:0}
+  .print-btn{display:none !important}
+}
