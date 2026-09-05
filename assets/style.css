@@ -247,3 +247,25 @@ html.fx-ready body{background:transparent}
 @media print{
   .site-header,.print-btn{display:none !important}
 }
+
+/* ---------- منشور الصف الأول: شريط معلومات، بطاقات دور الأهل، خطوات متصلة ---------- */
+.info-bar{display:flex;background:var(--mint);color:#fff;border-radius:var(--radius);padding:22px 30px;gap:24px;justify-content:space-between;flex-wrap:wrap}
+.info-bar .col{flex:1;min-width:200px}
+.info-bar .lbl{font-size:.85rem;opacity:.9;margin-bottom:6px}
+.info-bar .val{font-weight:800;font-size:1.1rem}
+.info-bar .sub{font-size:.85rem;opacity:.9;margin-top:4px}
+.esc-num.purple{background:#8b5cf6}
+.esc-num.teal{background:var(--mint)}
+.flow-steps{display:flex;justify-content:space-between;align-items:flex-start;position:relative;gap:8px}
+.flow-steps::before{content:"";position:absolute;top:29px;right:8%;left:8%;height:2px;background:var(--line);z-index:0}
+.flow-step{position:relative;z-index:1;flex:1;text-align:center}
+.flow-step .num{width:58px;height:58px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.3rem;margin:0 auto 10px;box-shadow:var(--shadow)}
+.flow-step.c1 .num{background:var(--mint)}
+.flow-step.c2 .num{background:var(--indigo)}
+.flow-step.c3 .num{background:var(--navy-900)}
+.flow-step.c4 .num{background:#8b5cf6}
+.flow-step p{font-size:.86rem;font-weight:700}
+.flyer-important{background:var(--card);border:2px solid var(--gold);border-radius:var(--radius);padding:22px 26px}
+.flyer-important .head{display:flex;align-items:center;gap:10px;color:var(--coral);font-weight:800;margin-bottom:10px}
+.flyer-important .head .bang{width:26px;height:26px;border-radius:50%;background:var(--gold);color:var(--navy-950);display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0}
+@media(max-width:640px){.flow-steps{flex-wrap:wrap}.flow-steps::before{display:none}.flow-step{min-width:45%}}
