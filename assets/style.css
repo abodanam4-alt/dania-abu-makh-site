@@ -279,3 +279,11 @@ html.fx-ready body{background:transparent}
 .mini-timeline .row{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px}
 .mini-timeline .row .t{background:var(--navy-900);color:var(--gold);font-weight:800;font-size:.76rem;padding:5px 12px;border-radius:999px;flex-shrink:0;min-width:64px;text-align:center}
 .mini-timeline .row .s{font-weight:700;font-size:.92rem}
+
+/* ---------- جدول المنازل (المبنى العشري) ---------- */
+.pv-table{width:100%;max-width:480px;margin:16px auto;border-collapse:collapse;text-align:center}
+.pv-table th{background:var(--navy-900);color:var(--gold);padding:10px;font-size:.82rem}
+.pv-table td{padding:14px;font-size:1.6rem;font-weight:900;border:1px solid var(--line);color:var(--ink);background:var(--card)}
+.score-bands{display:flex;flex-direction:column;gap:8px;max-width:560px;margin:18px auto 0}
+.score-bands .band{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-size:.9rem}
+.score-bands .band b{color:var(--indigo);flex-shrink:0;min-width:110px}
