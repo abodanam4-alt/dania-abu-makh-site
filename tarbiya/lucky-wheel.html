@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عجلة الحظ - صف القيادة (6-1)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Cairo & Alexandria -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        },
+                        leader: {
+                            purple: '#6d28d9',
+                            gold: '#f59e0b',
+                            blue: '#2563eb',
+                            pink: '#ec4899',
+                            dark: '#0f172a'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        alex: ['Alexandria', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Alexandria', 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-glow {
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover {
+            box-shadow: 0 0 35px rgba(245, 158, 11, 0.8);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .wheel-shadow {
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6));
+        }
+
+        .pointer-bounce {
+            animation: pointerTick 0.15s ease-in-out;
+        }
+
+        @keyframes pointerTick {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            50% { transform: translateX(-50%) rotate(-18deg); }
+            100% { transform: translateX(-50%) rotate(0deg); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(245, 158, 11, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(245, 158, 11, 0.8);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden flex flex-col min-h-screen">
+
+    <!-- Top Navigation / Class Header Banner -->
+    <header class="w-full glass-panel border-b border-white/10 sticky top-0 z-30 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid fa-crown text-xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-amber-500/20 text-amber-300 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-500/30">مدرسة الرازي</span>
+                        <span class="bg-indigo-500/20 text-indigo-300 text-xs px-2.5 py-0.5 rounded-full font-bold border border-indigo-500/30">2026/2027</span>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-black text-white tracking-wide mt-0.5">
+                        عجلة الحظ <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-200 to-yellow-500">صف القيادة (6-1)</span>
+                    </h1>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 text-sm bg-slate-900/60 px-4 py-2 rounded-xl border border-white/10">
+                <div class="flex items-center gap-2 text-slate-300">
+                    <i class="fa-solid fa-chalkboard-user text-amber-400"></i>
+                    <span>المربية: <strong class="text-white">دانيا أبو مخ</strong></span>
+                </div>
+                <div class="h-4 w-px bg-slate-700"></div>
+                <div class="flex items-center gap-2 text-slate-300">
+                    <i class="fa-solid fa-users text-indigo-400"></i>
+                    <span>عدد الطلاب: <strong id="active-count-badge" class="text-amber-400">23</strong></span>
+                </div>
+                <div class="h-4 w-px bg-slate-700"></div>
+                <a href="index.html" class="flex items-center gap-1.5 text-slate-300 hover:text-amber-400 transition">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>العودة للموقع</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- Left Sidebar: Settings & Controls -->
+        <section class="lg:col-span-3 order-2 lg:order-1 flex flex-col gap-4">
+            
+            <!-- Quick Actions -->
+            <div class="glass-panel p-4 rounded-2xl">
+                <h2 class="text-lg font-bold text-amber-400 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-amber-400"></i> إعدادات العجلة
+                </h2>
+                
+                <div class="space-y-3">
+                    <label class="flex items-center justify-between p-3 rounded-xl bg-slate-800/60 border border-white/5 cursor-pointer hover:bg-slate-800 transition">
+                        <span class="text-sm font-medium text-slate-200">
+                            <i class="fa-solid fa-user-minus text-red-400 ml-2"></i> إزالة الفائز تلقائياً
+                        </span>
+                        <input type="checkbox" id="auto-remove-toggle" class="w-5 h-5 accent-amber-500 rounded cursor-pointer">
+                    </label>
+
+                    <label class="flex items-center justify-between p-3 rounded-xl bg-slate-800/60 border border-white/5 cursor-pointer hover:bg-slate-800 transition">
+                        <span class="text-sm font-medium text-slate-200">
+                            <i class="fa-solid fa-volume-high text-emerald-400 ml-2"></i> الأصوات والمؤثرات
+                        </span>
+                        <input type="checkbox" id="sound-toggle" checked class="w-5 h-5 accent-amber-500 rounded cursor-pointer">
+                    </label>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">سرعة الدوران</label>
+                        <select id="spin-speed" class="w-full bg-slate-800 border border-white/10 text-slate-200 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-amber-500 outline-none">
+                            <option value="slow">سريع وهادئ (3 ثوانٍ)</option>
+                            <option value="medium" selected>متوسط ومحمس (5 ثوانٍ)</option>
+                            <option value="fast">طويل ومشوق (8 ثوانٍ)</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-2 flex gap-2">
+                        <button id="reset-students-btn" class="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 rounded-xl border border-white/10 flex items-center justify-center gap-1.5 transition">
+                            <i class="fa-solid fa-rotate-right text-amber-400"></i> استعادة الكل
+                        </button>
+                        <button id="select-all-btn" class="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 rounded-xl border border-white/10 flex items-center justify-center gap-1.5 transition">
+                            <i class="fa-solid fa-check-double text-indigo-400"></i> تحديد الكل
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Log -->
+            <div class="glass-panel p-4 rounded-2xl flex-1 min-h-[220px] flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-base font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-trophy text-yellow-400"></i> سجل الفائزين
+                    </h2>
+                    <button id="clear-history-btn" class="text-xs text-slate-400 hover:text-red-400 transition" title="مسح السجل">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+                
+                <div id="history-list" class="flex-1 overflow-y-auto max-h-[200px] space-y-2 pr-1">
+                    <p id="empty-history-msg" class="text-xs text-slate-500 text-center py-6">لم يتم سحب أي اسم بعد</p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Center Column: Wheel Canvas & Spin Action -->
+        <section class="lg:col-span-6 order-1 lg:order-2 flex flex-col items-center justify-center gap-6">
+            
+            <div class="relative w-full max-w-[460px] aspect-square flex items-center justify-center p-2">
+                <!-- Outer Decorative Glowing Ring -->
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-500 blur-xl opacity-30 animate-pulse"></div>
+
+                <!-- Ticker Pointer Indicator -->
+                <div id="wheel-pointer" class="absolute top-0 left-1/2 -translate-x-1/2 z-20 w-10 h-12 flex items-start justify-center drop-shadow-xl transition-transform origin-top">
+                    <div class="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-t-[32px] border-t-amber-400 filter drop-shadow-md"></div>
+                    <div class="absolute -top-1 w-4 h-4 rounded-full bg-yellow-200 border-2 border-amber-600"></div>
+                </div>
+
+                <!-- Wheel Canvas Container -->
+                <div class="relative w-full h-full rounded-full border-4 border-amber-400/40 p-1.5 bg-slate-900/80 shadow-2xl wheel-shadow overflow-hidden">
+                    <canvas id="wheel-canvas" width="600" height="600" class="w-full h-full rounded-full cursor-pointer transition-transform"></canvas>
+                </div>
+
+                <!-- Center Golden Hub / Spin Button Overlay -->
+                <button id="center-spin-btn" class="absolute z-10 w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-300 border-4 border-slate-900 shadow-2xl flex flex-col items-center justify-center text-slate-950 font-black text-lg md:text-xl btn-glow group active:scale-95 transition">
+                    <i class="fa-solid fa-play text-xl md:text-2xl mb-0.5 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-black tracking-wider uppercase">تدوير</span>
+                </button>
+            </div>
+
+            <!-- Big Spin Action Button -->
+            <div class="w-full max-w-md px-4">
+                <button id="spin-main-btn" class="w-full py-4 px-8 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 text-slate-950 font-black text-xl shadow-xl btn-glow flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-arrows-spin text-2xl animate-spin-slow"></i>
+                    <span>دَوِّر العَجَلَة الآَن!</span>
+                </button>
+            </div>
+
+        </section>
+
+        <!-- Right Sidebar: Students List Manager -->
+        <section class="lg:col-span-3 order-3 flex flex-col gap-4">
+            
+            <div class="glass-panel p-4 rounded-2xl flex flex-col h-[520px]">
+                <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+                    <div>
+                        <h2 class="text-base font-bold text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-id-card text-indigo-400"></i> قائمة طلاب 6-1
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">حدد الأسماء المشاركة في السحب</p>
+                    </div>
+                    <span id="active-ratio" class="text-xs font-bold bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-lg border border-amber-500/30">
+                        23 / 23
+                    </span>
+                </div>
+
+                <!-- Add Custom Student Form -->
+                <div class="flex gap-2 mb-3">
+                    <input type="text" id="new-student-input" placeholder="إضافة طالب جديد..." class="flex-1 bg-slate-800/80 border border-white/10 text-white placeholder-slate-500 text-xs rounded-xl px-3 py-2 outline-none focus:border-amber-400 transition">
+                    <button id="add-student-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs transition">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- Students Scrollable List -->
+                <div id="students-container" class="flex-1 overflow-y-auto space-y-1.5 pr-1">
+                    <!-- Dynamic Student Rows Generated via JS -->
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Winner Modal Window -->
+    <div id="winner-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+        <!-- Confetti Canvas -->
+        <canvas id="confetti-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
+
+        <div class="relative z-20 max-w-lg w-full glass-panel border-2 border-amber-400/50 rounded-3xl p-6 md:p-8 text-center transform scale-90 transition-transform duration-300 shadow-2xl bg-gradient-to-b from-slate-900/90 to-indigo-950/90">
+            
+            <!-- Crown / Star Trophy Icon -->
+            <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-tr from-amber-500 via-yellow-300 to-amber-200 p-1 shadow-2xl shadow-amber-500/50 flex items-center justify-center animate-bounce">
+                <div class="w-full h-full rounded-full bg-slate-900 flex items-center justify-center">
+                    <i class="fa-solid fa-award text-5xl text-amber-400"></i>
+                </div>
+            </div>
+
+            <span class="inline-block bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold text-xs px-4 py-1.5 rounded-full mb-3 tracking-widest uppercase">
+                🌟 طالب اليوم المميز (صف القيادة 6-1) 🌟
+            </span>
+
+            <h3 id="winner-name" class="text-3xl md:text-4xl font-black text-white my-3 drop-shadow-md text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-300">
+                اسم الطالب
+            </h3>
+
+            <p class="text-slate-300 text-sm mb-6">
+                تهانينا لك! لقد تم اختيارك لقيادة النشاط القادم بكل تفوق وريادة 🎉
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button id="modal-close-btn" class="w-full sm:w-auto flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-black text-sm rounded-xl shadow-lg hover:brightness-110 transition">
+                    متابعة العجلة <i class="fa-solid fa-arrow-left mr-1"></i>
+                </button>
+                <button id="modal-remove-winner-btn" class="w-full sm:w-auto py-3 px-5 bg-red-500/20 border border-red-500/40 text-red-300 font-bold text-sm rounded-xl hover:bg-red-500/30 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-user-xmark"></i> إزالة من القائمة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full py-3 text-center text-xs text-slate-500 border-t border-white/5 bg-slate-950/40 mt-auto">
+        مدرسة الرازي الابتدائيّة | صف القيادة (6-1) - المربية دانيا أبو مخ | السنة الدراسية 2026/2027
+    </footer>
+
+    <script>
+        // Official Student List from PDF (Class 6-1, Al-Razi School 2026/2027)
+        const DEFAULT_STUDENTS = [
+            "أمير عمر",
+            "أبي ابوفول",
+            "ألين ابومخ",
+            "أمير حجيرات",
+            "جنة علوش",
+            "جود بيادسة",
+            "سامر عمر",
+            "سوار كتانة",
+            "سيلين قعدان",
+            "عمرو مقالدة",
+            "كرم مصاروة",
+            "لارين ابومخ",
+            "ربيع مصاروة",
+            "محمد ابو صلاح",
+            "محمد شهاب",
+            "محمد فقرة",
+            "محمد مصاروة",
+            "محمد مصري",
+            "محمد مقالدة",
+            "محمود غرغور",
+            "يارا مصري",
+            "يوسف ابومخ",
+            "يوسف زايط"
+        ];
+
+        // Colorful Palette for Wheel Segments
+        const WHEEL_COLORS = [
+            '#2563eb', '#7c3aed', '#db2777', '#ea580c', '#059669', 
+            '#0284c7', '#9333ea', '#e11d48', '#d97706', '#10b981',
+            '#4f46e5', '#c026d3', '#f43f5e', '#b45309', '#047857'
+        ];
+
+        // State variables
+        let students = DEFAULT_STUDENTS.map(name => ({ name, active: true }));
+        let isSpinning = false;
+        let currentRotation = 0; // In Radians
+        let winnersHistory = [];
+        let audioCtx = null;
+
+        // DOM Elements
+        const canvas = document.getElementById('wheel-canvas');
+        const ctx = canvas.getContext('2d');
+        const spinMainBtn = document.getElementById('spin-main-btn');
+        const centerSpinBtn = document.getElementById('center-spin-btn');
+        const pointer = document.getElementById('wheel-pointer');
+        const studentsContainer = document.getElementById('students-container');
+        const activeCountBadge = document.getElementById('active-count-badge');
+        const activeRatio = document.getElementById('active-ratio');
+        const autoRemoveToggle = document.getElementById('auto-remove-toggle');
+        const soundToggle = document.getElementById('sound-toggle');
+        const spinSpeedSelect = document.getElementById('spin-speed');
+        const historyList = document.getElementById('history-list');
+        const emptyHistoryMsg = document.getElementById('empty-history-msg');
+        const winnerModal = document.getElementById('winner-modal');
+        const winnerNameEl = document.getElementById('winner-name');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const modalRemoveWinnerBtn = document.getElementById('modal-remove-winner-btn');
+        const newStudentInput = document.getElementById('new-student-input');
+        const addStudentBtn = document.getElementById('add-student-btn');
+        const resetStudentsBtn = document.getElementById('reset-students-btn');
+        const selectAllBtn = document.getElementById('select-all-btn');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        let lastWinner = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playTickSound() {
+            if (!soundToggle.checked) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.04);
+                
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.04);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function playFanfareSound() {
+            if (!soundToggle.checked) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99]; // C E G C E G
+            notes.forEach((freq, idx) => {
+                setTimeout(() => {
+                    try {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = freq;
+                        
+                        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 0.4);
+                    } catch(e){}
+                }, idx * 90);
+            });
+        }
+
+        function getActiveStudents() {
+            return students.filter(s => s.active);
+        }
+
+        function drawWheel() {
+            const activeList = getActiveStudents();
+            const numSlices = activeList.length;
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = centerX - 10;
+
+            ctx.clearRect(0, 0, width, height);
+
+            if (numSlices === 0) {
+                // Draw empty state wheel
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = '#1e293b';
+                ctx.fill();
+                ctx.strokeStyle = '#475569';
+                ctx.lineWidth = 6;
+                ctx.stroke();
+
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = 'bold 22px Alexandria';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('يرجى تحديد طالب واحد على الأقل', centerX, centerY);
+                ctx.restore();
+                return;
+            }
+
+            const sliceAngle = (2 * Math.PI) / numSlices;
+
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(currentRotation);
+
+            for (let i = 0; i < numSlices; i++) {
+                const angle = i * sliceAngle;
+                const color = WHEEL_COLORS[i % WHEEL_COLORS.length];
+
+                // Slice sector
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, radius, angle, angle + sliceAngle);
+                ctx.closePath();
+                
+                ctx.fillStyle = color;
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(15, 23, 42, 0.4)';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Slice Text
+                ctx.save();
+                ctx.rotate(angle + sliceAngle / 2);
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#ffffff';
+
+                // Calculate optimal font size based on slice count
+                let fontSize = Math.min(22, Math.max(12, Math.floor(280 / numSlices)));
+                ctx.font = `bold ${fontSize}px Alexandria, Cairo`;
+
+                // Text shadow for high contrast
+                ctx.shadowColor = 'rgba(0,0,0,0.7)';
+                ctx.shadowBlur = 4;
+
+                ctx.fillText(activeList[i].name, radius - 25, 0);
+                ctx.restore();
+            }
+
+            ctx.restore();
+
+            // Inner Metallic Rim
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 8;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function renderStudentsList() {
+            studentsContainer.innerHTML = '';
+            const activeList = getActiveStudents();
+            activeCountBadge.textContent = activeList.length;
+            activeRatio.textContent = `${activeList.length} / ${students.length}`;
+
+            students.forEach((student, index) => {
+                const item = document.createElement('div');
+                item.className = `flex items-center justify-between p-2.5 rounded-xl border transition ${
+                    student.active 
+                    ? 'bg-slate-800/80 border-white/10 text-slate-100' 
+                    : 'bg-slate-900/40 border-white/5 text-slate-500'
+                }`;
+
+                item.innerHTML = `
+                    <div class="flex items-center gap-2.5 overflow-hidden">
+                        <input type="checkbox" ${student.active ? 'checked' : ''} data-index="${index}" class="student-checkbox w-4 h-4 accent-amber-500 rounded cursor-pointer">
+                        <span class="text-xs font-semibold truncate ${student.active ? '' : 'line-through'}">${student.name}</span>
+                    </div>
+                    <button data-index="${index}" class="delete-student-btn text-slate-500 hover:text-red-400 p-1 text-xs transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                `;
+
+                studentsContainer.appendChild(item);
+            });
+
+            // Attach event listeners to checkboxes & delete buttons
+            document.querySelectorAll('.student-checkbox').forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    const idx = parseInt(e.target.dataset.index);
+                    students[idx].active = e.target.checked;
+                    renderStudentsList();
+                    drawWheel();
+                });
+            });
+
+            document.querySelectorAll('.delete-student-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = parseInt(e.currentTarget.dataset.index);
+                    students.splice(idx, 1);
+                    renderStudentsList();
+                    drawWheel();
+                });
+            });
+        }
+
+        function spinWheel() {
+            if (isSpinning) return;
+            const activeList = getActiveStudents();
+            if (activeList.length === 0) {
+                alertModal("تنبيه", "يرجى اختيار طالب واحد على الأقل لبدء التدوير!");
+                return;
+            }
+
+            initAudio();
+            isSpinning = true;
+            spinMainBtn.disabled = true;
+            centerSpinBtn.disabled = true;
+            spinMainBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            // Determine duration based on speed setting
+            const speedVal = spinSpeedSelect.value;
+            let duration = 5000; // default medium
+            if (speedVal === 'slow') duration = 3000;
+            if (speedVal === 'fast') duration = 8000;
+
+            const startTime = performance.now();
+            const numSlices = activeList.length;
+            const sliceAngle = (2 * Math.PI) / numSlices;
+
+            // Pick a random winner index
+            const winnerIdx = Math.floor(Math.random() * numSlices);
+            
+            // Calculate final rotation so the slice lands directly under top pointer (which is at angle 3*PI/2 or 270deg)
+            // Wheel top center is -PI/2 radians relative to standard right 0rad
+            const targetSliceCenter = (winnerIdx + 0.5) * sliceAngle;
+            
+            // Pointer is fixed at top (270 degrees = 1.5 * PI)
+            const targetPointerAngle = (1.5 * Math.PI);
+            
+            // Calculate slice alignment offset
+            let targetAngle = targetPointerAngle - targetSliceCenter;
+            
+            // Add multiple full spins (4 to 8 full rotations)
+            const extraRotations = (Math.floor(Math.random() * 4) + 5) * (2 * Math.PI);
+            
+            // Total distance to rotate from current normalized rotation
+            const currentNorm = currentRotation % (2 * Math.PI);
+            const totalRotationNeeded = extraRotations + (targetAngle - currentNorm);
+
+            const initialRotation = currentRotation;
+            let lastSliceIndex = -1;
+
+            function animateSpin(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Cubic Ease Out for natural deceleration
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                currentRotation = initialRotation + (totalRotationNeeded * easeOut);
+
+                // Calculate current pointer slice index to trigger tick sounds
+                const normalizedRad = (currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+                const currentSliceIndex = Math.floor(((1.5 * Math.PI - normalizedRad + 2 * Math.PI) % (2 * Math.PI)) / sliceAngle);
+
+                if (currentSliceIndex !== lastSliceIndex) {
+                    playTickSound();
+                    pointer.classList.remove('pointer-bounce');
+                    void pointer.offsetWidth; // trigger reflow
+                    pointer.classList.add('pointer-bounce');
+                    lastSliceIndex = currentSliceIndex;
+                }
+
+                drawWheel();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateSpin);
+                } else {
+                    isSpinning = false;
+                    spinMainBtn.disabled = false;
+                    centerSpinBtn.disabled = false;
+                    spinMainBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                    // Winner Selected
+                    const winner = activeList[winnerIdx];
+                    lastWinner = winner;
+                    showWinnerModal(winner.name);
+                }
+            }
+
+            requestAnimationFrame(animateSpin);
+        }
+
+        let confettiParticles = [];
+        let confettiAnimationId = null;
+
+        function launchConfetti() {
+            const confettiCanvas = document.getElementById('confetti-canvas');
+            const cCtx = confettiCanvas.getContext('2d');
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+
+            const colors = ['#f59e0b', '#ec4899', '#3b82f6', '#10b981', '#8b5cf6', '#f43f5e'];
+            confettiParticles = [];
+
+            for (let i = 0; i < 150; i++) {
+                confettiParticles.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedY: Math.random() * 4 + 2,
+                    speedX: (Math.random() - 0.5) * 3,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 10
+                });
+            }
+
+            function updateConfetti() {
+                cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+                confettiParticles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.rotationSpeed;
+
+                    cCtx.save();
+                    cCtx.translate(p.x, p.y);
+                    cCtx.rotate((p.rotation * Math.PI) / 180);
+                    cCtx.fillStyle = p.color;
+                    cCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    cCtx.restore();
+
+                    if (p.y > confettiCanvas.height) {
+                        p.y = -10;
+                        p.x = Math.random() * confettiCanvas.width;
+                    }
+                });
+
+                confettiAnimationId = requestAnimationFrame(updateConfetti);
+            }
+
+            if (confettiAnimationId) cancelAnimationFrame(confettiAnimationId);
+            updateConfetti();
+        }
+
+        function stopConfetti() {
+            if (confettiAnimationId) cancelAnimationFrame(confettiAnimationId);
+            const confettiCanvas = document.getElementById('confetti-canvas');
+            const cCtx = confettiCanvas.getContext('2d');
+            cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        }
+
+        function showWinnerModal(name) {
+            winnerNameEl.textContent = name;
+            winnerModal.classList.remove('opacity-0', 'pointer-events-none');
+            winnerModal.querySelector('div').classList.remove('scale-90');
+            winnerModal.querySelector('div').classList.add('scale-100');
+
+            playFanfareSound();
+            launchConfetti();
+            addWinnerToHistory(name);
+
+            // Auto-remove feature if enabled
+            if (autoRemoveToggle.checked) {
+                setTimeout(() => {
+                    removeStudentByName(name);
+                }, 400);
+            }
+        }
+
+        function closeWinnerModal() {
+            winnerModal.classList.add('opacity-0', 'pointer-events-none');
+            winnerModal.querySelector('div').classList.remove('scale-100');
+            winnerModal.querySelector('div').classList.add('scale-90');
+            stopConfetti();
+        }
+
+        function addWinnerToHistory(name) {
+            winnersHistory.unshift({ name, time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) });
+            renderHistory();
+        }
+
+        function renderHistory() {
+            historyList.innerHTML = '';
+            if (winnersHistory.length === 0) {
+                emptyHistoryMsg.style.display = 'block';
+                return;
+            }
+            emptyHistoryMsg.style.display = 'none';
+
+            winnersHistory.forEach((win, idx) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-2 rounded-xl bg-slate-800/60 border border-white/5 text-xs';
+                item.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 font-bold flex items-center justify-center text-[10px]">
+                            ${idx + 1}
+                        </span>
+                        <span class="font-bold text-slate-200">${win.name}</span>
+                    </div>
+                    <span class="text-[10px] text-slate-500">${win.time}</span>
+                `;
+                historyList.appendChild(item);
+            });
+        }
+
+        function removeStudentByName(name) {
+            const idx = students.findIndex(s => s.name === name);
+            if (idx !== -1) {
+                students[idx].active = false;
+                renderStudentsList();
+                drawWheel();
+            }
+        }
+
+        function alertModal(title, message) {
+            alert(`${title}: ${message}`);
+        }
+
+        spinMainBtn.addEventListener('click', spinWheel);
+        centerSpinBtn.addEventListener('click', spinWheel);
+        modalCloseBtn.addEventListener('click', closeWinnerModal);
+
+        modalRemoveWinnerBtn.addEventListener('click', () => {
+            if (lastWinner) {
+                removeStudentByName(lastWinner.name);
+            }
+            closeWinnerModal();
+        });
+
+        // Add custom student
+        addStudentBtn.addEventListener('click', () => {
+            const val = newStudentInput.value.trim();
+            if (val) {
+                students.push({ name: val, active: true });
+                newStudentInput.value = '';
+                renderStudentsList();
+                drawWheel();
+            }
+        });
+
+        newStudentInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addStudentBtn.click();
+            }
+        });
+
+        // Reset & Select All
+        resetStudentsBtn.addEventListener('click', () => {
+            students = DEFAULT_STUDENTS.map(name => ({ name, active: true }));
+            renderStudentsList();
+            drawWheel();
+        });
+
+        selectAllBtn.addEventListener('click', () => {
+            const allActive = students.every(s => s.active);
+            students.forEach(s => s.active = !allActive);
+            renderStudentsList();
+            drawWheel();
+        });
+
+        clearHistoryBtn.addEventListener('click', () => {
+            winnersHistory = [];
+            renderHistory();
+        });
+
+        // Resize Canvas dynamically
+        window.addEventListener('resize', () => {
+            drawWheel();
+        });
+
+        // Initial Initialization
+        window.onload = () => {
+            renderStudentsList();
+            drawWheel();
+        };
+    </script>
+</body>
+</html>
