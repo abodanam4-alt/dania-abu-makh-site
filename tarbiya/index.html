@@ -104,7 +104,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   var host = document.getElementById('student-carousel');
   if (!host || !window.createSpinCarousel) return;
-  var files = ['s01.jpeg','s02.jpeg','s03.jpeg','s04.jpeg','s05.jpeg','s06.jpg','s07.png','s08.png','s09.jpeg','s10.jpeg','s11.jpeg','s12.jpeg','s13.jpeg','s14.jpeg','s15.jpeg','s16.jpeg','s17.jpeg','s18.jpeg','s19.jpeg','s20.jpeg','s21.jpeg','s22.jpeg','s23.jpeg','s24.jpeg','s25.jpg','s26.jpeg'];
+  var files = ['s01.jpeg','s02.jpeg','s03.jpeg','s04.jpeg','s05.jpeg','s06.jpeg','s07.jpeg','s08.jpeg','s09.jpeg','s10.jpeg','s11.jpeg','s12.jpeg','s13.jpeg','s14.jpeg','s15.jpeg','s16.jpeg','s17.jpeg','s18.jpeg','s19.jpeg'];
   var images = files.map(function (f) { return 'students/' + f; });
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   createSpinCarousel(host, {
