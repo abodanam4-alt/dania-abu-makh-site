@@ -172,7 +172,8 @@
     return {
       question: isNext ? `ما العدد الذي يأتي بعد العدد ${fmt(n)}؟` : `ما العدد الذي يأتي قبل العدد ${fmt(n)}؟`,
       sub: 'فكّري: خانة الآحاد فقط تتغيّر',
-      answer: isNext ? n + 1 : n - 1
+      answer: isNext ? n + 1 : n - 1,
+      dir: 'rtl'
     };
   }
 
@@ -184,7 +185,8 @@
       return {
         question: `ما العدد الذي يأتي بعد العدد ${fmt(n)}؟`,
         sub: 'انتبهي! كل الخانات ممكن تتبدّل دفعة واحدة',
-        answer: n + 1
+        answer: n + 1,
+        dir: 'rtl'
       };
     }
     const m = randInt(1, 10);
@@ -192,7 +194,8 @@
     return {
       question: `ما العدد الذي يأتي قبل العدد ${fmt(n)}؟`,
       sub: 'انتبهي! كل الخانات ممكن تتبدّل دفعة واحدة',
-      answer: n - 1
+      answer: n - 1,
+      dir: 'rtl'
     };
   }
 
@@ -222,9 +225,10 @@
     }
     const answer = isAdd ? A + B : A - B;
     return {
-      question: `${fmt(A)} ${isAdd ? '+' : '−'} ${fmt(B)} = ؟`,
+      question: `${fmt(A)} ${isAdd ? '+' : '−'} ${fmt(B)} = ?`,
       sub: isAdd ? 'اجمعي كل خانة على حدة — بدون تبديل' : 'اطرحي كل خانة على حدة — بدون تبديل',
-      answer: answer
+      answer: answer,
+      dir: 'ltr'
     };
   }
 
@@ -236,6 +240,20 @@
   ];
 
   let levelIndex = 0, qIndex = 0, attempts = 0, totalStars = 0, levelStars = 0, currentQ = null;
+  let usedInLevel = new Set();
+
+  function generateUnique(genFn) {
+    let q;
+    for (let i = 0; i < 40; i++) {
+      q = genFn();
+      if (!usedInLevel.has(q.question)) {
+        usedInLevel.add(q.question);
+        return q;
+      }
+    }
+    usedInLevel.add(q.question);
+    return q;
+  }
 
   const topbar = document.getElementById('game-topbar');
   const dotsWrap = document.getElementById('progress-dots');
@@ -271,8 +289,9 @@
   }
 
   function loadQuestion() {
-    currentQ = LEVELS[levelIndex].gen();
+    currentQ = generateUnique(LEVELS[levelIndex].gen);
     qText.textContent = currentQ.question;
+    qText.dir = currentQ.dir || 'rtl';
     qSub.textContent = currentQ.sub;
     qInput.value = '';
     qInput.classList.remove('ok', 'bad');
@@ -381,6 +400,7 @@
       return;
     }
     qIndex = 0; levelStars = 0;
+    usedInLevel = new Set();
     levelComplete.classList.add('hidden');
     dotsWrap.classList.remove('hidden');
     questionScreen.classList.remove('hidden');
@@ -389,6 +409,7 @@
 
   function startGame() {
     levelIndex = 0; qIndex = 0; totalStars = 0; levelStars = 0;
+    usedInLevel = new Set();
     starCount.textContent = '0';
     startScreen.classList.add('hidden');
     finalScreen.classList.add('hidden');
