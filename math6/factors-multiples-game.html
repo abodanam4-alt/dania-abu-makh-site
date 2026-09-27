@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رحلة عالم الأعداد | موقع الأستاذة دانية أبو مخ</title>
+<meta name="description" content="لعبة تفاعلية للصف السادس: قواسم الأعداد، الأعداد الأولية، والمضاعف المشترك — 6 مراحل متدرجة بأسلوب مغامرة، نجوم ومتتاليات حماسية.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .game-shell{max-width:640px;margin:0 auto}
+
+  .game-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  .level-pill{background:var(--navy-950);color:#fff;font-weight:800;font-size:.85rem;padding:8px 18px;border-radius:999px;display:flex;align-items:center;gap:8px}
+  .counters{display:flex;gap:8px;flex-wrap:wrap}
+  .star-counter{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);font-weight:800;color:var(--navy-950);padding:8px 16px;border-radius:999px;display:flex;align-items:center;gap:6px;font-size:.95rem}
+  .star-counter .n{color:#d97706;font-size:1.05rem}
+  .streak-badge{background:linear-gradient(135deg,#ff6b4a,#ffc93c);color:#fff;font-weight:800;padding:8px 14px;border-radius:999px;font-size:.9rem;display:none;align-items:center;gap:6px;box-shadow:0 6px 16px rgba(255,107,74,.4)}
+  .streak-badge.show{display:flex}
+  @keyframes starPop{0%{transform:scale(1)}40%{transform:scale(1.5) rotate(-10deg)}100%{transform:scale(1)}}
+  .star-counter.pop{animation:starPop .5s ease}
+  @keyframes streakPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+  .streak-badge.pop{animation:streakPulse .4s ease}
+
+  .map-strip{display:flex;align-items:center;justify-content:center;margin-bottom:14px;gap:2px}
+  .map-strip .isle{width:38px;height:38px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;transition:.25s;opacity:.4;filter:grayscale(1)}
+  .map-strip .isle.done{background:var(--mint-bg);opacity:1;filter:none}
+  .map-strip .isle.active{background:var(--gold);opacity:1;filter:none;transform:scale(1.25);box-shadow:0 0 0 4px rgba(255,201,60,.3)}
+  .map-strip .line{width:18px;height:3px;background:var(--line);flex-shrink:0}
+  .map-strip .line.done{background:var(--mint)}
+
+  .progress-dots{display:flex;justify-content:center;gap:8px;margin-bottom:22px}
+  .progress-dots .dot{width:12px;height:12px;border-radius:50%;background:var(--line);transition:.25s}
+  .progress-dots .dot.done{background:var(--mint)}
+  .progress-dots .dot.active{background:var(--indigo);transform:scale(1.3)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:34px 26px;text-align:center}
+
+  .start-card .ic{font-size:3rem;margin-bottom:6px}
+  .start-card h2{font-size:1.4rem;margin-bottom:10px}
+  .start-card p{color:var(--ink-soft);margin-bottom:6px}
+  .rules-list{text-align:right;max-width:440px;margin:18px auto;display:flex;flex-direction:column;gap:10px}
+  .rules-list li{display:flex;gap:10px;align-items:flex-start;color:var(--ink-soft);font-size:.94rem;list-style:none}
+  .rules-list li b{color:var(--navy-950)}
+
+  .level-tag{display:inline-block;font-weight:800;font-size:.82rem;color:#fff;padding:6px 16px;border-radius:999px;margin-bottom:16px}
+  .level-tag.mint{background:var(--mint)}
+  .level-tag.gold{background:#d97706}
+  .level-tag.indigo{background:var(--indigo)}
+  .level-tag.coral{background:var(--coral)}
+  .level-tag.purple{background:#8b5cf6}
+  .level-tag.teal{background:#14b8a6}
+
+  .q-text{font-size:1.32rem;font-weight:800;color:var(--navy-950);line-height:1.6;margin-bottom:8px}
+  .q-sub{color:var(--ink-soft);font-size:.88rem;margin-bottom:22px}
+  .q-input{width:100%;max-width:220px;text-align:center;font-size:1.6rem;font-weight:800;padding:14px 10px;border-radius:14px;border:2px solid var(--line);outline:none;transition:.2s;font-family:'Cairo',sans-serif;direction:ltr}
+  .q-input:focus{border-color:var(--indigo)}
+  .q-input.ok{border-color:var(--mint);background:var(--mint-bg)}
+  .q-input.bad{border-color:var(--coral);background:var(--coral-bg)}
+
+  .q-actions{margin-top:20px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .feedback{margin-top:16px;font-weight:800;font-size:1.02rem;min-height:1.4em}
+  .feedback.ok{color:#1a8a56}
+  .feedback.bad{color:#c0392b}
+
+  .choice-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:6px}
+  .choice-btn{background:var(--bg);border:2px solid var(--line);border-radius:16px;padding:18px 22px;font-family:'Cairo',sans-serif;font-weight:800;font-size:1.05rem;color:var(--navy-950);cursor:pointer;transition:.2s;min-width:160px}
+  .choice-btn:hover{border-color:var(--indigo);transform:translateY(-2px)}
+  .choice-btn.correct{border-color:var(--mint);background:var(--mint-bg)}
+  .choice-btn.wrong{border-color:var(--coral);background:var(--coral-bg)}
+  .choice-btn:disabled{cursor:default;transform:none}
+
+  .overlay{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:40px 26px;text-align:center}
+  .overlay .big-ic{font-size:3.4rem;margin-bottom:10px}
+  .stars-row{display:flex;justify-content:center;gap:6px;margin:18px 0;font-size:2rem}
+  .stars-row span{opacity:.25;transition:.3s}
+  .stars-row span.lit{opacity:1}
+  @keyframes dropIn{0%{transform:translateY(-14px) scale(.5);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
+  .stars-row span.lit{animation:dropIn .4s ease backwards}
+  .stars-row span:nth-child(1).lit{animation-delay:.05s}
+  .stars-row span:nth-child(2).lit{animation-delay:.15s}
+  .stars-row span:nth-child(3).lit{animation-delay:.25s}
+  .stars-row span:nth-child(4).lit{animation-delay:.35s}
+  .stars-row span:nth-child(5).lit{animation-delay:.45s}
+
+  .rank-badge{display:inline-block;font-size:1.2rem;font-weight:900;padding:10px 22px;border-radius:999px;margin:10px 0;background:linear-gradient(135deg,var(--gold),#ffdd7a);color:var(--navy-950)}
+
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a class="brand" href="../index.html"><img class="school-logo" src="../assets/logo.jpeg" alt="شعار مدرسة الرازي"> موقع الأستاذة دانية أبو مخ</a>
+    <nav class="nav">
+      <a href="../index.html">الرئيسية</a>
+      <a href="../tarbiya/index.html">تربية السادس أ</a>
+      <a href="../math4/index.html">رياضيات الرابع</a>
+      <a href="index.html">رياضيات السادس</a>
+      <a href="../science/index.html">العلوم</a>
+      <a href="../computing/index.html">الحوسبة</a>
+      <a href="../quizzes/index.html">الاختبارات</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero hero-sm">
+  <div class="starfield"></div>
+  <div class="container hero-inner">
+    <span class="hero-eyebrow">🗺️ لعبة مغامرة تفاعلية</span>
+    <h1>رحلة <span>عالم الأعداد</span></h1>
+    <p class="lead">قواسم الأعداد، الأعداد الأولية، والمضاعف المشترك — 6 محطات من الأسهل إلى التحدي الأخير.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container game-shell">
+
+    <div id="game-topbar" class="game-topbar hidden">
+      <span id="level-pill" class="level-pill">🍀 المحطة 1</span>
+      <div class="counters">
+        <span id="streak-badge" class="streak-badge">🔥 <span id="streak-count">0</span></span>
+        <span id="star-counter" class="star-counter">⭐ <span class="n" id="star-count">0</span> / 30</span>
+      </div>
+    </div>
+    <div id="map-strip" class="map-strip hidden"></div>
+    <div id="progress-dots" class="progress-dots hidden"></div>
+
+    <!-- Start screen -->
+    <div id="start-screen" class="card start-card">
+      <div class="ic">🗺️</div>
+      <h2>هل أنتِ مستعدة للرحلة؟</h2>
+      <p>6 محطات في عالم الأعداد، تبدأ سهلة وتنتهي بتحدٍّ كبير. كل جواب صحيح = نجمة وخطوة للأمام!</p>
+      <ul class="rules-list">
+        <li>🍀 <span><b>قواسم الأعداد:</b> كم عددًا يقسم الرقم بدون باقٍ؟</span></li>
+        <li>🔍 <span><b>الأعداد الأولية:</b> احذري! بعض الأعداد تبدو أولية وما هي.</span></li>
+        <li>🌊 <span><b>المضاعفات:</b> والمضاعف المشترك الأصغر لعددين معًا.</span></li>
+        <li>🔥 <span>جاوبي صح من أول مرة عدة مرات متتالية وشوفي "المتتالية" تكبر!</span></li>
+      </ul>
+      <button class="btn btn-gold" id="start-btn" style="font-size:1.05rem;padding:14px 34px">ابدئي المغامرة 🚀</button>
+    </div>
+
+    <!-- Question screen -->
+    <div id="question-screen" class="card hidden">
+      <span id="level-tag" class="level-tag mint">المحطة 1 — قواسم الأعداد</span>
+      <div class="q-text" id="q-text">...</div>
+      <div class="q-sub" id="q-sub">اكتبي الجواب واضغطي إنتر أو تحقّق</div>
+
+      <div id="number-mode">
+        <input type="text" inputmode="numeric" id="q-input" class="q-input" placeholder="؟" autocomplete="off">
+        <div class="q-actions">
+          <button class="btn btn-gold" id="check-btn">تحقّق ✓</button>
+          <button class="btn btn-outline" id="next-btn" style="color:var(--navy-950);border-color:var(--line);display:none">التالي ⟵</button>
+        </div>
+      </div>
+
+      <div id="choice-mode" class="hidden">
+        <div class="choice-row" id="choice-row"></div>
+        <div class="q-actions">
+          <button class="btn btn-outline" id="next-btn-choice" style="color:var(--navy-950);border-color:var(--line);display:none">التالي ⟵</button>
+        </div>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+    </div>
+
+    <!-- Level complete overlay -->
+    <div id="level-complete" class="overlay hidden">
+      <div class="big-ic">🎉</div>
+      <h2 id="lc-title">أحسنت! أنهيتِ المحطة</h2>
+      <div class="stars-row" id="lc-stars"></div>
+      <p id="lc-sub" style="color:var(--ink-soft)"></p>
+      <button class="btn btn-gold" id="lc-next-btn" style="font-size:1.02rem;padding:12px 30px;margin-top:10px">المحطة التالية ⟵</button>
+    </div>
+
+    <!-- Final screen -->
+    <div id="final-screen" class="overlay hidden">
+      <div class="big-ic">🏆</div>
+      <h2>وصلتِ لنهاية الرحلة!</h2>
+      <div class="rank-badge" id="rank-badge"></div>
+      <p id="final-score" style="font-size:1.2rem;font-weight:800;color:var(--navy-950);margin:10px 0"></p>
+      <p id="final-msg" style="color:var(--ink-soft);margin-bottom:18px"></p>
+      <button class="btn btn-gold" id="restart-btn" style="font-size:1.02rem;padding:12px 30px">🔁 ابدئي رحلة جديدة</button>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-logos"><img src="../assets/signature.webp" alt="توقيع المعلمة دانية أبو مخ"></div>
+    الأستاذة دانية أبو مخ • معلّمة رياضيات
+  </div>
+</footer>
+
+<script src="../assets/effects.js" defer></script>
+<script>
+(function () {
+  function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+  function isPrime(n) {
+    if (n < 2) return false;
+    for (let i = 2; i * i <= n; i++) { if (n % i === 0) return false; }
+    return true;
+  }
+  function divisorCount(n) {
+    let c = 0;
+    for (let i = 1; i <= n; i++) { if (n % i === 0) c++; }
+    return c;
+  }
+  function smallestPrimeFactor(n) {
+    for (let i = 2; i <= n; i++) { if (n % i === 0) return i; }
+    return n;
+  }
+  function gcd(a, b) { while (b) { [a, b] = [b, a % b]; } return a; }
+  function lcm(a, b) { return (a * b) / gcd(a, b); }
+
+  /* ---------- Level 1: factor count ---------- */
+  function genFactorsCount() {
+    const n = randInt(6, 40);
+    return {
+      mode: 'number',
+      question: `كم قاسمًا (عاملًا) للعدد ${n}؟`,
+      sub: 'عدّي كل الأعداد التي تقسم العدد بدون باقٍ (لا تنسي 1 والعدد نفسه)',
+      answer: divisorCount(n)
+    };
+  }
+
+  /* ---------- Level 2: prime or not (with tempting traps) ---------- */
+  const PRIME_POOL = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+  const TRAP_POOL = [21, 27, 33, 35, 39, 49, 51, 57, 63, 65, 69, 77, 81, 87, 91, 93, 95, 99];
+  function genPrimeCheck() {
+    const useTrap = Math.random() < 0.5;
+    const pool = useTrap ? TRAP_POOL : PRIME_POOL;
+    const n = pool[randInt(0, pool.length - 1)];
+    return {
+      mode: 'choice',
+      question: `هل العدد ${n} عدد أولي أم غير أولي؟`,
+      sub: 'العدد الأولي له قاسمان فقط: 1 والعدد نفسه',
+      answer: isPrime(n),
+      choices: [
+        { label: '✅ عدد أولي', value: true },
+        { label: '❌ غير أولي (مركّب)', value: false }
+      ]
+    };
+  }
+
+  /* ---------- Level 3: multiples ---------- */
+  function genMultiple() {
+    const n = randInt(2, 12);
+    const idx = randInt(3, 9);
+    return {
+      mode: 'number',
+      question: `أوجدي المضاعف رقم ${idx} للعدد ${n}`,
+      sub: `اضربي: ${n} × ${idx}`,
+      answer: n * idx
+    };
+  }
+
+  /* ---------- Level 4: smallest/largest factor ---------- */
+  function genFactorExtreme() {
+    let n;
+    do { n = randInt(10, 90); } while (isPrime(n));
+    const variantSmallest = Math.random() < 0.5;
+    if (variantSmallest) {
+      return {
+        mode: 'number',
+        question: `ما أصغر قاسم للعدد ${n} أكبر من 1؟`,
+        sub: 'ابحثي عن أصغر عدد (غير 1) يقسم العدد بدون باقٍ',
+        answer: smallestPrimeFactor(n)
+      };
+    }
+    return {
+      mode: 'number',
+      question: `ما أكبر قاسم للعدد ${n} غير العدد نفسه؟`,
+      sub: 'قسّمي العدد على أصغر قاسم له (غير 1) لتحصلي عليه',
+      answer: n / smallestPrimeFactor(n)
+    };
+  }
+
+  /* ---------- Level 5: LCM ---------- */
+  function genLCM() {
+    let a, b;
+    do { a = randInt(2, 12); b = randInt(2, 12); } while (a === b);
+    return {
+      mode: 'number',
+      question: `ما أصغر مضاعف مشترك للعددين ${a} و ${b}؟`,
+      sub: 'أصغر عدد موجود في جدول ضرب العددين معًا',
+      answer: lcm(a, b)
+    };
+  }
+
+  /* ---------- Level 6: boss mix ---------- */
+  function genBoss() {
+    const gens = [genFactorsCount, genPrimeCheck, genMultiple, genFactorExtreme, genLCM];
+    return gens[randInt(0, gens.length - 1)]();
+  }
+
+  const LEVELS = [
+    { name: 'قواسم الأعداد', tag: 'المحطة 1 — قواسم الأعداد', color: 'mint', icon: '🍀', gen: genFactorsCount, count: 5 },
+    { name: 'الأعداد الأولية', tag: 'المحطة 2 — أولي أم لا؟', color: 'gold', icon: '🔍', gen: genPrimeCheck, count: 5 },
+    { name: 'المضاعفات', tag: 'المحطة 3 — المضاعفات', color: 'indigo', icon: '🌊', gen: genMultiple, count: 5 },
+    { name: 'أكبر وأصغر قاسم', tag: 'المحطة 4 — قواسم أعمق', color: 'purple', icon: '⛰️', gen: genFactorExtreme, count: 5 },
+    { name: 'المضاعف المشترك الأصغر', tag: 'المحطة 5 — المضاعف المشترك', color: 'teal', icon: '⭐', gen: genLCM, count: 5 },
+    { name: 'التحدي الأخير', tag: 'المحطة 6 — التحدي الأخير!', color: 'coral', icon: '🏆', gen: genBoss, count: 5 }
+  ];
+
+  let levelIndex = 0, qIndex = 0, attempts = 0, totalStars = 0, levelStars = 0, currentQ = null, streak = 0;
+  let usedInLevel = new Set();
+
+  function generateUnique(genFn) {
+    let q;
+    for (let i = 0; i < 40; i++) {
+      q = genFn();
+      if (!usedInLevel.has(q.question)) { usedInLevel.add(q.question); return q; }
+    }
+    usedInLevel.add(q.question);
+    return q;
+  }
+
+  const topbar = document.getElementById('game-topbar');
+  const mapStrip = document.getElementById('map-strip');
+  const dotsWrap = document.getElementById('progress-dots');
+  const starCount = document.getElementById('star-count');
+  const starCounterEl = document.getElementById('star-counter');
+  const streakBadge = document.getElementById('streak-badge');
+  const streakCountEl = document.getElementById('streak-count');
+  const levelPill = document.getElementById('level-pill');
+  const startScreen = document.getElementById('start-screen');
+  const questionScreen = document.getElementById('question-screen');
+  const levelTag = document.getElementById('level-tag');
+  const qText = document.getElementById('q-text');
+  const qSub = document.getElementById('q-sub');
+  const numberMode = document.getElementById('number-mode');
+  const choiceMode = document.getElementById('choice-mode');
+  const qInput = document.getElementById('q-input');
+  const checkBtn = document.getElementById('check-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const nextBtnChoice = document.getElementById('next-btn-choice');
+  const choiceRow = document.getElementById('choice-row');
+  const feedback = document.getElementById('feedback');
+  const levelComplete = document.getElementById('level-complete');
+  const finalScreen = document.getElementById('final-screen');
+
+  function renderMapStrip() {
+    mapStrip.innerHTML = '';
+    LEVELS.forEach(function (lvl, i) {
+      if (i > 0) {
+        const line = document.createElement('div');
+        line.className = 'line' + (i <= levelIndex ? ' done' : '');
+        mapStrip.appendChild(line);
+      }
+      const isle = document.createElement('div');
+      isle.className = 'isle' + (i < levelIndex ? ' done' : i === levelIndex ? ' active' : '');
+      isle.textContent = lvl.icon;
+      mapStrip.appendChild(isle);
+    });
+  }
+
+  function renderDots() {
+    dotsWrap.innerHTML = '';
+    for (let i = 0; i < LEVELS[levelIndex].count; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i < qIndex ? ' done' : i === qIndex ? ' active' : '');
+      dotsWrap.appendChild(d);
+    }
+  }
+
+  function bumpStars() {
+    starCounterEl.classList.remove('pop');
+    void starCounterEl.offsetWidth;
+    starCounterEl.classList.add('pop');
+    starCount.textContent = totalStars;
+  }
+
+  function updateStreakBadge() {
+    if (streak >= 2) {
+      streakBadge.classList.add('show');
+      streakCountEl.textContent = streak;
+      streakBadge.classList.remove('pop');
+      void streakBadge.offsetWidth;
+      streakBadge.classList.add('pop');
+    } else {
+      streakBadge.classList.remove('show');
+    }
+  }
+
+  function loadQuestion() {
+    currentQ = generateUnique(LEVELS[levelIndex].gen);
+    qText.textContent = currentQ.question;
+    qText.dir = 'rtl';
+    qSub.textContent = currentQ.sub;
+    feedback.textContent = '';
+    feedback.className = 'feedback';
+    attempts = 0;
+
+    if (currentQ.mode === 'choice') {
+      numberMode.classList.add('hidden');
+      choiceMode.classList.remove('hidden');
+      choiceRow.innerHTML = '';
+      nextBtnChoice.style.display = 'none';
+      currentQ.choices.forEach(function (c) {
+        const b = document.createElement('button');
+        b.className = 'choice-btn';
+        b.textContent = c.label;
+        b.addEventListener('click', function () { checkChoice(c.value, b); });
+        choiceRow.appendChild(b);
+      });
+    } else {
+      numberMode.classList.remove('hidden');
+      choiceMode.classList.add('hidden');
+      qInput.value = '';
+      qInput.classList.remove('ok', 'bad');
+      qInput.disabled = false;
+      checkBtn.style.display = '';
+      nextBtn.style.display = 'none';
+      setTimeout(function () { qInput.focus(); }, 50);
+    }
+
+    renderDots();
+    renderMapStrip();
+    levelPill.textContent = LEVELS[levelIndex].icon + ' ' + LEVELS[levelIndex].name;
+    levelTag.textContent = LEVELS[levelIndex].tag;
+    levelTag.className = 'level-tag ' + LEVELS[levelIndex].color;
+  }
+
+  function onCorrect(el) {
+    if (el) { el.classList.add('correct'); el.disabled = true; }
+    feedback.className = 'feedback ok';
+    if (attempts === 0) {
+      streak++;
+      updateStreakBadge();
+      const hype = streak >= 5 ? ' 🔥🔥 متتالية مذهلة!' : streak >= 3 ? ' 🔥 متتالية رائعة!' : '';
+      feedback.textContent = '✅ صحيح!' + hype;
+    } else {
+      feedback.textContent = '✅ صحيح!';
+    }
+    totalStars++; levelStars++;
+    bumpStars();
+  }
+
+  function onWrongFinal(el) {
+    feedback.className = 'feedback bad';
+    feedback.textContent = 'الإجابة الصحيحة: ' + (currentQ.mode === 'choice'
+      ? (currentQ.answer ? 'عدد أولي' : 'غير أولي (مركّب)')
+      : String(currentQ.answer));
+    streak = 0;
+    updateStreakBadge();
+  }
+
+  function checkAnswer() {
+    const raw = qInput.value.replace(/[,\s]/g, '');
+    if (raw === '') { qInput.focus(); return; }
+    const val = Number(raw);
+    if (val === currentQ.answer) {
+      qInput.classList.add('ok');
+      qInput.disabled = true;
+      onCorrect(null);
+      checkBtn.style.display = 'none';
+      nextBtn.style.display = '';
+      nextBtn.focus();
+    } else {
+      attempts++;
+      if (attempts < 2) {
+        qInput.classList.add('bad');
+        feedback.className = 'feedback bad';
+        feedback.textContent = '🤔 قريب! جرّبي مرة أخرى';
+        qInput.select();
+      } else {
+        qInput.classList.remove('bad');
+        qInput.classList.add('ok');
+        qInput.value = String(currentQ.answer);
+        qInput.disabled = true;
+        onWrongFinal(null);
+        checkBtn.style.display = 'none';
+        nextBtn.style.display = '';
+        nextBtn.focus();
+      }
+    }
+  }
+
+  function checkChoice(value, btnEl) {
+    const buttons = choiceRow.querySelectorAll('.choice-btn');
+    if (value === currentQ.answer) {
+      buttons.forEach(function (b) { b.disabled = true; });
+      onCorrect(btnEl);
+      nextBtnChoice.style.display = '';
+      nextBtnChoice.focus();
+    } else {
+      attempts++;
+      btnEl.classList.add('wrong');
+      btnEl.disabled = true;
+      if (attempts < 2) {
+        feedback.className = 'feedback bad';
+        feedback.textContent = '🤔 قريب! جرّبي الخيار الآخر';
+      } else {
+        buttons.forEach(function (b) { b.disabled = true; if (currentQ.choices.find(c => c.value === currentQ.answer).label === b.textContent) b.classList.add('correct'); });
+        onWrongFinal(null);
+        nextBtnChoice.style.display = '';
+        nextBtnChoice.focus();
+      }
+    }
+  }
+
+  checkBtn.addEventListener('click', checkAnswer);
+  qInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      if (checkBtn.style.display !== 'none') checkAnswer();
+      else nextBtn.click();
+    }
+  });
+
+  function goNextQuestion() {
+    qIndex++;
+    if (qIndex >= LEVELS[levelIndex].count) {
+      showLevelComplete();
+    } else {
+      loadQuestion();
+    }
+  }
+  nextBtn.addEventListener('click', goNextQuestion);
+  nextBtnChoice.addEventListener('click', goNextQuestion);
+
+  function showLevelComplete() {
+    const lit = levelStars;
+    document.getElementById('lc-title').textContent = '🎉 أحسنت! أنهيتِ ' + LEVELS[levelIndex].name;
+    const starsRow = document.getElementById('lc-stars');
+    starsRow.innerHTML = '';
+    for (let i = 0; i < 5; i++) {
+      const s = document.createElement('span');
+      s.textContent = '⭐';
+      if (i < lit) s.classList.add('lit');
+      starsRow.appendChild(s);
+    }
+    document.getElementById('lc-sub').textContent = 'حصلتِ على ' + lit + ' من 5 نجوم في هذه المحطة.';
+    const btn = document.getElementById('lc-next-btn');
+    btn.textContent = (levelIndex < LEVELS.length - 1) ? 'المحطة التالية ⟵' : 'إنهاء الرحلة 🏁';
+    questionScreen.classList.add('hidden');
+    dotsWrap.classList.add('hidden');
+    levelComplete.classList.remove('hidden');
+  }
+
+  function showFinal() {
+    const pct = totalStars / 30;
+    let rank, msg;
+    if (pct >= 0.9) { rank = '🥇 خبيرة الأعداد'; msg = '🌟 أداء استثنائي! أتقنتِ القواسم والمضاعفات والأعداد الأولية.'; }
+    else if (pct >= 0.65) { rank = '🥈 مستكشفة واعدة'; msg = '🎉 عمل رائع! كمان شوي تمرين وبتوصلي للمستوى الذهبي.'; }
+    else { rank = '🥉 مستكشفة مبتدئة'; msg = '💪 بداية جيدة! جرّبي الرحلة مرة أخرى وشوفي شو رح تحققي.'; }
+    document.getElementById('rank-badge').textContent = rank;
+    document.getElementById('final-score').textContent = '⭐ ' + totalStars + ' / 30 نجمة';
+    document.getElementById('final-msg').textContent = msg;
+    topbar.classList.add('hidden');
+    mapStrip.classList.add('hidden');
+    levelComplete.classList.add('hidden');
+    finalScreen.classList.remove('hidden');
+  }
+
+  document.getElementById('lc-next-btn').addEventListener('click', function () {
+    levelIndex++;
+    if (levelIndex >= LEVELS.length) { showFinal(); return; }
+    qIndex = 0; levelStars = 0;
+    levelComplete.classList.add('hidden');
+    dotsWrap.classList.remove('hidden');
+    questionScreen.classList.remove('hidden');
+    loadQuestion();
+  });
+
+  function startGame() {
+    levelIndex = 0; qIndex = 0; totalStars = 0; levelStars = 0; streak = 0;
+    usedInLevel = new Set();
+    starCount.textContent = '0';
+    updateStreakBadge();
+    startScreen.classList.add('hidden');
+    finalScreen.classList.add('hidden');
+    topbar.classList.remove('hidden');
+    mapStrip.classList.remove('hidden');
+    dotsWrap.classList.remove('hidden');
+    questionScreen.classList.remove('hidden');
+    loadQuestion();
+  }
+
+  document.getElementById('start-btn').addEventListener('click', startGame);
+  document.getElementById('restart-btn').addEventListener('click', startGame);
+})();
+</script>
+</body>
+</html>
