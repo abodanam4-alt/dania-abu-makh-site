@@ -3,25 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>وحدة قسمة الكسور | موقع الأستاذة دانية أبو مخ</title>
-<meta name="description" content="زاوية وحدة قسمة الكسور للصف السادس: الفكرة بلمحة بأمثلة محلولة، ومكان لملخصات وأوراق عمل وألعاب الوحدة.">
+<title>وحدة قسمة الكسور — مختبر العصائر | موقع الأستاذة دانية أبو مخ</title>
+<meta name="description" content="خطة درس قسمة الكسور عندما يكون أحد العددين عددًا صحيحًا: «مختبر العصائر — هل نوزّع أم نملأ؟» — الأهداف، سير الحصة 45 دقيقة، محطات التحدي، بطاقة الخروج ومفتاح الإجابة.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <style>
-  .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 4px;line-height:1.15;font-weight:800}
-  .frac .num{border-bottom:2px solid currentColor;padding:0 6px 2px}
-  .frac .den{padding:2px 6px 0}
-  .div-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1000px;margin:0 auto}
-  .div-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;display:flex;flex-direction:column;gap:12px}
-  .div-card .tag{align-self:flex-start;background:var(--navy-950);color:var(--gold);font-weight:800;font-size:.78rem;padding:4px 14px;border-radius:999px}
-  .div-card h3{font-size:1.05rem}
-  .div-card p{font-size:.9rem;color:var(--ink-soft)}
-  .eq{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;direction:ltr;font-size:1.3rem;font-weight:800;color:var(--navy-950);background:var(--bg);border-radius:12px;padding:12px 8px}
-  .rule-box{max-width:760px;margin:0 auto 28px;background:linear-gradient(135deg,var(--navy-950),var(--navy-800));color:#fff;border-radius:var(--radius);padding:20px 26px;text-align:center}
-  .rule-box .eq{background:transparent;color:var(--gold);font-size:1.6rem;margin-top:8px}
-  .rule-box b{color:var(--gold)}
-  @media(max-width:860px){.div-grid{grid-template-columns:1fr}}
+  .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;line-height:1.1;font-weight:800;font-size:.92em}
+  .frac .num{border-bottom:2px solid currentColor;padding:0 5px 1px}
+  .frac .den{padding:1px 5px 0}
+  .eqi{display:inline-block;white-space:nowrap;unicode-bidi:isolate;font-weight:800;color:var(--indigo);margin:0 2px}
+  .cover{max-width:520px;margin:0 auto 22px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-lg)}
+  .cover img{width:100%;display:block}
+  .lesson-title{text-align:center}
+  .lesson-title h2{font-size:1.6rem;margin-bottom:10px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .chip{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:999px;padding:6px 16px;font-weight:800;font-size:.85rem}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:960px;margin:0 auto}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
+  .panel h3{font-size:1.1rem;margin-bottom:12px;color:var(--indigo)}
+  .st-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:960px;margin:0 auto}
+  .st-card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px;display:flex;flex-direction:column;gap:8px}
+  .st-card .top{display:flex;align-items:center;gap:12px}
+  .st-card .n{width:40px;height:40px;border-radius:12px;background:var(--gold);color:var(--navy-950);font-weight:900;font-size:1.2rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .st-card h4{font-size:1.05rem}
+  .st-card p{line-height:2;color:var(--ink)}
+  .sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1000px;margin:0 auto 30px}
+  .sum-card{background:var(--navy-900);color:#fff;border-radius:var(--radius);padding:20px;text-align:center;display:flex;flex-direction:column;gap:10px}
+  .sum-card h4{color:var(--gold);font-size:.98rem}
+  .sum-card p{font-size:.88rem;color:#dfe2f7}
+  .sum-card .eq{direction:ltr;font-size:1.25rem;font-weight:800;color:#fff;background:rgba(255,255,255,.08);border-radius:12px;padding:10px 6px;white-space:nowrap}
+  .exit{max-width:760px;margin:0 auto;background:var(--card);border:2px dashed var(--indigo);border-radius:var(--radius);padding:22px 26px}
+  .exit h3{color:var(--indigo);margin-bottom:12px;font-size:1.1rem}
+  .exit ol{margin:0;padding:0;list-style:none;counter-reset:q}
+  .exit li{counter-increment:q;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line);line-height:2}
+  .exit li:last-child{border-bottom:none}
+  .exit li::before{content:counter(q);flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--indigo);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85rem;margin-top:5px}
+  .lv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:960px;margin:0 auto 22px}
+  .lv-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:var(--shadow);padding:18px 20px}
+  .lv-card .tag{display:inline-block;color:#fff;font-weight:800;font-size:.8rem;padding:4px 14px;border-radius:999px;margin-bottom:8px}
+  .lv-card .tag.mint{background:var(--mint)}.lv-card .tag.indigo{background:var(--indigo)}.lv-card .tag.purple{background:#8b5cf6}
+  .callout{max-width:960px;margin:0 auto 14px;border-radius:var(--radius-sm);padding:16px 22px;font-weight:700;line-height:1.9}
+  .callout.warn{background:var(--coral-bg);color:#b8402a;border:1px solid #ffc9bb}
+  .callout.note{background:var(--mint-bg);color:#1a8a56}
+  .key-box{max-width:760px;margin:0 auto 22px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:6px 22px}
+  .key-box summary{cursor:pointer;font-weight:900;padding:14px 0}
+  .key-box .k{display:flex;gap:10px;padding:8px 0;border-top:1px dashed var(--line);line-height:2}
+  .key-box .k b{color:var(--indigo);min-width:7em}
+  @media(max-width:860px){.two-col,.st-grid,.sum-grid,.lv-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -46,41 +75,72 @@
   <div class="container hero-inner">
     <span class="hero-eyebrow">➗ وحدة قسمة الكسور</span>
     <h1>قسمة <span>الكسور</span></h1>
-    <p class="lead">زاوية الوحدة: الفكرة بلمحة بأمثلة محلولة، وهنا تُجمع ملخصات وأوراق عمل وألعاب القسمة.</p>
+    <p class="lead">الدرس الأول: عندما يكون أحد العددين عددًا صحيحًا — «مختبر العصائر».</p>
   </div>
 </section>
 
 <section class="section">
+  <div class="container lesson-title">
+    <div class="cover"><img src="images/fraction-division-cover.jpg" alt="قسمة الكسور مع أصدقاء العصير: إبريق عصير 3/4 يُقسَّم على ثلاثة أكواب، وروبوت وعدد 3 يشرحان على السبورة"></div>
+    <h2>مختبر العصائر — هل نوزّع أم نملأ؟</h2>
+    <div class="chips"><span class="chip">📘 الرياضيات</span><span class="chip">🧭 مسارات زائد</span><span class="chip">⏱ 45 دقيقة</span></div>
+  </div>
+</section>
+
+<section class="section section-alt">
   <div class="container">
+    <div class="two-col">
+      <div class="panel">
+        <h3>🎯 الأهداف التعليمية</h3>
+        <ul class="check-list">
+          <li><span class="chk">✓</span> تمثيل قسمة كسر على عدد صحيح بالرسم والتوزيع المتساوي.</li>
+          <li><span class="chk">✓</span> تمثيل قسمة عدد صحيح على كسر وحدي باستخدام مجموعات متساوية.</li>
+          <li><span class="chk">✓</span> كتابة تمرين قسمة مناسب لموقف حياتي والتحقق من الحل بالضرب.</li>
+          <li><span class="chk">✓</span> تفسير معنى الناتج وتمييز القسمة بالتوزيع عن القسمة بالقياس.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>🧰 الوسائل</h3>
+        <ul class="check-list">
+          <li><span class="chk">✓</span> إبريق أو صورة إبريق عصير</li>
+          <li><span class="chk">✓</span> شرائط كسور</li>
+          <li><span class="chk">✓</span> أكواب ورقية</li>
+          <li><span class="chk">✓</span> أقلام تلوين</li>
+          <li><span class="chk">✓</span> بطاقات محطات</li>
+          <li><span class="chk">✓</span> بطاقة خروج</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:860px">
     <div class="section-head">
-      <span class="eyebrow">الفكرة بلمحة</span>
-      <h2>ثلاث حالات للقسمة</h2>
+      <span class="eyebrow">سير الحصة</span>
+      <h2>45 دقيقة في خمس محطات زمنية</h2>
     </div>
-    <div class="rule-box">
-      <div>للقسمة على كسر: <b>نضرب في مقلوب المقسوم عليه</b></div>
-      <div class="eq" dir="ltr">
-        <span class="frac"><span class="num">a</span><span class="den">b</span></span><span>÷</span><span class="frac"><span class="num">c</span><span class="den">d</span></span><span>=</span><span class="frac"><span class="num">a</span><span class="den">b</span></span><span>×</span><span class="frac"><span class="num">d</span><span class="den">c</span></span>
-      </div>
-    </div>
-    <div class="div-grid">
-      <div class="div-card">
-        <span class="tag">1</span>
-        <h3>كسر ÷ عدد صحيح</h3>
-        <p>نقسم الكسر إلى أجزاء متساوية بعدد القاسم: نضرب في مقلوب العدد.</p>
-        <div class="eq"><span class="frac"><span class="num">2</span><span class="den">3</span></span><span>÷</span><span>2</span><span>=</span><span class="frac"><span class="num">2</span><span class="den">3</span></span><span>×</span><span class="frac"><span class="num">1</span><span class="den">2</span></span><span>=</span><span class="frac"><span class="num">1</span><span class="den">3</span></span></div>
-      </div>
-      <div class="div-card">
-        <span class="tag">2</span>
-        <h3>عدد صحيح ÷ كسر</h3>
-        <p>نسأل: كم مرة يتسع الكسر داخل العدد؟ ونضرب في مقلوب الكسر.</p>
-        <div class="eq"><span>3</span><span>÷</span><span class="frac"><span class="num">1</span><span class="den">2</span></span><span>=</span><span>3</span><span>×</span><span>2</span><span>=</span><span>6</span></div>
-      </div>
-      <div class="div-card">
-        <span class="tag">3</span>
-        <h3>كسر ÷ كسر</h3>
-        <p>نقلب الكسر الثاني ونضرب، ثم نختزل إن أمكن.</p>
-        <div class="eq"><span class="frac"><span class="num">3</span><span class="den">4</span></span><span>÷</span><span class="frac"><span class="num">3</span><span class="den">8</span></span><span>=</span><span class="frac"><span class="num">3</span><span class="den">4</span></span><span>×</span><span class="frac"><span class="num">8</span><span class="den">3</span></span><span>=</span><span>2</span></div>
-      </div>
+    <div class="timeline">
+      <div class="t-item"><div class="t-card">
+        <div class="t-head"><span class="t-time">5 دقائق</span><span class="t-title">إثارة الفضول</span><span class="t-letter">1</span></div>
+        <p>أعرض <span class="frac"><span class="num">3</span><span class="den">4</span></span> لتر عصير وأسأل: إذا اقتسمه 3 أطفال بالتساوي، فكم يحصل كل طفل؟ أسجّل التوقعات دون إعطاء قاعدة.</p>
+      </div></div>
+      <div class="t-item"><div class="t-card">
+        <div class="t-head"><span class="t-time">10 دقائق</span><span class="t-title">اكتشاف بالتوزيع</span><span class="t-letter">2</span></div>
+        <p>تلوّن كل مجموعة 3 أجزاء من شريط مقسم إلى 4 أرباع، ثم توزّع الأجزاء على 3 أطفال. نستنتج: <span class="eqi" dir="ltr"><span class="frac"><span class="num">3</span><span class="den">4</span></span> ÷ 3 = <span class="frac"><span class="num">1</span><span class="den">4</span></span></span>. أسأل: لماذا نصيب الطفل ربع؟</p>
+      </div></div>
+      <div class="t-item"><div class="t-card">
+        <div class="t-head"><span class="t-time">10 دقائق</span><span class="t-title">التحدي المعاكس</span><span class="t-letter">3</span></div>
+        <p>لدينا لتران من العصير وأكواب سعة كل منها <span class="frac"><span class="num">1</span><span class="den">4</span></span> لتر. يمثّل الطلاب كم ربعًا في اللترين ويستنتجون: <span class="eqi" dir="ltr">2 ÷ <span class="frac"><span class="num">1</span><span class="den">4</span></span> = 8</span> أكواب.</p>
+      </div></div>
+      <div class="t-item"><div class="t-card">
+        <div class="t-head"><span class="t-time">12 دقيقة</span><span class="t-title">محطات التحدي</span><span class="t-letter">4</span></div>
+        <p>أربع محطات، 3 دقائق لكل محطة: التوزيع، ملء الأكواب، اكتشاف الخطأ، تأليف مسألة.</p>
+      </div></div>
+      <div class="t-item"><div class="t-card">
+        <div class="t-head"><span class="t-time">8 دقائق</span><span class="t-title">استنتاج وتقويم</span><span class="t-letter">5</span></div>
+        <p>يناقش الطلاب الفرق بين التوزيع وعدّ الأجزاء، ويتحققون من النتائج بالضرب، ثم يحلون بطاقة الخروج.</p>
+      </div></div>
     </div>
   </div>
 </section>
@@ -88,15 +148,80 @@
 <section class="section section-alt">
   <div class="container">
     <div class="section-head">
-      <span class="eyebrow">مواد الوحدة</span>
-      <h2>ملخصات وأوراق عمل وألعاب</h2>
+      <span class="eyebrow">بطاقات محطات التحدي</span>
+      <h2>أربع محطات، 3 دقائق لكل محطة</h2>
     </div>
+    <div class="st-grid">
+      <div class="st-card"><div class="top"><span class="n">1</span><h4>وزّع بالتساوي</h4></div><p>لدينا <span class="frac"><span class="num">6</span><span class="den">8</span></span> لتر عصير نوزعه على 3 أطفال. كم يحصل كل طفل؟ ارسم ثم اكتب التمرين.</p></div>
+      <div class="st-card"><div class="top"><span class="n">2</span><h4>كم كوبًا نملأ؟</h4></div><p>لدينا 3 لترات عصير، وسعة كل كوب <span class="frac"><span class="num">1</span><span class="den">2</span></span> لتر. كم كوبًا نملأ؟ مثّل الحل.</p></div>
+      <div class="st-card"><div class="top"><span class="n">3</span><h4>اكتشف الخطأ</h4></div><p>قال طالب: <span class="eqi" dir="ltr"><span class="frac"><span class="num">4</span><span class="den">5</span></span> ÷ 2 = <span class="frac"><span class="num">4</span><span class="den">10</span></span></span>. هل إجابته صحيحة؟ هل يمكن اختزال الناتج؟</p></div>
+      <div class="st-card"><div class="top"><span class="n">4</span><h4>أنت مؤلف المسألة</h4></div><p>اكتب مسألة كلامية مناسبة لأحد التمرينين: <span class="eqi" dir="ltr"><span class="frac"><span class="num">3</span><span class="den">5</span></span> ÷ 3</span> أو <span class="eqi" dir="ltr">2 ÷ <span class="frac"><span class="num">1</span><span class="den">5</span></span></span>.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">ملخص السبورة</span>
+      <h2>ما نكتبه معًا في النهاية</h2>
+    </div>
+    <div class="sum-grid">
+      <div class="sum-card"><h4>الحالة الأولى: كسر ÷ عدد صحيح</h4><p>نوزّع الكمية بالتساوي.</p><div class="eq" dir="ltr"><span class="frac"><span class="num">6</span><span class="den">7</span></span> ÷ 3 = <span class="frac"><span class="num">6</span><span class="den">21</span></span> = <span class="frac"><span class="num">2</span><span class="den">7</span></span></div></div>
+      <div class="sum-card"><h4>الحالة الثانية: عدد صحيح ÷ كسر</h4><p>نبحث عن عدد المجموعات أو الأجزاء الصغيرة.</p><div class="eq" dir="ltr">2 ÷ <span class="frac"><span class="num">1</span><span class="den">4</span></span> = 8</div></div>
+      <div class="sum-card"><h4>التحقق بالضرب</h4><div class="eq" dir="ltr"><span class="frac"><span class="num">2</span><span class="den">7</span></span> × 3 = <span class="frac"><span class="num">6</span><span class="den">7</span></span>   •   8 × <span class="frac"><span class="num">1</span><span class="den">4</span></span> = 2</div></div>
+    </div>
+    <div class="exit">
+      <h3>🎫 بطاقة الخروج — تقويم فردي</h3>
+      <ol>
+        <li><span>لدينا <span class="frac"><span class="num">4</span><span class="den">5</span></span> لتر عصير نوزعه على طفلين. كم يحصل كل طفل؟</span></li>
+        <li><span>لدينا لتران من العصير، وسعة كل كوب <span class="frac"><span class="num">1</span><span class="den">4</span></span> لتر. كم كوبًا نملأ؟</span></li>
+        <li><span>اكتب تمرين القسمة الذي يمثل توزيع <span class="frac"><span class="num">3</span><span class="den">4</span></span> لتر على 3 أطفال.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">التمايز والأخطاء الشائعة</span>
+      <h2>لكل مستوى ما يناسبه</h2>
+    </div>
+    <div class="lv-grid">
+      <div class="lv-card"><span class="tag mint">دعم</span><p>استخدام شرائط مرئية وكسور سهلة مثل <span class="frac"><span class="num">4</span><span class="den">6</span></span> ÷ 2.</p></div>
+      <div class="lv-card"><span class="tag indigo">مستوى متوسط</span><p>اختزال الناتج والتحقق بالضرب.</p></div>
+      <div class="lv-card"><span class="tag purple">إثراء</span><p>تفسير <span class="frac"><span class="num">3</span><span class="den">4</span></span> ÷ 5 بالرسم، ومناقشة أمثلة تتضمن أعدادًا مختلطة.</p></div>
+    </div>
+    <div class="callout warn">⚠️ ناقش الاعتقاد الخاطئ «القسمة دائمًا تصغّر العدد»؛ فقسمة عدد صحيح على كسر أصغر من الواحد قد تعطي ناتجًا أكبر.</div>
+    <div class="callout note">📝 ملاحظة تخطيطية: عند الحاجة تُخصَّص الحصة الأولى لقسمة الكسر على عدد صحيح، وتُستكمل الحالة الثانية في الحصة التالية.</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <details class="key-box">
+      <summary>🔑 مفتاح الإجابة للمعلم</summary>
+      <div class="k"><b>المحطات</b><span>(1) <span class="frac"><span class="num">1</span><span class="den">4</span></span> لتر، (2) 6 أكواب، (3) صحيحة وتختزل إلى <span class="frac"><span class="num">2</span><span class="den">5</span></span>، (4) إجابات متنوعة.</span></div>
+      <div class="k"><b>بطاقة الخروج</b><span>(1) <span class="frac"><span class="num">2</span><span class="den">5</span></span> لتر، (2) 8 أكواب، (3) <span class="eqi" dir="ltr"><span class="frac"><span class="num">3</span><span class="den">4</span></span> ÷ 3 = <span class="frac"><span class="num">1</span><span class="den">4</span></span></span>.</span></div>
+    </details>
+    <a class="download-card" href="files/fraction-division-lesson-plan.docx" download="خطة درس قسمة الكسور - مختبر العصائر.docx" style="max-width:620px;margin:0 auto">
+      <div class="ic">📥</div>
+      <div>
+        <h4>تحميل خطة الدرس (Word)</h4>
+        <p>الخطة كاملة كما أُعدّت: الأهداف، سير الحصة، المحطات، بطاقة الخروج ومفتاح الإجابة</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
     <div class="coming-soon" style="margin:0 auto;max-width:640px">
       <div class="ic">🧱</div>
-      <h2>الزاوية جاهزة لمواد القسمة</h2>
-      <p>ابعتيلي ملخصات أو أوراق عمل أو فكرة لعبة لقسمة الكسور، وبضيفها هنا بنفس تصميم وحدة ضرب الكسور.</p>
+      <h2>مواد إضافية قريبًا</h2>
+      <p>ابعتيلي ملخصات أو أوراق عمل أو فكرة لعبة لقسمة الكسور، وبضيفها هنا بنفس التصميم.</p>
     </div>
-    <p style="text-align:center;margin-top:22px"><a href="fraction-multiplication-summaries.html" style="color:var(--indigo);font-weight:800;text-decoration:underline">✖️ الوحدة السابقة: ملخصات ضرب الكسور</a></p>
   </div>
 </section>
 
