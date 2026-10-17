@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بينغو الصف التعاوني | موقع الأستاذة دانية أبو مخ</title>
+<meta name="description" content="لوحة بينغو جماعية للصف: عبارات عن تجارب إيجابية وقيادية، يعلّم الصف معًا كل ما حدث لأحدهم، وعند إكمال سطر تأتي لمسة «القوة في معًا».">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .bingo-shell{max-width:860px;margin:0 auto}
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin-bottom:18px}
+  .tb-btn{font-family:'Cairo',sans-serif;font-weight:800;font-size:.88rem;padding:10px 18px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--navy-950);cursor:pointer;box-shadow:var(--shadow);transition:.2s}
+  .tb-btn:hover{border-color:var(--indigo);transform:translateY(-2px)}
+  .tb-btn.on{background:var(--navy-950);color:var(--gold);border-color:var(--navy-950)}
+  .tb-group{display:flex;gap:6px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 6px;box-shadow:var(--shadow)}
+  .tb-group .tb-btn{box-shadow:none;border-color:transparent;padding:7px 14px}
+  .tb-group .lbl{font-size:.78rem;font-weight:800;color:var(--ink-soft);padding:0 8px}
+  .stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 18px;font-weight:800;font-size:.9rem;box-shadow:var(--shadow)}
+  .stat b{color:var(--indigo);font-size:1.05rem}
+  .board{display:grid;gap:12px;grid-template-columns:repeat(var(--n),1fr)}
+  .tile{position:relative;font-family:'Cairo',sans-serif;font-weight:800;color:var(--navy-950);background:var(--card);border:2.5px solid var(--line);border-radius:18px;box-shadow:var(--shadow);cursor:pointer;padding:14px 12px;min-height:clamp(96px,16vw,150px);display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.6;font-size:clamp(.9rem,2.1vw,1.25rem);transition:.2s}
+  .board.n4 .tile{font-size:clamp(.78rem,1.7vw,1.02rem);min-height:clamp(86px,13vw,120px)}
+  .tile:hover{transform:translateY(-3px);border-color:var(--indigo)}
+  .tile .tick{position:absolute;top:8px;inset-inline-start:10px;width:30px;height:30px;border-radius:50%;background:var(--mint);color:#fff;font-size:1rem;display:none;align-items:center;justify-content:center}
+  .tile.marked{background:linear-gradient(135deg,#e8f9f1,#c9f1dd);border-color:var(--mint);color:#16724a}
+  .tile.marked .tick{display:flex}
+  .tile.in-line{box-shadow:0 0 0 4px rgba(255,201,60,.55),var(--shadow)}
+  @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.07)}100%{transform:scale(1)}}
+  .tile.pop{animation:pop .35s ease}
+  .edit-mode .tile{border-style:dashed;border-color:var(--coral)}
+  .hint{text-align:center;color:var(--ink-soft);font-size:.86rem;margin-top:16px}
+  .how{max-width:700px;margin:0 auto}
+  .credit{max-width:700px;margin:22px auto 0;text-align:center;font-size:.84rem;color:var(--ink-soft)}
+  .credit a{color:var(--indigo);font-weight:800;text-decoration:underline}
+  .celebrate{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;background:rgba(13,17,48,.72);padding:20px}
+  .celebrate.show{display:flex}
+  .cel-card{background:var(--card);border-radius:28px;box-shadow:var(--shadow-lg);padding:34px 30px;max-width:520px;text-align:center}
+  .cel-card .big{font-size:3.4rem;margin-bottom:6px}
+  .cel-card h2{font-size:1.6rem;margin-bottom:10px;color:var(--navy-950)}
+  .cel-card .act{background:linear-gradient(135deg,#fff8dc,#ffe9a3);border:2px solid #f2b705;border-radius:16px;padding:14px 18px;font-weight:900;font-size:1.15rem;margin:14px 0 20px}
+  #confetti{position:fixed;inset:0;z-index:90;pointer-events:none;display:none}
+  @media print{
+    .site-header,.site-footer,.hero,.toolbar,.hint,.celebrate,#confetti,.credit,.how-wrap,.print-hide{display:none !important}
+    .tile{box-shadow:none;border:2px solid #333;min-height:140px}
+    .tile.marked{background:#fff;color:inherit}
+    .stats{display:none}
+  }
+  @media(max-width:600px){.board{gap:8px}.tile{border-radius:14px;padding:10px 8px}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a class="brand" href="../index.html"><img class="school-logo" src="../assets/logo.jpeg" alt="شعار مدرسة الرازي"> موقع الأستاذة دانية أبو مخ</a>
+    <nav class="nav">
+      <a href="../index.html">الرئيسية</a>
+      <a href="index.html" class="active">تربية السادس أ</a>
+      <a href="../math4/index.html">رياضيات الرابع</a>
+      <a href="../math6/index.html">رياضيات السادس</a>
+      <a href="../science/index.html">العلوم</a>
+      <a href="../computing/index.html">الحوسبة</a>
+      <a href="../quizzes/index.html">الاختبارات</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero hero-sm">
+  <div class="starfield"></div>
+  <div class="container hero-inner">
+    <span class="hero-eyebrow">🎯 فعاليّة صفّية تعاونية</span>
+    <h1>بينغو <span>الصف</span></h1>
+    <p class="lead">لوحة واحدة للصف كله: كلما حدث لأحدنا ما تقوله العبارة، نعلّمها معًا — وعند إكمال سطر نحتفل: القوة في معًا!</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container bingo-shell">
+
+    <div class="toolbar">
+      <button class="tb-btn" id="shuffle-btn">🔀 لوحة جديدة</button>
+      <div class="tb-group"><span class="lbl">الحجم</span><button class="tb-btn on" data-size="3">3×3</button><button class="tb-btn" data-size="4">4×4</button></div>
+      <div class="tb-group"><span class="lbl">العبارات</span><button class="tb-btn on" data-bank="all">الكل</button><button class="tb-btn" data-bank="daily">يومية</button><button class="tb-btn" data-bank="lead">قيادية</button></div>
+      <button class="tb-btn" id="edit-btn">✏️ تعديل عبارة</button>
+      <button class="tb-btn" id="reset-btn">↺ مسح العلامات</button>
+      <button class="tb-btn" id="print-btn">🖨️ طباعة</button>
+    </div>
+
+    <div class="stats">
+      <span class="stat">الخانات المعلَّمة: <b id="s-marked">0</b> / <b id="s-total">9</b></span>
+      <span class="stat">الأسطر المكتملة: <b id="s-lines">0</b></span>
+    </div>
+
+    <div class="board" id="board" style="--n:3"></div>
+    <p class="hint" id="hint">اضغطي على الخانة عندما يقول أحدنا «حدث لي هذا!» — ويشاركنا بإيجاز تجربته.</p>
+  </div>
+</section>
+
+<section class="section section-alt how-wrap">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">طريقة اللعب</span>
+      <h2>كيف نلعب؟</h2>
+    </div>
+    <ul class="check-list how">
+      <li><span class="chk">1</span> نعرض اللوحة على الشاشة، وتقرأ المعلّمة (أو طالب) العبارات واحدة بعد أخرى.</li>
+      <li><span class="chk">2</span> كل من حدثت له التجربة يرفع يده ويشارك زملاءه بها بإيجاز، ثم نعلّم الخانة.</li>
+      <li><span class="chk">3</span> الهدف: إكمال سطر أو عمود أو قُطر — ثم اللوحة كاملة.</li>
+      <li><span class="chk">4</span> عند اكتمال سطر نقوم بحركة انتصار مشتركة: «القوة في معًا» 👏 ❤️</li>
+      <li><span class="chk">5</span> نختم بكلمة واحدة يصف بها كل طالب شعوره بعد النشاط.</li>
+    </ul>
+    <p class="credit">الفكرة والعبارات اليومية مستوحاة من نشاط «بينغو الابتسامات والمشاركات الإيجابيّة» — وزارة التربية والتعليم، وأضفنا عبارات قيادية تناسب قيمة الشهر.
+      <a href="https://meyda.education.gov.il/files/Yesodi/arab/bingo-smiles.pdf" target="_blank" rel="noopener noreferrer">فتح النشاط الأصلي</a></p>
+  </div>
+</section>
+
+<div class="celebrate" id="celebrate" role="dialog" aria-live="polite">
+  <div class="cel-card">
+    <div class="big" id="cel-emoji">🎉</div>
+    <h2 id="cel-title">سطر مكتمل!</h2>
+    <p>القوة في معًا — نجاح الفرد فرح للجميع</p>
+    <div class="act" id="cel-act">👏 صفّقوا بإيقاع واحد</div>
+    <button class="btn btn-gold" id="cel-close">متابعة اللعب ⟵</button>
+  </div>
+</div>
+<canvas id="confetti"></canvas>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-logos"><img src="../assets/signature.webp" alt="توقيع المعلمة دانية أبو مخ"></div>
+    الأستاذة دانية أبو مخ • مربية الصف السادس أ
+  </div>
+</footer>
+
+<script src="../assets/effects.js" defer></script>
+<script>
+(function () {
+  var DAILY = [
+    'شربت في الصباح مشروبًا لذيذًا.',
+    'ساعدت في البيت هذا الأسبوع.',
+    'أحد ما ابتسم لي في الصباح.',
+    'قرأت شيئًا مُضحكًا.',
+    'شاهدت فيلمًا أحبّه.',
+    'تنازلت لصديق.',
+    'نجحت في مهمّة.',
+    'أعددت وجبة الإفطار للعائلة.',
+    'اعتنيت بإخوتي الصغار.',
+    'تلقيت مجاملة أو إطراءً.',
+    'أشركوني في لعبة.',
+    'تذوّقت شيئًا جديدًا.',
+    'تغلّبت على الغضب.',
+    'تغلّبت على خيبة الأمل.',
+    'فاجأت والديّ.',
+    'طرحت سؤالًا رغم خجلي.',
+    'اعتنيت بحيوان أليف.',
+    'سمعت أغنية أحبّها.',
+    'اشتروا لي هدية.',
+    'استضفت أصدقاء.',
+    'كنت ضيفًا عند أصدقاء.'
+  ];
+  var LEAD = [
+    'شجّعت زميلًا حين تعثّر.',
+    'اعتذرت عندما أخطأت.',
+    'استمعت لرأي مختلف باهتمام.',
+    'ساعدت زميلًا دون أن يطلب مني.',
+    'تحمّلت مسؤولية فعلي.',
+    'حاولت مرة أخرى رغم الصعوبة.',
+    'التزمت بما وعدت به.',
+    'سامحت زميلًا.',
+    'تعلّمت من خطأ ارتكبته.',
+    'ضبطت غضبي وفكّرت قبل أن أتصرّف.',
+    'ثابرت حتى أنهيت واجبي.',
+    'فرحت لنجاح زميل.'
+  ];
+  var ACTIONS = [
+    '👏 صفّقوا بإيقاع واحد',
+    '❤️ شكّلوا قلبًا بأيديكم',
+    '🙌 ارفعوا أيديكم معًا وقولوا: القوة في معًا!',
+    '🌟 صفّقوا لزملائكم الذين شاركوا بتجاربهم',
+    '😄 ابتسموا لبعضكم ثلاث ثوانٍ'
+  ];
+
+  var size = 3, bank = 'all', editMode = false;
+  var tiles = [], marked = [], doneLines = {};
+
+  var boardEl = document.getElementById('board');
+  var sMarked = document.getElementById('s-marked'), sTotal = document.getElementById('s-total'), sLines = document.getElementById('s-lines');
+  var cel = document.getElementById('celebrate'), celTitle = document.getElementById('cel-title'), celAct = document.getElementById('cel-act'), celEmoji = document.getElementById('cel-emoji');
+  var cv = document.getElementById('confetti'), cx = cv.getContext('2d'), confettiId = null;
+
+  function pool() { return bank === 'daily' ? DAILY : bank === 'lead' ? LEAD : DAILY.concat(LEAD); }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+  function newBoard() {
+    var need = size * size, p = shuffle(pool());
+    if (p.length < need) p = p.concat(shuffle(DAILY.concat(LEAD).filter(function (x) { return p.indexOf(x) < 0; })));
+    tiles = p.slice(0, need);
+    marked = tiles.map(function () { return false; });
+    doneLines = {};
+    render();
+  }
+
+  function lines() {
+    var L = [], i, j, r, c;
+    for (r = 0; r < size; r++) { var row = []; for (c = 0; c < size; c++) row.push(r * size + c); L.push({ id: 'r' + r, cells: row }); }
+    for (c = 0; c < size; c++) { var col = []; for (r = 0; r < size; r++) col.push(r * size + c); L.push({ id: 'c' + c, cells: col }); }
+    var d1 = [], d2 = [];
+    for (i = 0; i < size; i++) { d1.push(i * size + i); d2.push(i * size + (size - 1 - i)); }
+    L.push({ id: 'd1', cells: d1 }); L.push({ id: 'd2', cells: d2 });
+    return L;
+  }
+
+  function render() {
+    boardEl.style.setProperty('--n', size);
+    boardEl.className = 'board' + (size === 4 ? ' n4' : '') + (editMode ? ' edit-mode' : '');
+    boardEl.innerHTML = '';
+    tiles.forEach(function (txt, i) {
+      var b = document.createElement('button');
+      b.className = 'tile' + (marked[i] ? ' marked' : '');
+      b.setAttribute('aria-pressed', marked[i] ? 'true' : 'false');
+      b.innerHTML = '<span class="tick">✓</span><span class="txt"></span>';
+      b.querySelector('.txt').textContent = txt;
+      b.addEventListener('click', function () { onTile(i, b); });
+      boardEl.appendChild(b);
+    });
+    updateStats(false);
+  }
+
+  function onTile(i, el) {
+    if (editMode) {
+      var v = window.prompt('اكتبي العبارة الجديدة لهذه الخانة:', tiles[i]);
+      if (v && v.trim()) { tiles[i] = v.trim(); render(); }
+      return;
+    }
+    marked[i] = !marked[i];
+    el.classList.toggle('marked', marked[i]);
+    el.setAttribute('aria-pressed', marked[i] ? 'true' : 'false');
+    el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+    updateStats(true);
+  }
+
+  function updateStats(celebrateNew) {
+    var count = marked.filter(Boolean).length, newLine = false, full = count === marked.length;
+    var current = {}, total = 0;
+    var tilesEls = boardEl.children;
+    for (var k = 0; k < tilesEls.length; k++) tilesEls[k].classList.remove('in-line');
+    lines().forEach(function (L) {
+      var ok = L.cells.every(function (ci) { return marked[ci]; });
+      if (ok) {
+        total++; current[L.id] = true;
+        L.cells.forEach(function (ci) { tilesEls[ci].classList.add('in-line'); });
+        if (!doneLines[L.id]) newLine = true;
+      }
+    });
+    doneLines = current;
+    sMarked.textContent = count; sTotal.textContent = marked.length; sLines.textContent = total;
+    if (celebrateNew && (newLine || full) && count > 0) celebrate(full);
+  }
+
+  function celebrate(full) {
+    celEmoji.textContent = full ? '🏆' : '🎉';
+    celTitle.textContent = full ? 'بينغو! اكتملت اللوحة كلها' : 'سطر مكتمل!';
+    celAct.textContent = ACTIONS[Math.floor(Math.random() * ACTIONS.length)];
+    cel.classList.add('show');
+    confetti();
+  }
+
+  function confetti() {
+    cv.width = window.innerWidth; cv.height = window.innerHeight; cv.style.display = 'block';
+    var colors = ['#ffc93c', '#ff6b4a', '#22b573', '#4c5fd5', '#8b5cf6', '#f43f5e'], parts = [], i;
+    for (i = 0; i < 140; i++) parts.push({ x: Math.random() * cv.width, y: -Math.random() * cv.height, s: Math.random() * 8 + 4, c: colors[i % colors.length], vy: Math.random() * 4 + 2.5, vx: (Math.random() - 0.5) * 3, r: Math.random() * 360, vr: (Math.random() - 0.5) * 12 });
+    var t0 = performance.now();
+    if (confettiId) cancelAnimationFrame(confettiId);
+    (function frame(now) {
+      cx.clearRect(0, 0, cv.width, cv.height);
+      parts.forEach(function (p) {
+        p.y += p.vy; p.x += p.vx; p.r += p.vr;
+        cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r * Math.PI / 180); cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s); cx.restore();
+      });
+      if (now - t0 < 3200) confettiId = requestAnimationFrame(frame);
+      else { cx.clearRect(0, 0, cv.width, cv.height); cv.style.display = 'none'; }
+    })(t0);
+  }
+
+  document.getElementById('cel-close').addEventListener('click', function () { cel.classList.remove('show'); });
+  cel.addEventListener('click', function (e) { if (e.target === cel) cel.classList.remove('show'); });
+  document.getElementById('shuffle-btn').addEventListener('click', newBoard);
+  document.getElementById('reset-btn').addEventListener('click', function () { marked = tiles.map(function () { return false; }); doneLines = {}; render(); });
+  document.getElementById('print-btn').addEventListener('click', function () { window.print(); });
+  document.getElementById('edit-btn').addEventListener('click', function () {
+    editMode = !editMode;
+    this.classList.toggle('on', editMode);
+    boardEl.classList.toggle('edit-mode', editMode);
+    document.getElementById('hint').textContent = editMode ? 'وضع التعديل: اضغطي على أي خانة لتغيير عبارتها.' : 'اضغطي على الخانة عندما يقول أحدنا «حدث لي هذا!» — ويشاركنا بإيجاز تجربته.';
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-size]'), function (b) {
+    b.addEventListener('click', function () {
+      size = parseInt(b.getAttribute('data-size'), 10);
+      Array.prototype.forEach.call(document.querySelectorAll('[data-size]'), function (x) { x.classList.toggle('on', x === b); });
+      newBoard();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-bank]'), function (b) {
+    b.addEventListener('click', function () {
+      bank = b.getAttribute('data-bank');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-bank]'), function (x) { x.classList.toggle('on', x === b); });
+      newBoard();
+    });
+  });
+
+  newBoard();
+})();
+</script>
+</body>
+</html>
