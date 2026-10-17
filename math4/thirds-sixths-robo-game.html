@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدّي روبو | كسور الرابع: الأثلاث والأسداس</title>
+    <!-- Tailwind CSS with internal fallback definitions for standalone offline play -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&family=Fredoka:wght@600;700&display=swap');
+
+        :root {
+            --bg-sunny-yellow: #FFDE59;
+            --bg-sky-blue: #38BDF8;
+            --bg-candy-pink: #FF66C4;
+            --bg-lime-green: #7ED957;
+            --bg-lavender: #C38FFF;
+            --bg-orange: #FF914D;
+            --text-dark: #1E293B;
+        }
+
+        body {
+            font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #E0F2FE 0%, #FEF9C3 50%, #FCE7F3 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* 3D Glossy Buttons & Tiles */
+        .btn-3d {
+            transition: all 0.15s ease-out;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2), 0 10px 15px rgba(0,0,0,0.15);
+            position: relative;
+            top: 0;
+        }
+        .btn-3d:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 rgba(0,0,0,0.2), 0 12px 20px rgba(0,0,0,0.2);
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tile-3d {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.18), inset 0 3px 0 rgba(255,255,255,0.6);
+        }
+        .tile-3d:hover {
+            transform: scale(1.05) translateY(-4px);
+        }
+        .tile-active-highlight {
+            animation: pulseGlow 1.2s infinite alternate;
+            border: 4px solid #FFFFFF !important;
+            z-index: 20;
+        }
+        .tile-completed {
+            opacity: 0.55;
+            filter: grayscale(40%);
+            box-shadow: 0 3px 0 rgba(0,0,0,0.1);
+            transform: scale(0.96);
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px #FFD700, 0 8px 0 rgba(0,0,0,0.2); transform: scale(1.06); }
+            100% { box-shadow: 0 0 35px #FF66C4, 0 12px 0 rgba(0,0,0,0.25); transform: scale(1.12); }
+        }
+
+        /* Robot Animations */
+        .robot-container {
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .anim-idle {
+            animation: floatRobot 3s ease-in-out infinite;
+        }
+        .anim-jump {
+            animation: jumpBounce 0.7s ease-in-out;
+        }
+        .anim-happy {
+            animation: happyDance 0.6s infinite alternate;
+        }
+        .anim-shocked {
+            animation: shockShake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes floatRobot {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(1.5deg); }
+        }
+        @keyframes jumpBounce {
+            0% { transform: scale(1, 1) translateY(0); }
+            30% { transform: scale(1.15, 0.85) translateY(10px); }
+            60% { transform: scale(0.9, 1.1) translateY(-60px); }
+            80% { transform: scale(1.05, 0.95) translateY(0); }
+            100% { transform: scale(1, 1) translateY(0); }
+        }
+        @keyframes happyDance {
+            0% { transform: translateY(0) rotate(-6deg) scale(1.05); }
+            100% { transform: translateY(-25px) rotate(6deg) scale(1.1); }
+        }
+        @keyframes shockShake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            20% { transform: translateX(-8px) rotate(-5deg); }
+            40% { transform: translateX(8px) rotate(5deg); }
+            60% { transform: translateX(-8px) rotate(-5deg); }
+            80% { transform: translateX(8px) rotate(5deg); }
+        }
+
+        /* Speech Bubble Tail */
+        .speech-bubble {
+            position: relative;
+            background: #FFFFFF;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            border: 4px solid #38BDF8;
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            right: 40px;
+            border-width: 20px 15px 0;
+            border-style: solid;
+            border-color: #FFFFFF transparent;
+            display: block;
+            width: 0;
+        }
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -26px;
+            right: 38px;
+            border-width: 23px 17px 0;
+            border-style: solid;
+            border-color: #38BDF8 transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #38BDF8;
+            border-radius: 10px;
+        }
+
+        /* Custom Math Fraction Styling (بسط ومقام) */
+        .frac-box {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            margin: 0 4px;
+            padding: 2px 8px;
+            background: #FEF3C7;
+            border: 2px solid #F59E0B;
+            border-radius: 10px;
+            font-weight: 900;
+            line-height: 1.1;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        .frac-num {
+            border-bottom: 2px solid #1E293B;
+            padding-bottom: 2px;
+            width: 100%;
+            text-align: center;
+            color: #1E293B;
+        }
+        .frac-den {
+            padding-top: 2px;
+            width: 100%;
+            text-align: center;
+            color: #1E293B;
+        }
+
+        /* Confetti canvas */
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between p-2 md:p-4 text-slate-800">
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- TOP HEADER / SCOREBOARD -->
+    <header class="max-w-7xl w-full mx-auto bg-white/90 backdrop-blur-md rounded-3xl p-3 md:p-4 shadow-xl border-4 border-amber-300 flex flex-wrap items-center justify-between gap-3 z-10">
+        <!-- Game Title Badge -->
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black text-xl md:text-2xl px-5 py-2.5 rounded-2xl shadow-md flex items-center gap-2 border-2 border-white">
+                <span class="text-2xl">🤖</span>
+                <span>تحدّي روبو | <span class="text-yellow-200">الفصل ضد الروبوت</span></span>
+            </div>
+            <span class="hidden lg:inline-block bg-sky-100 text-sky-800 font-bold px-3 py-1 rounded-xl text-sm border border-sky-300">
+                درس: الأثلاث والأسداس
+            </span>
+        </div>
+
+        <!-- Scoreboard (Class vs Robot) -->
+        <div class="flex items-center gap-3 md:gap-6 mx-auto sm:mx-0">
+            <!-- Class Score -->
+            <div class="flex items-center gap-3 bg-sky-500 text-white px-4 md:px-6 py-2 rounded-2xl border-4 border-sky-200 shadow-lg">
+                <div class="text-2xl md:text-3xl">👥</div>
+                <div>
+                    <div class="text-xs font-bold text-sky-100">الفصل (الأبطال)</div>
+                    <div id="classScore" class="text-2xl md:text-3xl font-black leading-none">0</div>
+                </div>
+            </div>
+
+            <div class="text-2xl md:text-3xl font-black text-amber-500 animate-pulse">VS</div>
+
+            <!-- Robot Score -->
+            <div class="flex items-center gap-3 bg-pink-500 text-white px-4 md:px-6 py-2 rounded-2xl border-4 border-pink-200 shadow-lg">
+                <div class="text-2xl md:text-3xl">🤖</div>
+                <div>
+                    <div class="text-xs font-bold text-pink-100">الروبوت العبقري</div>
+                    <div id="robotScore" class="text-2xl md:text-3xl font-black leading-none">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Utility Action Controls -->
+        <div class="flex items-center gap-2">
+            <!-- Remaining counter -->
+            <div class="bg-amber-100 text-amber-900 px-3 py-2 rounded-xl font-bold text-sm border border-amber-300 hidden sm:flex items-center gap-1">
+                <span>المتبقي:</span>
+                <span id="remainingCount" class="bg-amber-500 text-white px-2 py-0.5 rounded-lg">20</span>
+            </div>
+            <!-- Sound Toggle -->
+            <button id="soundToggleBtn" onclick="toggleSound()" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-700 p-2.5 rounded-2xl border-2 border-slate-300 text-xl" title="كتم/تشغيل الصوت">
+                🔊
+            </button>
+            <!-- Fullscreen Toggle -->
+            <button onclick="toggleFullscreen()" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-700 p-2.5 rounded-2xl border-2 border-slate-300 text-xl" title="ملء الشاشة">
+                ⛶
+            </button>
+            <!-- Reset Game -->
+            <button onclick="confirmReset()" class="btn-3d bg-red-100 hover:bg-red-200 text-red-600 p-2.5 rounded-2xl border-2 border-red-300 text-xl" title="إعادة تشغيل اللعبة">
+                🔄
+            </button>
+            <!-- Download HTML -->
+            <button onclick="downloadGameFile()" class="btn-3d bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-3 py-2 rounded-2xl text-xs md:text-sm flex items-center gap-1 border-2 border-white shadow">
+                <span>💾</span>
+                <span class="hidden md:inline">تحميل الملف</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN BOARD & ROBOT DISPLAY AREA -->
+    <main class="max-w-7xl w-full mx-auto my-3 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+        
+        <!-- TRACK / BOARD GAME PATHWAY (8 Columns) -->
+        <section class="lg:col-span-8 bg-white/80 backdrop-blur-md rounded-3xl p-4 md:p-6 shadow-2xl border-4 border-amber-200 relative min-h-[500px] flex flex-col justify-between">
+            
+            <!-- Path Header -->
+            <div class="flex items-center justify-between mb-3 border-b-2 border-amber-100 pb-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🏁</span>
+                    <h2 class="font-black text-slate-700 text-lg md:text-xl">مسار التحديات (20 مَربّعاً)</h2>
+                </div>
+                <div class="text-xs md:text-sm font-bold text-slate-500">
+                    اضغط على <span class="text-sky-600 font-extrabold">الروبوت</span> لاختيار التحدي القادم!
+                </div>
+            </div>
+
+            <!-- 20 Grid / Snake Track -->
+            <div id="boardGrid" class="grid grid-cols-4 sm:grid-cols-5 gap-2.5 md:gap-3.5 my-auto py-2">
+                <!-- Tiles dynamically generated via JS -->
+            </div>
+
+            <!-- Category Legend Bar -->
+            <div class="mt-3 pt-3 border-t border-slate-200 flex flex-wrap justify-around text-xs font-bold text-slate-600 gap-2 bg-amber-50/80 p-2.5 rounded-2xl">
+                <span class="flex items-center gap-1"><span class="text-base">🔍</span> اكتشف الخطأ</span>
+                <span class="flex items-center gap-1"><span class="text-base">💡</span> علّمني يا بطل</span>
+                <span class="flex items-center gap-1"><span class="text-base">🧩</span> هات الدليل</span>
+                <span class="flex items-center gap-1"><span class="text-base">📊</span> رتّب وصنّف</span>
+                <span class="flex items-center gap-1"><span class="text-base">⚡</span> فكّر واتخذ القرار</span>
+            </div>
+        </section>
+
+        <!-- ROBOT MASCOT STAGE & INTERACTIVE PANEL (4 Columns) -->
+        <section class="lg:col-span-4 bg-gradient-to-b from-sky-400 via-sky-300 to-indigo-300 rounded-3xl p-4 shadow-2xl border-4 border-white flex flex-col items-center justify-between relative overflow-hidden min-h-[500px]">
+            
+            <!-- Background sparkles SVG -->
+            <div class="absolute inset-0 opacity-20 pointer-events-none">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="20%" cy="20%" r="4" fill="#FFF"/>
+                    <circle cx="80%" cy="30%" r="6" fill="#FFF"/>
+                    <circle cx="60%" cy="70%" r="5" fill="#FFF"/>
+                    <circle cx="30%" cy="80%" r="7" fill="#FFF"/>
+                </svg>
+            </div>
+
+            <!-- Speech Bubble -->
+            <div class="w-full z-10 my-2">
+                <div class="speech-bubble p-4 text-center">
+                    <p id="robotDialogue" class="text-slate-800 font-black text-base md:text-lg leading-relaxed">
+                        مرحباً يا أبطال! أنا الروبوت العبقري 🤖 جاهز لمنافستكم! اضغطوا عليّ لاختيار التحدي!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Robot Vector Mascot Container -->
+            <div class="relative cursor-pointer my-2 group z-10" onclick="triggerRobotChoice()" title="انقر على الروبوت لاختيار السؤال!">
+                
+                <!-- Glowing Aura backdrop -->
+                <div class="absolute -inset-4 bg-amber-300/40 rounded-full blur-xl group-hover:bg-amber-300/70 transition"></div>
+
+                <!-- Robot SVG -->
+                <div id="robotCharacter" class="robot-container anim-idle relative w-48 md:w-56 h-56 md:h-64 mx-auto drop-shadow-2xl">
+                    <svg viewBox="0 0 200 240" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Pedestal Shadow -->
+                        <ellipse cx="100" cy="225" rx="65" ry="12" fill="#0284C7" opacity="0.4"/>
+                        <!-- Pedestal Base -->
+                        <path d="M 40 210 L 160 210 L 175 230 L 25 230 Z" fill="#38BDF8" stroke="#0284C7" stroke-width="3"/>
+                        
+                        <!-- Body Torso -->
+                        <rect x="55" y="105" width="90" height="80" rx="25" fill="#FFFFFF" stroke="#0284C7" stroke-width="4"/>
+                        <!-- Torso Chest Screen/Badge -->
+                        <rect x="70" y="120" width="60" height="45" rx="12" fill="#38BDF8" stroke="#0284C7" stroke-width="3"/>
+                        <!-- Chat Bubble Icon on Chest -->
+                        <path d="M 88 133 h 24 a 6 6 0 0 1 6 6 v 10 a 6 6 0 0 1 -6 6 h -12 l -6 6 v -6 h -6 a 6 6 0 0 1 -6 -6 v -10 a 6 6 0 0 1 6 -6 Z" fill="#FFFFFF"/>
+
+                        <!-- Arms -->
+                        <!-- Left Arm -->
+                        <g id="robotLeftArm">
+                            <rect x="25" y="115" width="28" height="14" rx="7" fill="#38BDF8" stroke="#0284C7" stroke-width="3"/>
+                            <circle cx="22" cy="122" r="12" fill="#FFFFFF" stroke="#0284C7" stroke-width="3"/>
+                        </g>
+                        <!-- Right Arm -->
+                        <g id="robotRightArm">
+                            <rect x="147" y="115" width="28" height="14" rx="7" fill="#38BDF8" stroke="#0284C7" stroke-width="3"/>
+                            <circle cx="178" cy="122" r="12" fill="#FFFFFF" stroke="#0284C7" stroke-width="3"/>
+                        </g>
+
+                        <!-- Head Joint Neck -->
+                        <rect x="85" y="92" width="30" height="16" rx="5" fill="#94A3B8" stroke="#475569" stroke-width="2"/>
+
+                        <!-- Head -->
+                        <rect x="40" y="25" width="120" height="72" rx="30" fill="#FFFFFF" stroke="#0284C7" stroke-width="4"/>
+                        
+                        <!-- Antenna -->
+                        <line x1="100" y1="25" x2="100" y2="8" stroke="#0284C7" stroke-width="5" stroke-linecap="round"/>
+                        <circle id="robotAntennaTip" cx="100" cy="6" r="9" fill="#FFDE59" stroke="#EAB308" stroke-width="2" class="animate-pulse"/>
+
+                        <!-- Face Screen -->
+                        <rect x="52" y="36" width="96" height="50" rx="18" fill="#0F172A" stroke="#38BDF8" stroke-width="2"/>
+
+                        <!-- Dynamic Eyes SVG group -->
+                        <g id="robotEyes">
+                            <!-- Normal Happy Eyes -->
+                            <path d="M 68 62 Q 78 48 88 62" stroke="#38BDF8" stroke-width="6" stroke-linecap="round" fill="none"/>
+                            <path d="M 112 62 Q 122 48 132 62" stroke="#38BDF8" stroke-width="6" stroke-linecap="round" fill="none"/>
+                        </g>
+
+                        <!-- Cheeks -->
+                        <circle cx="62" cy="72" r="6" fill="#FF66C4" opacity="0.6"/>
+                        <circle cx="138" cy="72" r="6" fill="#FF66C4" opacity="0.6"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Big Action Trigger Button -->
+            <button id="spinChallengeBtn" onclick="triggerRobotChoice()" class="btn-3d w-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white font-black text-lg md:text-xl py-3.5 px-6 rounded-2xl border-4 border-white shadow-xl flex items-center justify-center gap-2 group z-10">
+                <span class="text-2xl group-hover:rotate-12 transition">🎲</span>
+                <span>تحدَّ الروبوت الآن!</span>
+            </button>
+        </section>
+    </main>
+
+    <!-- CINEMATIC INTRO MODAL -->
+    <div id="introModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-2xl w-full text-center border-8 border-amber-300 shadow-2xl relative transform transition-all scale-100 animate-bounce-short">
+            
+            <div class="w-28 h-28 mx-auto -mt-16 bg-gradient-to-tr from-sky-400 to-amber-300 rounded-full p-2 border-4 border-white shadow-lg flex items-center justify-center">
+                <span class="text-6xl">🤖</span>
+            </div>
+
+            <h1 class="text-3xl md:text-4xl font-black text-amber-500 mt-3 mb-2">تحدّي روبو | الفصل ضد الروبوت</h1>
+            <p class="text-sky-600 font-bold text-lg mb-6">مغامرة شائقة في درس الأثلاث والأسداس!</p>
+
+            <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 mb-6 text-right leading-relaxed text-slate-700 text-base md:text-lg">
+                <p class="font-black text-amber-900 mb-2 text-xl">«أنا الروبوت العبقري! 🤖✨»</p>
+                <p class="mb-2">شكرًا لمجهودكم أيها الأبطال! لقد فهمت الدرس بفضل توجيهاتكم في الفصل.</p>
+                <p class="font-bold text-sky-700 text-lg">والآن أتحداكم! لقد أصبحت الأذكى في الكسور... فهل أنتم مستعدون لهزيمتي؟</p>
+            </div>
+
+            <button onclick="startGame()" class="btn-3d w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-black text-2xl py-4 rounded-2xl border-4 border-white shadow-xl hover:from-emerald-500 hover:to-teal-600 transition">
+                🚀 هيا نبدأ التحدي!
+            </button>
+        </div>
+    </div>
+
+    <!-- QUESTION / CHALLENGE POPUP MODAL -->
+    <div id="questionModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center z-50 p-3 md:p-6 hidden">
+        <div class="bg-white rounded-3xl p-5 md:p-8 max-w-3xl w-full border-8 border-sky-300 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between border-b-4 border-slate-100 pb-3 mb-4">
+                <div class="flex items-center gap-3">
+                    <span id="qCategoryBadge" class="bg-amber-400 text-amber-950 font-black px-4 py-1.5 rounded-2xl text-sm md:text-base border-2 border-amber-200">
+                        تحدّي #1
+                    </span>
+                    <span id="qCategoryName" class="text-slate-600 font-bold text-sm md:text-base">
+                        علّمني يا بطل
+                    </span>
+                </div>
+                <div class="bg-emerald-100 text-emerald-800 font-black px-3 py-1 rounded-xl text-sm border border-emerald-300">
+                    +10 نقاط
+                </div>
+            </div>
+
+            <!-- Question Text -->
+            <div class="mb-6">
+                <h3 id="questionText" class="text-xl md:text-2xl font-black text-slate-800 leading-relaxed mb-4">
+                    نص السؤال هنا...
+                </h3>
+
+                <!-- Visual Math Canvas Helper Container -->
+                <div id="visualMathContainer" class="my-4 p-4 bg-sky-50 rounded-2xl border-2 border-sky-200 flex justify-center items-center hidden">
+                    <!-- SVG Visual Fraction rendered here dynamically -->
+                </div>
+            </div>
+
+            <!-- Answer Options (Multiple Choice) -->
+            <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-6">
+                <!-- Buttons added by JS -->
+            </div>
+
+            <!-- Open Answer Model & Teacher Evaluation Controls -->
+            <div id="openAnswerContainer" class="hidden bg-amber-50 rounded-2xl p-4 border-2 border-amber-300 mb-6">
+                <button onclick="revealModelAnswer()" id="revealBtn" class="btn-3d w-full bg-amber-400 text-amber-950 font-black py-2.5 rounded-xl text-base mb-3 border-2 border-amber-200">
+                    🔍 إظهار نموذج الإجابة للمعلم
+                </button>
+                <div id="modelAnswerBox" class="hidden text-slate-800 text-base leading-relaxed bg-white p-4 rounded-xl border border-amber-200 mb-4">
+                    <span class="font-bold text-amber-800 block mb-1">الإجابة النموذجية والمعيار:</span>
+                    <p id="modelAnswerText"></p>
+                </div>
+
+                <div id="teacherRatingBtns" class="hidden flex flex-col sm:flex-row gap-3">
+                    <button onclick="submitTeacherScore(true)" class="btn-3d flex-1 bg-emerald-500 text-white font-bold py-3 rounded-xl border-2 border-white text-base">
+                        ✅ إجابة صحيحة (+10 للفصل)
+                    </button>
+                    <button onclick="submitTeacherScore(false)" class="btn-3d flex-1 bg-pink-500 text-white font-bold py-3 rounded-xl border-2 border-white text-base">
+                        ❌ إجابة خاطئة (+10 للروبوت)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Answer Feedback Banner -->
+            <div id="feedbackBox" class="hidden rounded-2xl p-4 text-center font-black text-lg mb-4 animate-bounce-short">
+                <!-- Feedback JS insertion -->
+            </div>
+
+            <!-- Close Modal Action Button -->
+            <div id="modalCloseAction" class="hidden justify-end">
+                <button onclick="closeQuestionModal()" class="btn-3d bg-sky-500 hover:bg-sky-600 text-white font-black text-lg px-8 py-3 rounded-2xl border-2 border-white">
+                    متابعة التحدي ➔
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINAL GAME RESULT SCREEN MODAL -->
+    <div id="finalModal" class="fixed inset-0 bg-slate-900/85 backdrop-blur-md flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-2xl w-full text-center border-8 border-amber-400 shadow-2xl relative">
+            <div class="text-7xl mb-3" id="finalIcon">🏆</div>
+            <h2 id="finalTitle" class="text-3xl md:text-4xl font-black text-slate-800 mb-2">
+                نتيجة التحدي النهائية
+            </h2>
+            <p id="finalSubtitle" class="text-xl font-bold text-sky-600 mb-6"></p>
+
+            <!-- Score Summary Cards -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-sky-100 border-2 border-sky-300 rounded-2xl p-4">
+                    <div class="text-sky-800 font-bold mb-1">نقاط الفصل</div>
+                    <div id="finalClassScore" class="text-4xl font-black text-sky-600">0</div>
+                </div>
+                <div class="bg-pink-100 border-2 border-pink-300 rounded-2xl p-4">
+                    <div class="text-pink-800 font-bold mb-1">نقاط الروبوت</div>
+                    <div id="finalRobotScore" class="text-4xl font-black text-pink-600">0</div>
+                </div>
+            </div>
+
+            <button onclick="resetGame(true)" class="btn-3d w-full bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black text-2xl py-4 rounded-2xl border-4 border-white shadow-xl">
+                🔄 العب من جديد!
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global Game State
+        let classScore = 0;
+        let robotScore = 0;
+        let activeQuestionIndex = null;
+        let completedQuestions = [];
+        let isSpinning = false;
+        let soundEnabled = true;
+
+        // Audio Context Synthesizer (Zero External Dependencies)
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    audioCtx = new AudioContext();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'jump') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.exponentialRampToValueAtTime(660, now + 0.25);
+                    gain.gain.setValueAtTime(0.4, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'correct') {
+                    // Major Chord Arpeggio (C5, E5, G5, C6)
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const subOsc = audioCtx.createOscillator();
+                        const subGain = audioCtx.createGain();
+                        subOsc.connect(subGain);
+                        subGain.connect(audioCtx.destination);
+
+                        subOsc.type = 'sine';
+                        subOsc.frequency.setValueAtTime(freq, now + idx * 0.09);
+                        subGain.gain.setValueAtTime(0.3, now + idx * 0.09);
+                        subGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.3);
+
+                        subOsc.start(now + idx * 0.09);
+                        subOsc.stop(now + idx * 0.09 + 0.3);
+                    });
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.linearRampToValueAtTime(120, now + 0.35);
+                    gain.gain.setValueAtTime(0.35, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'win') {
+                    const notes = [440, 554.37, 659.25, 880];
+                    notes.forEach((freq, idx) => {
+                        const subOsc = audioCtx.createOscillator();
+                        const subGain = audioCtx.createGain();
+                        subOsc.connect(subGain);
+                        subGain.connect(audioCtx.destination);
+
+                        subOsc.type = 'triangle';
+                        subOsc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                        subGain.gain.setValueAtTime(0.3, now + idx * 0.12);
+                        subGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.4);
+
+                        subOsc.start(now + idx * 0.12);
+                        subOsc.stop(now + idx * 0.12 + 0.4);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio playback error:", e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundToggleBtn').innerText = soundEnabled ? '🔊' : '🔇';
+        }
+
+        // Helper function to format linear fractions (e.g., 1/3, 2/6) into vertical math fractions (بسط ومقام)
+        function formatFractions(text) {
+            if (!text) return '';
+            return text.replace(/(\d+)\/(\d+)/g, function(match, num, den) {
+                return `<span class="frac-box"><span class="frac-num">${num}</span><span class="frac-den">${den}</span></span>`;
+            });
+        }
+
+        // QUESTION BANK (Derived 100% from lesson plan document)
+        const questionBank = [
+            {
+                id: 1,
+                category: "اكتشف خطأ الروبوت",
+                icon: "🔍",
+                text: "قال الروبوت: «أي شكل يُقسَّم إلى 3 أقسام يكون كل قسم فيه ثلثًا (1/3) بالضرورة!». هل مقولة الروبوت صحيحة؟",
+                options: [
+                    "أ) صحيحة دائماً",
+                    "ب) خاطئة، ينبغي أن تكون الأجزاء متساوية في المساحة لتمثيل الثلث",
+                    "ج) صحيحة فقط في المستطيلات"
+                ],
+                correct: 1,
+                explanation: "الخطوط وحدها وعد الأجزاء لا يكفيان؛ ينبغي أن تكون الأقسام متساوية في المساحة لتسميتها أثلاثاً.",
+                visual: "circle3_unequal"
+            },
+            {
+                id: 2,
+                category: "علّمني يا بطل",
+                icon: "💡",
+                text: "لدينا مستطيل مقسَّم إلى 6 أجزاء متساوية. كم جزءًا يجب أن نلوّن لتمثيل الثلث (1/3)؟",
+                options: [
+                    "أ) جزء واحد فقط",
+                    "ب) جزأين اثنين (2/6)",
+                    "ج) 3 أجزاء"
+                ],
+                correct: 1,
+                explanation: "لأن كل جزأين من أصل ستة أجزاء متساوية يشكلان ثلثًا واحدًا: 2/6 = 1/3.",
+                visual: "bar6_color2"
+            },
+            {
+                id: 3,
+                category: "هات الدليل",
+                icon: "🧩",
+                text: "أكمل المساواة التالية بناءً على ما تعلمته في مقارنة الأثلاث والأسداس: 1/3 = ___ / 6",
+                options: [
+                    "أ) 1",
+                    "ب) 2",
+                    "ج) 3"
+                ],
+                correct: 1,
+                explanation: "عند مطابقة أجزاء الشريط، يتبين أن كل ثلث (1/3) يطابق تماماً سدسين (2/6).",
+                visual: "fraction_equiv"
+            },
+            {
+                id: 4,
+                category: "رتّب وصنّف",
+                icon: "📊",
+                text: "حوّل الكسر الأكبر من الواحد (5/3) إلى وحدات وأثلاث كاملة:",
+                options: [
+                    "أ) 1 وحدة و 1/3",
+                    "ب) 1 وحدة و 2/3",
+                    "ج) 2 وحدة و 1/3"
+                ],
+                correct: 1,
+                explanation: "كل 3 أثلاث تشكل وحدة واحدة كاملة (3/3 = 1)، ويبقى ثلثان (2/3)، إذن النتيجة 1 و 2/3.",
+                visual: null
+            },
+            {
+                id: 5,
+                category: "فكّر واتخذ القرار",
+                icon: "⚡",
+                text: "تحدي صفحة 10: شكل مقسّم إلى 6 مناطق متساوية المساحة. هل نستطيع تلوين ثلثه دون رسم خطوط تقسيم جديدة؟",
+                options: [
+                    "أ) نعم، بتلوين أي منطقتين من الستة",
+                    "ب) لا، يجب إعادة رسم خطوط تقسيم جديدة",
+                    "ج) نعم، بتلوين 3 مناطق"
+                ],
+                correct: 0,
+                explanation: "يمكن التلوين وفق الحدود الحالية المتاحة بتجميع جزأين من الستة لتمثيل الثلث دون إضافة خطوط.",
+                visual: "bar6_color2"
+            },
+            {
+                id: 6,
+                category: "اكتشف خطأ الروبوت",
+                icon: "🔍",
+                text: "يدّعي الروبوت: «لا يمكن أن يتكوّن ثلث الشكل من قطعتين منفصلتين». هل توافق الروبوت؟",
+                options: [
+                    "أ) أوافقه، يجب أن تكون المنطقة الملوّنة قطعة واحدة متصلة",
+                    "ب) لا أوافقه، يمكن تلوين منطقتين منفصلتين تعادلان ثلث المساحة الكلية (2/6 = 1/3)",
+                    "ج) أوافقه فقط في الدائرة"
+                ],
+                correct: 1,
+                explanation: "في المقارنة والتظليل، لا يُشترط أن تكون المنطقة الملونة قطعة واحدة متصلة طالما أن المجموع يمثل ثلث المساحة.",
+                visual: null
+            },
+            {
+                id: 7,
+                category: "علّمني يا بطل",
+                icon: "💡",
+                text: "كم سدسًا يلزم لتكوين ثلثين (2/3) من الوحدة؟",
+                options: [
+                    "أ) سدسان (2/6)",
+                    "ب) 3 أسداس (3/6)",
+                    "ج) 4 أسداس (4/6)"
+                ],
+                correct: 2,
+                explanation: "بما أن الثلث الواحد = 2/6، فإن الثلثين (2/3) يساويا ضعف ذلك أي 4 أسداس (4/6).",
+                visual: null
+            },
+            {
+                id: 8,
+                category: "هات الدليل",
+                icon: "🧩",
+                text: "حوّل الكسر (8/3) إلى وحدات وأثلاث:",
+                options: [
+                    "أ) 2 وحدة و 2/3",
+                    "ب) 2 وحدة و 1/3",
+                    "ج) 3 وحدات و 1/3"
+                ],
+                correct: 0,
+                explanation: "8 أثلاث = 6 أثلاث (وحدتان) + ثلثان = 2 و 2/3.",
+                visual: null
+            },
+            {
+                id: 9,
+                category: "رتّب وصنّف",
+                icon: "📊",
+                text: "أي من الكسور التالية يمثّل وحدة كاملة (1)؟",
+                options: [
+                    "أ) 3/3 فقط",
+                    "ب) 6/6 فقط",
+                    "ج) كلاهما (3/3 و 6/6) يمثلان وحدة كاملة"
+                ],
+                correct: 2,
+                explanation: "تكون الوحدة كاملة عندما يتساوى البسط والمقام في كسور الجزء من الكل (3/3 = 1 و 6/6 = 1).",
+                visual: null
+            },
+            {
+                id: 10,
+                category: "فكّر واتخذ القرار",
+                icon: "⚡",
+                text: "شكل سداسي مقسّم إلى 6 مثلثات متساوية المساحة. كم مثلثًا نلوّن لنمثل ثلث المساحة الكلية؟",
+                options: [
+                    "أ) مثلث واحد",
+                    "ب) مثلثان اثنان",
+                    "ج) 3 مثلثات"
+                ],
+                correct: 1,
+                explanation: "نلوّن مثلثين لأن 2 من 6 تساوي ثلث المساحة الكلية (2/6 = 1/3).",
+                visual: null
+            },
+            {
+                id: 11,
+                category: "اكتشف خطأ الروبوت",
+                icon: "🔍",
+                text: "رسم الروبوت دائرة وقسّمها بخطين غير متناظرين إلى 3 مناطق مختلفة المساحة، ولوّن أكبر منطقة وقال: «هذا ثلث الدائرة». ما تصحح لقوله؟",
+                options: [
+                    "أ) التقسيم صحيح والثلث صحيح",
+                    "ب) التقسيم غير متساوٍ؛ لذا لا يضمن تلوين منطقة واحدة تمثيل الثلث دون قياس المساحة",
+                    "ج) الدائرة لا يمكن تقسيمها إلى أثلاث أبداً"
+                ],
+                correct: 1,
+                explanation: "لا نكتفي بوجود 3 أقسام؛ يجب التأكد من تساوي المساحة أولاً.",
+                visual: "circle3_unequal"
+            },
+            {
+                id: 12,
+                category: "علّمني يا بطل",
+                icon: "💡",
+                text: "ما التعريف الرياضي الدقيق لـ «الوحدة» في درس الكسور؟",
+                options: [
+                    "أ) هي الكسر 1/3 دائماً",
+                    "ب) هي الكل الذي نتفق على اعتباره واحدًا كاملاً في المسألة",
+                    "ج) هي الرقم المكتوب تحت الكسر"
+                ],
+                correct: 1,
+                explanation: "الوحدة هي الكل المتفق على اعتباره 1 صحيح، وتنسب إليها الأجزاء والكسور.",
+                visual: null
+            },
+            {
+                id: 13,
+                category: "هات الدليل",
+                icon: "🧩",
+                text: "إذا كانت الوحدة مقسمة إلى 6 أجزاء متساوية، فما الكسر الذي يمثله كل جزء فردي واحد؟",
+                options: [
+                    "أ) 1/3 (ثلث)",
+                    "ب) 1/6 (سدس)",
+                    "ج) 2/6 (سدسان)"
+                ],
+                correct: 1,
+                explanation: "كل جزء من أصل 6 أجزاء متساوية هو سدس الوحدة (1/6).",
+                visual: null
+            },
+            {
+                id: 14,
+                category: "رتّب وصنّف",
+                icon: "📊",
+                text: "قارن بين مساحة (1/3) من شريط A ومساحة (2/6) من نفس الشريط A:",
+                options: [
+                    "أ) 1/3 أكبر من 2/6",
+                    "ب) 2/6 أكبر من 1/3",
+                    "ج) المساحتان متساويتان تماماً"
+                ],
+                correct: 2,
+                explanation: "1/3 يساوي تماماً 2/6 لنفس الوحدة.",
+                visual: "fraction_equiv"
+            },
+            {
+                id: 15,
+                category: "فكّر واتخذ القرار",
+                icon: "⚡",
+                text: "قسّم المعلم كعكة إلى 6 قطع متساوية، أكلت الطالبة سارة قطعتين. ما الكسر الأبسط الذي يمثل ما أكلته سارة؟",
+                options: [
+                    "أ) 1/6 الكعكة",
+                    "ب) 1/3 الكعكة",
+                    "ج) 1/2 الكعكة"
+                ],
+                correct: 1,
+                explanation: "أكلت 2/6 وهو ما يعادل 1/3 الكعكة.",
+                visual: null
+            },
+            {
+                id: 16,
+                category: "اكتشف خطأ الروبوت",
+                icon: "🔍",
+                text: "قال الروبوت: «إذا غيّرنا شكل الوحدة، يتغير مفهوم الثلث تماماً ولا نعود نستطيع حسابه». ما الصواب؟",
+                options: [
+                    "أ) كلامه صحيح",
+                    "ب) الثلث يظل هو ثلث مقدار تلك الوحدة المحددة أياً كان شكلها طالما قسّمناها لأجزاء متساوية المساحة",
+                    "ج) الثلث يعمل فقط في الدوائر"
+                ],
+                correct: 1,
+                explanation: "تتغير الأشكال لكن مفهوم الثلث كنسبة (1 من 3 أجزاء متساوية المساحة) يظل ثابتاً بالنسبة للوحدة.",
+                visual: null
+            },
+            {
+                id: 17,
+                category: "علّمني يا بطل",
+                icon: "💡",
+                text: "كم ثلثاً يوجد في 4 وحدات كاملة؟",
+                options: [
+                    "أ) 4 أثلاث",
+                    "ب) 8 أثلاث",
+                    "ج) 12 ثلثاً"
+                ],
+                correct: 2,
+                explanation: "كل وحدة تحتوي 3 أثلاث، إذن 4 × 3 = 12 ثلثاً.",
+                visual: null
+            },
+            {
+                id: 18,
+                category: "هات الدليل",
+                icon: "🧩",
+                text: "تحدي الشرح (مفتوح للمعلم): كيف تشرح زميلك بالطيّ طريقتين لإثبات أن 2/6 = 1/3؟",
+                isOpen: true,
+                modelAnswer: "نأخذ شريطين متساويين بالطول (نفس الوحدة). نطوي الأول إلى 3 أقسام متساوية (أثلاث)، ونطوي الثاني إلى 6 أقسام متساوية (أسداس). عند تراكب جزأين من الأسداس فوق جزء واحد من الأثلاث نلاحظ تطابقهما التام في الطول والمساحة."
+            },
+            {
+                id: 19,
+                category: "رتّب وصنّف",
+                icon: "📊",
+                text: "رتّب الكسور التالية تصاعدياً من الأصغر إلى الأكبر: (1/6 ، 1/3 ، 5/6 ، 4/3)",
+                options: [
+                    "أ) 1/6 < 1/3 < 5/6 < 4/3",
+                    "ب) 1/3 < 1/6 < 5/6 < 4/3",
+                    "ج) 4/3 < 5/6 < 1/3 < 1/6"
+                ],
+                correct: 0,
+                explanation: "1/6 = 1/6، 1/3 = 2/6، ثم 5/6، وأخيراً 4/3 = 8/6 وهو أكبر من الواحد الصحيح.",
+                visual: null
+            },
+            {
+                id: 20,
+                category: "فكّر واتخذ القرار",
+                icon: "⚡",
+                text: "تحدي صفحة 10 (مفتوح للمعلم): شكل مؤلف من 3 أجزاء مختلفة الشكل ولكنها متساوية المساحة. هل اختيار جزء واحد يمثل 1/3 المساحة الكلية؟ علّل.",
+                isOpen: true,
+                modelAnswer: "نعم، يمثل 1/3 تماماً. لأن معيار الثلث هو تساوي المساحة والكمية، ولا يُشترط تطابق الهيئة أو الشكل الهندسي للأجزاء."
+            }
+        ];
+
+        // Initialize Game Board Grid
+        function renderBoard() {
+            const grid = document.getElementById('boardGrid');
+            grid.innerHTML = '';
+
+            const colors = [
+                'bg-amber-400 text-amber-950 border-amber-500',
+                'bg-sky-400 text-sky-950 border-sky-500',
+                'bg-pink-400 text-pink-950 border-pink-500',
+                'bg-emerald-400 text-emerald-950 border-emerald-500',
+                'bg-purple-400 text-purple-950 border-purple-500',
+                'bg-orange-400 text-orange-950 border-orange-500'
+            ];
+
+            questionBank.forEach((q, idx) => {
+                const isCompleted = completedQuestions.includes(idx);
+                const colorClass = colors[idx % colors.length];
+
+                const tile = document.createElement('div');
+                tile.id = `tile-${idx}`;
+                tile.className = `tile-3d ${colorClass} ${isCompleted ? 'tile-completed' : ''} rounded-2xl p-2.5 md:p-3 flex flex-col items-center justify-between cursor-pointer border-b-4 relative aspect-square text-center`;
+
+                tile.onclick = () => selectTileDirectly(idx);
+
+                tile.innerHTML = `
+                    <div class="flex justify-between items-center w-full">
+                        <span class="font-black text-xs opacity-75">${q.category}</span>
+                        <span class="text-base">${q.icon}</span>
+                    </div>
+                    <div class="text-2xl md:text-3xl font-black my-1">${q.id}</div>
+                    ${isCompleted ? '<span class="bg-slate-900 text-white font-bold text-xs px-2 py-0.5 rounded-full">تم ✅</span>' : '<span class="text-xs font-bold opacity-80">+10 ن</span>'}
+                `;
+
+                grid.appendChild(tile);
+            });
+
+            document.getElementById('remainingCount').innerText = questionBank.length - completedQuestions.length;
+            document.getElementById('classScore').innerText = classScore;
+            document.getElementById('robotScore').innerText = robotScore;
+        }
+
+        // Trigger Robot Random Selection Animation
+        function triggerRobotChoice() {
+            if (isSpinning) return;
+
+            const remainingIndices = questionBank
+                .map((_, idx) => idx)
+                .filter(idx => !completedQuestions.includes(idx));
+
+            if (remainingIndices.length === 0) {
+                showFinalResults();
+                return;
+            }
+
+            isSpinning = true;
+            playSound('jump');
+
+            // Robot Visual Reaction
+            const robot = document.getElementById('robotCharacter');
+            const dialogue = document.getElementById('robotDialogue');
+            
+            robot.className = 'robot-container anim-jump relative w-48 md:w-56 h-56 md:h-64 mx-auto drop-shadow-2xl';
+            setRobotFacialState('happy');
+
+            dialogue.innerText = "جاري اختيار رقم التحدي العشوائي... 🎲✨";
+
+            let ticks = 0;
+            const maxTicks = 12;
+            const interval = setInterval(() => {
+                playSound('click');
+                const randomSample = remainingIndices[Math.floor(Math.random() * remainingIndices.length)];
+                
+                // Highlight temporary tile
+                document.querySelectorAll('.tile-3d').forEach(t => t.classList.remove('tile-active-highlight'));
+                const tempTile = document.getElementById(`tile-${randomSample}`);
+                if (tempTile) tempTile.classList.add('tile-active-highlight');
+
+                ticks++;
+                if (ticks >= maxTicks) {
+                    clearInterval(interval);
+                    
+                    // Final Selection
+                    const chosenIndex = remainingIndices[Math.floor(Math.random() * remainingIndices.length)];
+                    activeQuestionIndex = chosenIndex;
+
+                    document.querySelectorAll('.tile-3d').forEach(t => t.classList.remove('tile-active-highlight'));
+                    const selectedTile = document.getElementById(`tile-${chosenIndex}`);
+                    if (selectedTile) selectedTile.classList.add('tile-active-highlight');
+
+                    dialogue.innerText = `«أتحداكم في السؤال رقم (${questionBank[chosenIndex].id})! هل يستطيع أبطال الفصل حله؟» 🤖🔥`;
+                    playSound('win');
+
+                    setTimeout(() => {
+                        openQuestionModal(chosenIndex);
+                        isSpinning = false;
+                        robot.className = 'robot-container anim-idle relative w-48 md:w-56 h-56 md:h-64 mx-auto drop-shadow-2xl';
+                    }, 1200);
+                }
+            }, 120);
+        }
+
+        function selectTileDirectly(index) {
+            if (isSpinning) return;
+            if (completedQuestions.includes(index)) {
+                alert("هذا التحدي تم حله بجداره سابقاً! اختر مربعاً آخر 🌟");
+                return;
+            }
+            activeQuestionIndex = index;
+            openQuestionModal(index);
+        }
+
+        function setRobotFacialState(state) {
+            const eyes = document.getElementById('robotEyes');
+            if (state === 'happy') {
+                eyes.innerHTML = `
+                    <path d="M 68 62 Q 78 48 88 62" stroke="#38BDF8" stroke-width="6" stroke-linecap="round" fill="none"/>
+                    <path d="M 112 62 Q 122 48 132 62" stroke="#38BDF8" stroke-width="6" stroke-linecap="round" fill="none"/>
+                `;
+            } else if (state === 'shocked') {
+                eyes.innerHTML = `
+                    <circle cx="78" cy="58" r="10" stroke="#FF66C4" stroke-width="4" fill="none"/>
+                    <circle cx="122" cy="58" r="10" stroke="#FF66C4" stroke-width="4" fill="none"/>
+                `;
+            } else if (state === 'victory') {
+                eyes.innerHTML = `
+                    <path d="M 68 55 L 88 65 L 68 70" stroke="#7ED957" stroke-width="5" stroke-linecap="round" fill="none"/>
+                    <path d="M 132 55 L 112 65 L 132 70" stroke="#7ED957" stroke-width="5" stroke-linecap="round" fill="none"/>
+                `;
+            }
+        }
+
+        // Open Question Modal
+        function openQuestionModal(idx) {
+            const q = questionBank[idx];
+            
+            document.getElementById('qCategoryBadge').innerText = `تحدّي #${q.id}`;
+            document.getElementById('qCategoryName').innerText = `${q.icon} ${q.category}`;
+            
+            document.getElementById('questionText').innerHTML = formatFractions(q.text);
+
+            // Visual Helper rendering
+            const visualBox = document.getElementById('visualMathContainer');
+            if (q.visual) {
+                visualBox.classList.remove('hidden');
+                visualBox.innerHTML = renderVisualFractionSVG(q.visual);
+            } else {
+                visualBox.classList.add('hidden');
+            }
+
+            // Options Setup
+            const optsBox = document.getElementById('optionsContainer');
+            const openBox = document.getElementById('openAnswerContainer');
+            const feedbackBox = document.getElementById('feedbackBox');
+            const closeAction = document.getElementById('modalCloseAction');
+
+            optsBox.innerHTML = '';
+            feedbackBox.classList.add('hidden');
+            closeAction.classList.add('hidden');
+
+            if (q.isOpen) {
+                optsBox.classList.add('hidden');
+                openBox.classList.remove('hidden');
+                document.getElementById('modelAnswerBox').classList.add('hidden');
+                document.getElementById('teacherRatingBtns').classList.add('hidden');
+                document.getElementById('revealBtn').classList.remove('hidden');
+                document.getElementById('modelAnswerText').innerHTML = formatFractions(q.modelAnswer);
+            } else {
+                openBox.classList.add('hidden');
+                optsBox.classList.remove('hidden');
+
+                q.options.forEach((optText, oIdx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-3d w-full bg-slate-100 hover:bg-sky-100 text-slate-800 font-black text-right p-4 rounded-2xl border-2 border-slate-300 transition text-base md:text-lg flex items-center justify-between';
+                    btn.innerHTML = `<span>${formatFractions(optText)}</span><span class="text-sky-500">👈</span>`;
+                    btn.onclick = () => submitMultipleChoice(oIdx);
+                    optsBox.appendChild(btn);
+                });
+            }
+
+            document.getElementById('questionModal').classList.remove('hidden');
+        }
+
+        // Generate visual inline SVGs for math fractions
+        function renderVisualFractionSVG(type) {
+            if (type === 'circle3_unequal') {
+                return `
+                    <svg viewBox="0 0 160 160" class="w-36 h-36">
+                        <circle cx="80" cy="80" r="70" fill="#E2E8F0" stroke="#0284C7" stroke-width="4"/>
+                        <!-- Unequal slice lines -->
+                        <path d="M 80 80 L 80 10 A 70 70 0 0 1 145 105 Z" fill="#FF66C4" opacity="0.8"/>
+                        <line x1="80" y1="80" x2="80" y2="10" stroke="#0284C7" stroke-width="4"/>
+                        <line x1="80" y1="80" x2="145" y2="105" stroke="#0284C7" stroke-width="4"/>
+                        <line x1="80" y1="80" x2="25" y2="120" stroke="#0284C7" stroke-width="4"/>
+                    </svg>
+                `;
+            } else if (type === 'bar6_color2') {
+                return `
+                    <svg viewBox="0 0 300 70" class="w-full max-w-sm h-20">
+                        <rect x="5" y="10" width="290" height="50" rx="8" fill="#F1F5F9" stroke="#0284C7" stroke-width="4"/>
+                        <!-- 6 parts, 2 colored -->
+                        <rect x="5" y="10" width="48.3" height="50" fill="#38BDF8"/>
+                        <rect x="53.3" y="10" width="48.3" height="50" fill="#38BDF8"/>
+                        <line x1="53.3" y1="10" x2="53.3" y2="60" stroke="#0284C7" stroke-width="3"/>
+                        <line x1="101.6" y1="10" x2="101.6" y2="60" stroke="#0284C7" stroke-width="3"/>
+                        <line x1="150" y1="10" x2="150" y2="60" stroke="#0284C7" stroke-width="3"/>
+                        <line x1="198.3" y1="10" x2="198.3" y2="60" stroke="#0284C7" stroke-width="3"/>
+                        <line x1="246.6" y1="10" x2="246.6" y2="60" stroke="#0284C7" stroke-width="3"/>
+                    </svg>
+                `;
+            } else if (type === 'fraction_equiv') {
+                return `
+                    <div class="flex items-center gap-4 text-center font-black text-xl text-slate-700">
+                        <div class="bg-white p-3 rounded-xl border-2 border-sky-300 shadow">
+                            <div>1</div>
+                            <div class="border-t-2 border-slate-700">3</div>
+                        </div>
+                        <div class="text-3xl text-amber-500">=</div>
+                        <div class="bg-white p-3 rounded-xl border-2 border-sky-300 shadow">
+                            <div>2</div>
+                            <div class="border-t-2 border-slate-700">6</div>
+                        </div>
+                    </div>
+                `;
+            }
+            return '';
+        }
+
+        function revealModelAnswer() {
+            playSound('click');
+            document.getElementById('revealBtn').classList.add('hidden');
+            document.getElementById('modelAnswerBox').classList.remove('hidden');
+            document.getElementById('teacherRatingBtns').classList.remove('hidden');
+        }
+
+        function submitMultipleChoice(selectedIdx) {
+            const q = questionBank[activeQuestionIndex];
+            const isCorrect = (selectedIdx === q.correct);
+            processAnswerResult(isCorrect, q.explanation);
+        }
+
+        function submitTeacherScore(isClassCorrect) {
+            processAnswerResult(isClassCorrect, "تقييم المعلم بناءً على معايير الإجابة.");
+        }
+
+        function processAnswerResult(isClassCorrect, textDetail) {
+            const feedbackBox = document.getElementById('feedbackBox');
+            const closeAction = document.getElementById('modalCloseAction');
+            const robot = document.getElementById('robotCharacter');
+            const dialogue = document.getElementById('robotDialogue');
+
+            // Disable option clicks
+            document.querySelectorAll('#optionsContainer button').forEach(b => b.disabled = true);
+
+            if (isClassCorrect) {
+                classScore += 10;
+                playSound('correct');
+                triggerConfetti();
+
+                feedbackBox.className = 'rounded-2xl p-4 text-center font-black text-lg mb-4 bg-emerald-100 text-emerald-900 border-2 border-emerald-300 block';
+                feedbackBox.innerHTML = `🎉 إجابة صحيحة! أحسنتم يا أبطال الفصل! (+10 نقاط للفصل)<br><span class="text-sm font-bold opacity-90">${formatFractions(textDetail) || ''}</span>`;
+
+                robot.className = 'robot-container anim-shocked relative w-48 md:w-56 h-56 md:h-64 mx-auto drop-shadow-2xl';
+                setRobotFacialState('shocked');
+                dialogue.innerText = "«مستحيل! 😱 كيف عرفتم الإجابة الصحيحة بسرعة؟ لقد هزمتموني في هذا التحدي!»";
+
+            } else {
+                robotScore += 10;
+                playSound('wrong');
+
+                feedbackBox.className = 'rounded-2xl p-4 text-center font-black text-lg mb-4 bg-pink-100 text-pink-900 border-2 border-pink-300 block';
+                feedbackBox.innerHTML = `🤖 نُقطة للروبوت! حاولوا أكثر في التحدي القادم (+10 نقاط للروبوت)<br><span class="text-sm font-bold opacity-90">${formatFractions(textDetail) || ''}</span>`;
+
+                robot.className = 'robot-container anim-happy relative w-48 md:w-56 h-56 md:h-64 mx-auto drop-shadow-2xl';
+                setRobotFacialState('victory');
+                dialogue.innerText = "«هاهاها! 🤖✨ أنا الروبوت العبقري الفائز في هذا السؤال! حاولوا مجدداً!»";
+            }
+
+            if (!completedQuestions.includes(activeQuestionIndex)) {
+                completedQuestions.push(activeQuestionIndex);
+            }
+
+            saveGameState();
+            renderBoard();
+
+            document.getElementById('teacherRatingBtns').classList.add('hidden');
+            closeAction.classList.remove('hidden');
+            closeAction.classList.add('flex');
+        }
+
+        function closeQuestionModal() {
+            playSound('click');
+            document.getElementById('questionModal').classList.add('hidden');
+
+            const robot = document.getElementById('robotCharacter');
+            robot.className = 'robot-container anim-idle relative w-48 md:w-56 h-56 md:h-64 mx-auto drop-shadow-2xl';
+            setRobotFacialState('happy');
+
+            if (completedQuestions.length >= questionBank.length) {
+                showFinalResults();
+            }
+        }
+
+        function showFinalResults() {
+            playSound('win');
+            triggerConfetti();
+
+            const modal = document.getElementById('finalModal');
+            document.getElementById('finalClassScore').innerText = classScore;
+            document.getElementById('finalRobotScore').innerText = robotScore;
+
+            const title = document.getElementById('finalTitle');
+            const sub = document.getElementById('finalSubtitle');
+            const icon = document.getElementById('finalIcon');
+
+            if (classScore > robotScore) {
+                icon.innerText = "🏆🎉";
+                title.innerText = "أحسنتم! لقد هزمتم الروبوت العبقري!";
+                sub.innerText = "فصل الأبطال هو بطل درس الأثلاث والأسداس 🥇";
+            } else if (robotScore > classScore) {
+                icon.innerText = "🤖👑";
+                title.innerText = "هاها! أنا الروبوت العبقري الفائز!";
+                sub.innerText = "لقد انتصر الروبوت في التحدي، راجعوا الدرس والعبوا مجدداً! 🚀";
+            } else {
+                icon.innerText = "🤝✨";
+                title.innerText = "تعادل رائع وسريع!";
+                sub.innerText = "أنتم جميعاً عباقرة ومتميزون في الكسور!";
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        // Confetti Canvas Particle System
+        function triggerConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#FFDE59', '#38BDF8', '#FF66C4', '#7ED957', '#C38FFF', '#FF914D'];
+
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 14,
+                    vy: (Math.random() - 0.7) * 14,
+                    size: Math.random() * 9 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 100
+                });
+            }
+
+            function update() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let active = false;
+
+                particles.forEach(p => {
+                    if (p.life > 0) {
+                        active = true;
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.25; // gravity
+                        p.life--;
+                        ctx.fillStyle = p.color;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+
+                if (active) requestAnimationFrame(update);
+            }
+            update();
+        }
+
+        function startGame() {
+            initAudio();
+            playSound('jump');
+            document.getElementById('introModal').classList.add('hidden');
+        }
+
+        function saveGameState() {
+            const state = {
+                classScore,
+                robotScore,
+                completedQuestions
+            };
+            localStorage.setItem('robo_challenge_state', JSON.stringify(state));
+        }
+
+        function loadGameState() {
+            const saved = localStorage.getItem('robo_challenge_state');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    classScore = parsed.classScore || 0;
+                    robotScore = parsed.robotScore || 0;
+                    completedQuestions = parsed.completedQuestions || [];
+                } catch(e) {}
+            }
+        }
+
+        function confirmReset() {
+            if (confirm("هل تريد إعادة تبديل وتهيئة اللعبة من جديد؟")) {
+                resetGame(true);
+            }
+        }
+
+        function resetGame(clearStorage = true) {
+            if (clearStorage) {
+                localStorage.removeItem('robo_challenge_state');
+            }
+            classScore = 0;
+            robotScore = 0;
+            completedQuestions = [];
+            activeQuestionIndex = null;
+            
+            document.getElementById('finalModal').classList.add('hidden');
+            document.getElementById('questionModal').classList.add('hidden');
+            
+            renderBoard();
+            playSound('click');
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {});
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function downloadGameFile() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'تحدي_روبو_الفصل_ضد_الروبوت.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // On Page Load Initialization
+        window.onload = function() {
+            loadGameState();
+            renderBoard();
+        };
+    </script>
+</body>
+</html>
