@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة مختبر العصائر | موقع الأستاذة دانية أبو مخ</title>
+<meta name="description" content="لعبة تفاعلية للصف السادس: قسمة الكسور عندما يكون أحد العددين عددًا صحيحًا — توزيع العصير على الأطفال وملء الأكواب، 5 محطات متدرجة بنجوم ومتتاليات.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .game-shell{max-width:680px;margin:0 auto}
+  .game-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  .level-pill{background:var(--navy-950);color:#fff;font-weight:800;font-size:.85rem;padding:8px 18px;border-radius:999px}
+  .counters{display:flex;gap:8px;flex-wrap:wrap}
+  .star-counter{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);font-weight:800;padding:8px 16px;border-radius:999px;font-size:.95rem}
+  .star-counter .n{color:#d97706;font-size:1.05rem}
+  .streak-badge{background:linear-gradient(135deg,#ff6b4a,#ffc93c);color:#fff;font-weight:800;padding:8px 14px;border-radius:999px;font-size:.9rem;display:none;box-shadow:0 6px 16px rgba(255,107,74,.4)}
+  .streak-badge.show{display:block}
+  @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.4) rotate(-8deg)}100%{transform:scale(1)}}
+  .pop{animation:pop .45s ease}
+
+  .map-strip{display:flex;align-items:center;justify-content:center;margin-bottom:14px;gap:2px}
+  .map-strip .isle{width:38px;height:38px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;transition:.25s;opacity:.4;filter:grayscale(1)}
+  .map-strip .isle.done{background:var(--mint-bg);opacity:1;filter:none}
+  .map-strip .isle.active{background:var(--gold);opacity:1;filter:none;transform:scale(1.25);box-shadow:0 0 0 4px rgba(255,201,60,.3)}
+  .map-strip .line{width:18px;height:3px;background:var(--line);flex-shrink:0}
+  .map-strip .line.done{background:var(--mint)}
+  .progress-dots{display:flex;justify-content:center;gap:8px;margin-bottom:22px}
+  .progress-dots .dot{width:12px;height:12px;border-radius:50%;background:var(--line);transition:.25s}
+  .progress-dots .dot.done{background:var(--mint)}
+  .progress-dots .dot.active{background:var(--indigo);transform:scale(1.3)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:30px 24px;text-align:center}
+  .start-card .ic{font-size:3rem;margin-bottom:6px}
+  .start-card h2{font-size:1.4rem;margin-bottom:10px}
+  .start-card p{color:var(--ink-soft);margin-bottom:6px}
+  .rules-list{text-align:right;max-width:460px;margin:18px auto;display:flex;flex-direction:column;gap:10px}
+  .rules-list li{display:flex;gap:10px;align-items:flex-start;color:var(--ink-soft);font-size:.94rem;list-style:none}
+  .rules-list li b{color:var(--navy-950)}
+
+  .level-tag{display:inline-block;font-weight:800;font-size:.82rem;color:#fff;padding:6px 16px;border-radius:999px;margin-bottom:14px}
+  .level-tag.mint{background:var(--mint)}.level-tag.gold{background:#d97706}.level-tag.indigo{background:var(--indigo)}
+  .level-tag.purple{background:#8b5cf6}.level-tag.coral{background:var(--coral)}
+
+  .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 4px;line-height:1.1;font-weight:900}
+  .frac .num{border-bottom:2.5px solid currentColor;padding:0 6px 2px}
+  .frac .den{padding:2px 6px 0}
+  .eqi{display:inline-block;white-space:nowrap;unicode-bidi:isolate;direction:ltr;font-weight:900;color:var(--indigo);margin:0 3px}
+  .q-text{font-size:1.2rem;font-weight:800;color:var(--navy-950);line-height:2.1;margin-bottom:10px}
+  .q-sub{color:var(--ink-soft);font-size:.86rem;margin-bottom:16px}
+
+  .viz{background:linear-gradient(180deg,#fff8e6,#fff);border:1.5px dashed #f2b705;border-radius:16px;padding:14px;margin:0 auto 16px;max-width:520px}
+  .viz .cap{font-size:.8rem;font-weight:800;color:#9a6a00;margin-bottom:8px}
+  .bar{display:grid;grid-template-columns:repeat(var(--d),1fr);gap:3px;margin:6px auto;max-width:420px;direction:ltr}
+  .bar span{height:26px;border-radius:6px;background:#fff;border:2px solid #f2b705}
+  .bar span.on{background:linear-gradient(180deg,#ffb347,#ff8c1a);border-color:#e07800}
+  .cups{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;font-size:1.6rem;margin-top:6px}
+  .cups small{display:block;font-size:.65rem;font-weight:800;color:var(--ink-soft)}
+
+  .ans-row{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+  .frac-input{display:inline-flex;flex-direction:column;align-items:center;gap:0}
+  .frac-input input{width:96px;text-align:center;font-size:1.4rem;font-weight:800;padding:8px;border-radius:12px;border:2px solid var(--line);outline:none;font-family:'Cairo',sans-serif;direction:ltr}
+  .frac-input .bar-line{width:96px;height:3px;background:var(--navy-950);margin:5px 0;border-radius:2px}
+  .num-input{width:150px;text-align:center;font-size:1.5rem;font-weight:800;padding:12px;border-radius:14px;border:2px solid var(--line);outline:none;font-family:'Cairo',sans-serif;direction:ltr}
+  .frac-input input:focus,.num-input:focus{border-color:var(--indigo)}
+  .frac-input input.ok,.num-input.ok{border-color:var(--mint);background:var(--mint-bg)}
+  .frac-input input.bad,.num-input.bad{border-color:var(--coral);background:var(--coral-bg)}
+  .unit{font-weight:800;color:var(--ink-soft)}
+
+  .q-actions{margin-top:18px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .btn-ghost{background:var(--card);border:1.5px solid var(--line);color:var(--navy-950)}
+  .feedback{margin-top:14px;font-weight:800;font-size:1.02rem;min-height:1.4em;line-height:2}
+  .feedback.ok{color:#1a8a56}.feedback.bad{color:#c0392b}
+
+  .choice-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+  .choice-btn{background:var(--bg);border:2px solid var(--line);border-radius:16px;padding:16px 24px;font-family:'Cairo',sans-serif;font-weight:800;font-size:1.05rem;color:var(--navy-950);cursor:pointer;transition:.2s;min-width:150px}
+  .choice-btn:hover{border-color:var(--indigo);transform:translateY(-2px)}
+  .choice-btn.correct{border-color:var(--mint);background:var(--mint-bg)}
+  .choice-btn.wrong{border-color:var(--coral);background:var(--coral-bg)}
+  .choice-btn:disabled{cursor:default;transform:none}
+
+  .overlay{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:38px 24px;text-align:center}
+  .overlay .big-ic{font-size:3.4rem;margin-bottom:8px}
+  .stars-row{display:flex;justify-content:center;gap:6px;margin:16px 0;font-size:2rem}
+  .stars-row span{opacity:.25;transition:.3s}.stars-row span.lit{opacity:1;animation:pop .45s ease}
+  .rank-badge{display:inline-block;font-size:1.2rem;font-weight:900;padding:10px 22px;border-radius:999px;margin:10px 0;background:linear-gradient(135deg,var(--gold),#ffdd7a);color:var(--navy-950)}
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a class="brand" href="../index.html"><img class="school-logo" src="../assets/logo.jpeg" alt="شعار مدرسة الرازي"> موقع الأستاذة دانية أبو مخ</a>
+    <nav class="nav">
+      <a href="../index.html">الرئيسية</a>
+      <a href="../tarbiya/index.html">تربية السادس أ</a>
+      <a href="../math4/index.html">رياضيات الرابع</a>
+      <a href="index.html" class="active">رياضيات السادس</a>
+      <a href="../science/index.html">العلوم</a>
+      <a href="../computing/index.html">الحوسبة</a>
+      <a href="../quizzes/index.html">الاختبارات</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero hero-sm">
+  <div class="starfield"></div>
+  <div class="container hero-inner">
+    <span class="hero-eyebrow">🧃 لعبة تفاعلية</span>
+    <h1>مختبر <span>العصائر</span></h1>
+    <p class="lead">هل نوزّع أم نملأ؟ قسمة الكسور عندما يكون أحد العددين عددًا صحيحًا — 5 محطات متدرجة.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container game-shell">
+
+    <div id="topbar" class="game-topbar hidden">
+      <span id="level-pill" class="level-pill">🧪 المحطة 1</span>
+      <div class="counters">
+        <span id="streak-badge" class="streak-badge">🔥 <span id="streak-count">0</span></span>
+        <span id="star-counter" class="star-counter">⭐ <span class="n" id="star-count">0</span> / 25</span>
+      </div>
+    </div>
+    <div id="map-strip" class="map-strip hidden"></div>
+    <div id="progress-dots" class="progress-dots hidden"></div>
+
+    <div id="start-screen" class="card start-card">
+      <div class="ic">🧃</div>
+      <h2>أهلًا بك في مختبر العصائر!</h2>
+      <p>مهمتك: توزيع العصير على الأطفال وملء الأكواب. كل جواب صحيح = نجمة!</p>
+      <ul class="rules-list">
+        <li>🧪 <span><b>نوزّع:</b> كسر من اللتر ÷ عدد من الأطفال — كم يحصل كل طفل؟</span></li>
+        <li>🥤 <span><b>نملأ:</b> عدد من اللترات ÷ سعة الكوب (كسر) — كم كوبًا نملأ؟</span></li>
+        <li>💡 <span>زر «ارسم لي» يُظهر رسمًا يساعدك. جرّبي أولًا بدونه لتحصلي على «متتالية» 🔥</span></li>
+        <li>✅ <span>لكِ محاولتان لكل سؤال. الناتج غير المختزل مقبول، لكننا نذكّرك بالاختزال.</span></li>
+      </ul>
+      <button class="btn btn-gold" id="start-btn" style="font-size:1.05rem;padding:14px 34px">ابدئي التجربة 🚀</button>
+    </div>
+
+    <div id="question-screen" class="card hidden">
+      <span id="level-tag" class="level-tag mint">المحطة 1</span>
+      <div class="q-text" id="q-text"></div>
+      <div class="q-sub" id="q-sub"></div>
+      <div id="viz-slot"></div>
+
+      <div id="mode-frac" class="hidden">
+        <div class="ans-row">
+          <div class="frac-input">
+            <input type="text" inputmode="numeric" id="in-num" placeholder="البسط" autocomplete="off">
+            <div class="bar-line"></div>
+            <input type="text" inputmode="numeric" id="in-den" placeholder="المقام" autocomplete="off">
+          </div>
+          <span class="unit" id="unit-frac">لتر</span>
+        </div>
+      </div>
+      <div id="mode-num" class="hidden">
+        <div class="ans-row"><input type="text" inputmode="numeric" id="in-one" class="num-input" placeholder="؟" autocomplete="off"><span class="unit" id="unit-num">كوبًا</span></div>
+      </div>
+      <div id="mode-choice" class="hidden"><div class="choice-row" id="choice-row"></div></div>
+
+      <div class="q-actions">
+        <button class="btn btn-gold" id="check-btn">تحقّق ✓</button>
+        <button class="btn btn-ghost" id="hint-btn">💡 ارسم لي</button>
+        <button class="btn btn-ghost" id="next-btn" style="display:none">التالي ⟵</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+
+    <div id="level-complete" class="overlay hidden">
+      <div class="big-ic">🎉</div>
+      <h2 id="lc-title"></h2>
+      <div class="stars-row" id="lc-stars"></div>
+      <p id="lc-sub" style="color:var(--ink-soft)"></p>
+      <button class="btn btn-gold" id="lc-next" style="font-size:1.02rem;padding:12px 30px;margin-top:10px">المحطة التالية ⟵</button>
+    </div>
+
+    <div id="final-screen" class="overlay hidden">
+      <div class="big-ic">🏆</div>
+      <h2>أنهيتِ تجارب المختبر!</h2>
+      <div class="rank-badge" id="rank-badge"></div>
+      <p id="final-score" style="font-size:1.2rem;font-weight:800;color:var(--navy-950);margin:10px 0"></p>
+      <p id="final-msg" style="color:var(--ink-soft);margin-bottom:18px"></p>
+      <button class="btn btn-gold" id="restart-btn" style="font-size:1.02rem;padding:12px 30px">🔁 تجارب جديدة</button>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-logos"><img src="../assets/signature.webp" alt="توقيع المعلمة دانية أبو مخ"></div>
+    الأستاذة دانية أبو مخ • معلّمة رياضيات
+  </div>
+</footer>
+
+<script src="../assets/effects.js" defer></script>
+<script>
+(function () {
+  function ri(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+  function pick(arr) { return arr[ri(0, arr.length - 1)]; }
+  function gcd(a, b) { while (b) { var t = a % b; a = b; b = t; } return a; }
+  function simp(n, d) { var g = gcd(n, d); return [n / g, d / g]; }
+  function F(n, d) { return '<span class="frac"><span class="num">' + n + '</span><span class="den">' + d + '</span></span>'; }
+  function EQ(inner) { return '<span class="eqi" dir="ltr">' + inner + '</span>'; }
+  function kidsText(k) { return k === 2 ? 'طفلين' : k + ' أطفال'; }
+  function litersText(L) { return L === 2 ? 'لتران' : L + ' لترات'; }
+  function fracOrInt(n, d) { var s = simp(n, d); return s[1] === 1 ? String(s[0]) : F(s[0], s[1]); }
+
+  /* ---- visuals ---- */
+  function bar(n, d) {
+    var h = '<div class="bar" style="--d:' + d + '">';
+    for (var i = 0; i < d; i++) h += '<span class="' + (i < n ? 'on' : '') + '"></span>';
+    return h + '</div>';
+  }
+  function vizDistribute(n, d, k) {
+    var cups = '';
+    for (var i = 0; i < k; i++) cups += '<span>🥤<small>طفل ' + (i + 1) + '</small></span>';
+    return '<div class="viz"><div class="cap">الجزء الملوّن هو العصير الذي عندنا — نوزّعه بالتساوي</div>' + bar(n, d) + '<div class="cups">' + cups + '</div></div>';
+  }
+  function vizCups(L, d) {
+    var h = '<div class="viz"><div class="cap">كل جزء ملوّن = كوب واحد (سعته 1/' + d + ' لتر)</div>';
+    for (var i = 0; i < L; i++) h += bar(d, d);
+    return h + '</div>';
+  }
+
+  /* ---- generators: return {key, html, sub, mode, answer, unit, viz, hint, meta} ---- */
+  function genDistribute() { // a/b ÷ k, numerator divisible by k
+    var k = pick([2, 3]), m = ri(1, 2), n = k * m, d = ri(n + 1, 10);
+    return { key: 'D1:' + n + '/' + d + ':' + k, mode: 'frac', unit: 'لتر',
+      html: 'لدينا ' + F(n, d) + ' لتر عصير نوزعه على ' + kidsText(k) + ' بالتساوي. كم يحصل كل طفل؟',
+      sub: 'اكتبي نصيب كل طفل ككسر', answer: [m, d], viz: vizDistribute(n, d, k),
+      hint: 'وزّعي الأجزاء الملوّنة (' + n + ') على ' + kidsText(k) + ': كل طفل يأخذ ' + m + ' من الأجزاء.', meta: { t: 'dist', n: n, d: d, k: k } };
+  }
+  function genCups() { // L ÷ 1/d
+    var L = ri(2, 5), d = pick([2, 3, 4, 5, 6, 8]);
+    return { key: 'C:' + L + ':' + d, mode: 'num', unit: 'كوبًا',
+      html: 'لدينا ' + litersText(L) + ' من العصير، وسعة كل كوب ' + F(1, d) + ' لتر. كم كوبًا نملأ؟',
+      sub: 'كم مرة يتسع الكوب داخل الكمية؟', answer: [L * d, 1], viz: vizCups(L, d),
+      hint: 'في كل لتر ' + d + ' أكواب، ولدينا ' + litersText(L) + '.', meta: { t: 'cups', L: L, d: d } };
+  }
+  function genReduce() { // a/b ÷ k, general (may reduce)
+    var k = ri(2, 5), b = ri(3, 10), a = ri(1, b - 1);
+    if (Math.random() < 0.45) { var q = ri(1, 3); a = k * q; if (a >= b) { b = a + ri(1, 4); } }
+    return { key: 'D3:' + a + '/' + b + ':' + k, mode: 'frac', unit: 'لتر',
+      html: 'لدينا ' + F(a, b) + ' لتر عصير نوزعه على ' + kidsText(k) + ' بالتساوي. كم يحصل كل طفل؟',
+      sub: 'اكتبي الناتج ككسر (ويفضّل اختزاله)', answer: [a, b * k], viz: vizDistribute(a, b, k),
+      hint: 'نقسم كل جزء إلى ' + k + ' أجزاء أصغر، فيصير المقام ' + b + ' × ' + k + ' = ' + (b * k) + '.', meta: { t: 'dist', n: a, d: b, k: k } };
+  }
+  function genError() { // true / false statement
+    var kind = ri(1, 3), correct = Math.random() < 0.5, eq, truth;
+    if (kind === 1) { // a/b ÷ k = a/(bk)
+      var k = ri(2, 4), b = ri(3, 8), a = ri(1, b - 1), right = [a, b * k], shown;
+      shown = correct ? right : pick([[a * k, b], [a, b + k], [a, b]]);
+      if (!correct && shown[0] * right[1] === shown[1] * right[0]) shown = [a * k, b];
+      truth = shown[0] * right[1] === shown[1] * right[0];
+      eq = F(a, b) + ' ÷ ' + k + ' = ' + F(shown[0], shown[1]);
+      return { key: 'E1:' + a + '/' + b + ':' + k + ':' + shown.join('/'), mode: 'choice', answer: truth,
+        html: 'قال طالب: ' + EQ(eq) + '. هل إجابته صحيحة؟', sub: 'فكّري: هل نصيب الطفل يصغر أم يكبر عند القسمة؟',
+        hint: 'تحققي بالضرب: الناتج × ' + k + ' يجب أن يعطي ' + F(a, b) + '.', meta: { t: 'err1', a: a, b: b, k: k, shown: shown } };
+    }
+    if (kind === 2) { // L ÷ 1/d = L*d
+      var L = ri(2, 6), d = ri(2, 6), shown2;
+      if (correct) { shown2 = [L * d, 1]; truth = true; } else { shown2 = pick([[L, d], [d, L], [L + d, 1]]); truth = false; }
+      if (shown2[0] * 1 === L * d * shown2[1]) { truth = true; }
+      eq = L + ' ÷ ' + F(1, d) + ' = ' + (shown2[1] === 1 ? shown2[0] : F(shown2[0], shown2[1]));
+      return { key: 'E2:' + L + ':' + d + ':' + shown2.join('/'), mode: 'choice', answer: truth,
+        html: 'قال طالب: ' + EQ(eq) + '. هل إجابته صحيحة؟', sub: 'فكّري: كم كوبًا سعته ' + F(1, d) + ' لتر نملأ من ' + litersText(L) + '؟',
+        hint: 'في كل لتر ' + d + ' أكواب، إذن في ' + L + ' لترات: ' + (L * d) + ' أكواب.', meta: { t: 'err2', L: L, d: d, shown: shown2 } };
+    }
+    // kind 3: equivalent unreduced is true
+    var k3 = ri(2, 3), m3 = ri(1, 2), n3 = k3 * m3, d3 = ri(n3 + 1, 9), unreduced = [n3, d3 * k3];
+    var shown3 = correct ? unreduced : [m3, d3 * k3 + 1];
+    var truth3 = shown3[0] * d3 === shown3[1] * m3;
+    eq = F(n3, d3) + ' ÷ ' + k3 + ' = ' + F(shown3[0], shown3[1]);
+    return { key: 'E3:' + n3 + '/' + d3 + ':' + k3 + ':' + shown3.join('/'), mode: 'choice', answer: truth3,
+      html: 'قال طالب: ' + EQ(eq) + '. هل إجابته صحيحة؟', sub: 'ملاحظة: قد يكون الناتج صحيحًا وغير مختزل.',
+      hint: 'الناتج الصحيح هو ' + F(m3, d3) + '، وهو يساوي ' + F(unreduced[0], unreduced[1]) + '.', meta: { t: 'err3', n: n3, d: d3, k: k3, shown: shown3 } };
+  }
+  function genInverse() { // distribute total among k, each gets m/d  => total = m*k/d
+    var k = ri(2, 4), m = ri(1, 2), d = ri(3, 9);
+    return { key: 'I:' + m + '/' + d + ':' + k, mode: 'frac', unit: 'لتر',
+      html: 'وزّعنا كمية من العصير على ' + kidsText(k) + ' بالتساوي، فحصل كل طفل على ' + F(m, d) + ' لتر. كم لترًا كانت الكمية كلها؟',
+      sub: 'تلميح: التحقق بالضرب — الكمية ÷ ' + k + ' = نصيب الطفل', answer: [m * k, d],
+      viz: '', hint: 'الكمية = نصيب الطفل × عدد الأطفال = ' + EQ(F(m, d) + ' × ' + k) + '.', meta: { t: 'inv', m: m, d: d, k: k } };
+  }
+  function genBoss() { return pick([genReduce, genCups, genInverse, genError, genReduce])(); }
+
+  var LEVELS = [
+    { name: 'نوزّع بالتساوي', tag: 'المحطة 1 — نوزّع بالتساوي', icon: '🧪', color: 'mint', gen: genDistribute },
+    { name: 'كم كوبًا نملأ؟', tag: 'المحطة 2 — كم كوبًا نملأ؟', icon: '🥤', color: 'gold', gen: genCups },
+    { name: 'نوزّع ونختزل', tag: 'المحطة 3 — نوزّع ونختزل', icon: '⚗️', color: 'indigo', gen: genReduce },
+    { name: 'اكتشف الخطأ', tag: 'المحطة 4 — اكتشفي الخطأ', icon: '🔍', color: 'purple', gen: genError },
+    { name: 'التحدي الأخير', tag: 'المحطة 5 — التحدي الأخير!', icon: '🏆', color: 'coral', gen: genBoss }
+  ];
+
+  function isCorrect(q, ans) {
+    if (q.mode === 'choice') return ans === q.answer;
+    var n = ans[0], d = ans[1];
+    if (!(d > 0) || n < 0 || isNaN(n) || isNaN(d)) return false;
+    return n * q.answer[1] === d * q.answer[0];
+  }
+
+  if (location.hash === '#selftest') { window.__game = { LEVELS: LEVELS, isCorrect: isCorrect, simp: simp, current: function () { return cur; } }; }
+
+  /* ---- state & DOM ---- */
+  var li = 0, qi = 0, attempts = 0, stars = 0, levelStars = 0, streak = 0, hinted = false, cur = null, used = {};
+  var $ = function (id) { return document.getElementById(id); };
+  var topbar = $('topbar'), strip = $('map-strip'), dots = $('progress-dots'), startS = $('start-screen'), qS = $('question-screen');
+  var lc = $('level-complete'), fin = $('final-screen'), fb = $('feedback'), checkBtn = $('check-btn'), hintBtn = $('hint-btn'), nextBtn = $('next-btn');
+  var modeFrac = $('mode-frac'), modeNum = $('mode-num'), modeChoice = $('mode-choice'), choiceRow = $('choice-row');
+  var inNum = $('in-num'), inDen = $('in-den'), inOne = $('in-one');
+
+  function unique(gen) {
+    var q;
+    for (var i = 0; i < 60; i++) { q = gen(); if (!used[q.key]) { used[q.key] = 1; return q; } }
+    used[q.key] = 1; return q;
+  }
+  function renderStrip() {
+    strip.innerHTML = '';
+    LEVELS.forEach(function (l, i) {
+      if (i) { var ln = document.createElement('div'); ln.className = 'line' + (i <= li ? ' done' : ''); strip.appendChild(ln); }
+      var s = document.createElement('div'); s.className = 'isle' + (i < li ? ' done' : i === li ? ' active' : ''); s.textContent = l.icon; strip.appendChild(s);
+    });
+  }
+  function renderDots() {
+    dots.innerHTML = '';
+    for (var i = 0; i < 5; i++) { var d = document.createElement('div'); d.className = 'dot' + (i < qi ? ' done' : i === qi ? ' active' : ''); dots.appendChild(d); }
+  }
+  function bump(el) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+  function updateStreak() {
+    if (streak >= 2) { $('streak-badge').classList.add('show'); $('streak-count').textContent = streak; bump($('streak-badge')); }
+    else $('streak-badge').classList.remove('show');
+  }
+
+  function loadQ() {
+    cur = unique(LEVELS[li].gen);
+    attempts = 0; hinted = false;
+    $('q-text').innerHTML = cur.html; $('q-sub').innerHTML = cur.sub || '';
+    $('viz-slot').innerHTML = ''; fb.textContent = ''; fb.className = 'feedback';
+    [inNum, inDen, inOne].forEach(function (i) { i.value = ''; i.disabled = false; i.className = i.className.replace(/\b(ok|bad)\b/g, '').trim(); });
+    modeFrac.classList.toggle('hidden', cur.mode !== 'frac'); modeNum.classList.toggle('hidden', cur.mode !== 'num'); modeChoice.classList.toggle('hidden', cur.mode !== 'choice');
+    $('unit-frac').textContent = cur.unit || ''; $('unit-num').textContent = cur.unit || '';
+    checkBtn.style.display = cur.mode === 'choice' ? 'none' : ''; nextBtn.style.display = 'none'; hintBtn.style.display = '';
+    if (cur.mode === 'choice') {
+      choiceRow.innerHTML = '';
+      [['✅ صحيحة', true], ['❌ خاطئة', false]].forEach(function (c) {
+        var b = document.createElement('button'); b.className = 'choice-btn'; b.textContent = c[0]; b.setAttribute('data-v', c[1]);
+        b.addEventListener('click', function () { submit(c[1], b); }); choiceRow.appendChild(b);
+      });
+    }
+    renderDots(); renderStrip();
+    $('level-pill').textContent = LEVELS[li].icon + ' المحطة ' + (li + 1);
+    $('level-tag').textContent = LEVELS[li].tag; $('level-tag').className = 'level-tag ' + LEVELS[li].color;
+    setTimeout(function () { (cur.mode === 'frac' ? inNum : cur.mode === 'num' ? inOne : checkBtn).focus(); }, 60);
+  }
+
+  function showHint() {
+    hinted = true;
+    if (cur.viz) $('viz-slot').innerHTML = cur.viz;
+    fb.className = 'feedback'; fb.innerHTML = '💡 ' + cur.hint;
+  }
+
+  function answerHtml() { return cur.mode === 'choice' ? (cur.answer ? 'صحيحة' : 'خاطئة') : EQ(fracOrInt(cur.answer[0], cur.answer[1])) + (cur.unit ? ' ' + cur.unit : ''); }
+
+  function finish(ok, extraHtml) {
+    checkBtn.style.display = 'none'; hintBtn.style.display = 'none'; nextBtn.style.display = ''; nextBtn.focus();
+    [inNum, inDen, inOne].forEach(function (i) { i.disabled = true; });
+    Array.prototype.forEach.call(choiceRow.querySelectorAll('button'), function (b) { b.disabled = true; if (String(cur.answer) === b.getAttribute('data-v')) b.classList.add('correct'); });
+    if (ok) {
+      stars++; levelStars++; bump($('star-counter')); $('star-count').textContent = stars;
+      if (attempts === 0 && !hinted) { streak++; } else { streak = 0; }
+      updateStreak();
+      var hype = streak >= 5 ? ' 🔥🔥 متتالية مذهلة!' : streak >= 3 ? ' 🔥 متتالية رائعة!' : '';
+      fb.className = 'feedback ok'; fb.innerHTML = '✅ صحيح!' + hype + (extraHtml ? '<br>' + extraHtml : '');
+    } else {
+      streak = 0; updateStreak();
+      fb.className = 'feedback bad'; fb.innerHTML = 'الجواب الصحيح: ' + answerHtml() + '<br><small>' + cur.hint + '</small>';
+    }
+  }
+
+  function submit(ans, btn) {
+    var ok = isCorrect(cur, ans);
+    if (ok) {
+      var extra = '';
+      if (cur.mode === 'frac') { var s = simp(ans[0], ans[1]); if (s[0] !== ans[0] || s[1] !== ans[1]) extra = 'ويمكن اختزال الناتج إلى ' + EQ(fracOrInt(s[0], s[1])); [inNum, inDen].forEach(function (i) { i.classList.add('ok'); }); }
+      if (cur.mode === 'num') inOne.classList.add('ok');
+      if (btn) btn.classList.add('correct');
+      finish(true, extra); return;
+    }
+    attempts++;
+    if (btn) { btn.classList.add('wrong'); btn.disabled = true; }
+    if (attempts < 2) {
+      fb.className = 'feedback bad'; fb.textContent = '🤔 قريب! جرّبي مرة أخرى' + (cur.mode === 'frac' ? ' — واستعيني بزر «ارسم لي»' : '');
+      if (cur.mode === 'frac') { inNum.classList.add('bad'); inDen.classList.add('bad'); inNum.select(); }
+      if (cur.mode === 'num') { inOne.classList.add('bad'); inOne.select(); }
+    } else { finish(false); }
+  }
+
+  function check() {
+    if (cur.mode === 'frac') {
+      var n = parseInt(inNum.value.replace(/[,\s]/g, ''), 10), d = parseInt(inDen.value.replace(/[,\s]/g, ''), 10);
+      if (isNaN(n) || isNaN(d)) { fb.className = 'feedback bad'; fb.textContent = 'اكتبي البسط والمقام معًا.'; return; }
+      submit([n, d]);
+    } else if (cur.mode === 'num') {
+      var v = parseInt(inOne.value.replace(/[,\s]/g, ''), 10); if (isNaN(v)) { inOne.focus(); return; }
+      submit([v, 1]);
+    }
+  }
+
+  function levelDone() {
+    $('lc-title').textContent = '🎉 أحسنتِ! أنهيتِ «' + LEVELS[li].name + '»';
+    var row = $('lc-stars'); row.innerHTML = '';
+    for (var i = 0; i < 5; i++) { var s = document.createElement('span'); s.textContent = '⭐'; if (i < levelStars) s.className = 'lit'; row.appendChild(s); }
+    $('lc-sub').textContent = 'حصلتِ على ' + levelStars + ' من 5 نجوم.';
+    $('lc-next').textContent = li < LEVELS.length - 1 ? 'المحطة التالية ⟵' : 'إنهاء التجارب 🏁';
+    qS.classList.add('hidden'); dots.classList.add('hidden'); lc.classList.remove('hidden');
+  }
+  function showFinal() {
+    var p = stars / 25, rank, msg;
+    if (p >= 0.9) { rank = '🥇 عالمة العصائر'; msg = '🌟 أتقنتِ قسمة الكسور بالتوزيع والقياس!'; }
+    else if (p >= 0.65) { rank = '🥈 مساعدة مختبر ماهرة'; msg = '🎉 عمل رائع! تدرّبي أكثر لتصلي للنجوم الكاملة.'; }
+    else { rank = '🥉 متدرّبة في المختبر'; msg = '💪 بداية جيدة! جرّبي تجارب جديدة واستعيني بالرسم.'; }
+    $('rank-badge').textContent = rank; $('final-score').textContent = '⭐ ' + stars + ' / 25 نجمة'; $('final-msg').textContent = msg;
+    topbar.classList.add('hidden'); strip.classList.add('hidden'); lc.classList.add('hidden'); fin.classList.remove('hidden');
+  }
+
+  checkBtn.addEventListener('click', check);
+  hintBtn.addEventListener('click', showHint);
+  [inNum, inDen, inOne].forEach(function (i) { i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { if (nextBtn.style.display === 'none') check(); else nextBtn.click(); } }); });
+  nextBtn.addEventListener('click', function () { qi++; if (qi >= 5) levelDone(); else loadQ(); });
+  $('lc-next').addEventListener('click', function () {
+    li++; if (li >= LEVELS.length) { showFinal(); return; }
+    qi = 0; levelStars = 0; lc.classList.add('hidden'); dots.classList.remove('hidden'); qS.classList.remove('hidden'); loadQ();
+  });
+  function start() {
+    li = 0; qi = 0; stars = 0; levelStars = 0; streak = 0; used = {}; $('star-count').textContent = '0'; updateStreak();
+    startS.classList.add('hidden'); fin.classList.add('hidden'); topbar.classList.remove('hidden'); strip.classList.remove('hidden'); dots.classList.remove('hidden'); qS.classList.remove('hidden'); loadQ();
+  }
+  $('start-btn').addEventListener('click', start); $('restart-btn').addEventListener('click', start);
+})();
+</script>
+</body>
+</html>
