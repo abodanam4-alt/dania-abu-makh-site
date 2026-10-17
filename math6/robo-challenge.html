@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدّي روبو | قسمة الكسور (الفصل ضد الروبوت)</title>
+    <style>
+        :root {
+            --sunny-yellow: #FFD100;
+            --sky-blue: #00C6FF;
+            --candy-pink: #FF5E97;
+            --lime-green: #00E676;
+            --lavender: #B388FF;
+            --vibrant-orange: #FF7043;
+            --clean-white: #FFFFFF;
+            --bg-gradient: linear-gradient(135deg, #E0F7FA 0%, #FFF9C4 50%, #FCE4EC 100%);
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            overflow-x: hidden;
+            color: #2C3E50;
+            padding: 10px;
+        }
+
+        /* 16:9 Smartboard Container setup */
+        #game-container {
+            width: 100%;
+            max-width: 1280px;
+            aspect-ratio: 16 / 9;
+            background: rgba(255, 255, 255, 0.88);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.8);
+            border: 6px solid #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background: linear-gradient(180deg, #FFFFFF 0%, #F5F7FA 100%);
+            border-bottom: 4px solid #E0E6ED;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .title-box {
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 25px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #FF7043, #FF5E97, #00C6FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .sub-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #546E7A;
+            letter-spacing: 0.5px;
+        }
+
+        .score-boards {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .score-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 18px;
+            border-radius: 50px;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.8);
+            border: 3px solid #FFF;
+            transition: transform 0.3s ease;
+        }
+
+        .score-card.class-score {
+            background: linear-gradient(135deg, #00C6FF, #0072FF);
+            color: #FFF;
+        }
+
+        .score-card.robot-score {
+            background: linear-gradient(135deg, #FF5E97, #FF7043);
+            color: #FFF;
+        }
+
+        .score-card .avatar {
+            font-size: 28px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .score-card .info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .score-card .label {
+            font-size: 13px;
+            font-weight: bold;
+            opacity: 0.9;
+        }
+
+        .score-card .points {
+            font-size: 22px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .controls-bar {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: #FFFFFF;
+            border: 2px solid #CFD8DC;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 0 #CFD8DC;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #CFD8DC;
+        }
+
+        .main-stage {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 15px;
+            padding: 15px 20px;
+            position: relative;
+        }
+
+        .board-container {
+            background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(240,244,248,0.92) 100%);
+            border-radius: 20px;
+            border: 4px dashed #B0BEC5;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            height: 100%;
+        }
+
+        .tile {
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: #FFF;
+            text-shadow: 1px 2px 3px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 0 rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.6);
+            border: 3px solid #FFF;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .tile:hover:not(.completed) {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 0 rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.8);
+        }
+
+        .tile .num {
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .tile .cat-icon {
+            font-size: 16px;
+            margin-top: 4px;
+        }
+
+        .tile.cat-notice { background: linear-gradient(135deg, #00C6FF, #0072FF); }
+        .tile.cat-error { background: linear-gradient(135deg, #FF5E97, #E91E63); }
+        .tile.cat-sort { background: linear-gradient(135deg, #FFD100, #FF9100); }
+        .tile.cat-reason { background: linear-gradient(135deg, #00E676, #00A152); }
+        .tile.cat-speed { background: linear-gradient(135deg, #B388FF, #651FFF); }
+
+        .tile.active-target {
+            animation: pulseGlow 1s infinite alternate;
+            border-color: #FFD100;
+            z-index: 5;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1) translateY(-2px); box-shadow: 0 0 15px #FFD100, 0 6px 0 rgba(0,0,0,0.2); }
+            100% { transform: scale(1.1) translateY(-8px); box-shadow: 0 0 30px #FFD100, 0 12px 0 rgba(0,0,0,0.2); }
+        }
+
+        .tile.completed {
+            background: linear-gradient(135deg, #CFD8DC, #90A4AE) !important;
+            box-shadow: 0 2px 0 #78909C;
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .tile.completed::after {
+            content: "✓ تم";
+            position: absolute;
+            background: rgba(0,0,0,0.6);
+            color: #FFF;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .robot-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+            background: linear-gradient(180deg, #FFF 0%, #E3F2FD 100%);
+            border-radius: 20px;
+            border: 4px solid #BBDEFB;
+            padding: 15px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.03);
+        }
+
+        .robot-action-prompt {
+            position: absolute;
+            top: 12px;
+            background: #FFD100;
+            color: #2C3E50;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 900;
+            box-shadow: 0 4px 0 #F57F17;
+            animation: bouncePrompt 1.5s infinite;
+            z-index: 5;
+            cursor: pointer;
+        }
+
+        @keyframes bouncePrompt {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .speech-bubble {
+            background: #FFFFFF;
+            border: 4px solid #FF7043;
+            border-radius: 20px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            position: relative;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #2C3E50;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 4;
+            transition: all 0.3s ease;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            right: 40%;
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: #FF7043 transparent;
+            display: block;
+            width: 0;
+        }
+
+        .robot-avatar-wrapper {
+            width: 220px;
+            height: 250px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .robot-avatar-wrapper:hover {
+            transform: scale(1.03);
+        }
+
+        .robot-avatar-wrapper:active {
+            transform: scale(0.97);
+        }
+
+        /* Robot SVG Animations */
+        .robot-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15));
+        }
+
+        .idle-bounce {
+            animation: robotFloat 3s ease-in-out infinite;
+        }
+
+        .jumping {
+            animation: robotJump 0.6s ease-in-out;
+        }
+
+        .shocked {
+            animation: robotShock 0.5s ease-in-out infinite alternate;
+        }
+
+        .happy-dance {
+            animation: robotDance 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes robotFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes robotJump {
+            0% { transform: translateY(0) scale(1, 1); }
+            30% { transform: translateY(10px) scale(1.15, 0.85); }
+            60% { transform: translateY(-60px) scale(0.9, 1.1); }
+            100% { transform: translateY(0) scale(1, 1); }
+        }
+
+        @keyframes robotShock {
+            0% { transform: rotate(-5deg) scale(0.95); }
+            100% { transform: rotate(5deg) scale(1.05); }
+        }
+
+        @keyframes robotDance {
+            0% { transform: translateY(-10px) rotate(-8deg); }
+            100% { transform: translateY(-10px) rotate(8deg); }
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #FFFFFF;
+            border-radius: 28px;
+            padding: 30px;
+            width: 90%;
+            max-width: 650px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            border: 6px solid #FFD100;
+            text-align: center;
+            transform: scale(0.8) translateY(30px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 3px dashed #E0E6ED;
+            padding-bottom: 12px;
+        }
+
+        .modal-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            color: #FFF;
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .question-text {
+            font-size: 22px;
+            font-weight: 800;
+            color: #2C3E50;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            background: #F8FAFC;
+            padding: 18px;
+            border-radius: 16px;
+            border-right: 6px solid #00C6FF;
+            direction: rtl;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: #FFFFFF;
+            border: 3px solid #E0E6ED;
+            border-radius: 18px;
+            padding: 14px;
+            font-size: 17px;
+            font-weight: bold;
+            color: #37474F;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #CFD8DC;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            border-color: #00C6FF;
+            background: #E0F7FA;
+            transform: translateY(-2px);
+        }
+
+        .option-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #CFD8DC;
+        }
+
+        .teacher-eval-box {
+            background: #FFF8E1;
+            border: 3px dashed #FFB300;
+            border-radius: 18px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .teacher-answer {
+            font-size: 16px;
+            color: #5D4037;
+            margin-bottom: 15px;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+
+        .teacher-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-3d {
+            border: none;
+            border-radius: 20px;
+            padding: 12px 28px;
+            font-size: 18px;
+            font-weight: 900;
+            color: #FFF;
+            cursor: pointer;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+
+        .btn-green { background: linear-gradient(135deg, #00E676, #00C853); }
+        .btn-red { background: linear-gradient(135deg, #FF5E97, #D50000); }
+        .btn-yellow { background: linear-gradient(135deg, #FFD100, #FFAB00); color: #2C3E50; }
+
+        /* Canvas particles */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 150;
+        }
+
+        /* تنسيق الكسور (بسط ومقام) */
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            padding: 0 4px;
+            font-size: 0.95em;
+            line-height: 1.1;
+            margin: 0 4px;
+        }
+
+        .frac .num {
+            border-bottom: 2px solid currentColor;
+            padding: 0 4px 2px 4px;
+            display: block;
+            font-weight: bold;
+        }
+
+        .frac .den {
+            padding: 2px 4px 0 4px;
+            display: block;
+            font-weight: bold;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px;
+            background: #FFF;
+            border-top: 2px solid #E0E6ED;
+            font-size: 13px;
+            font-weight: bold;
+            color: #607D8B;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <!-- Confetti Canvas overlay -->
+        <canvas id="confetti-canvas"></canvas>
+
+        <!-- Header Bar -->
+        <header>
+            <div class="score-boards">
+                <div class="score-card class-score">
+                    <span class="avatar">👨‍🎓</span>
+                    <div class="info">
+                        <span class="label">الفصل</span>
+                        <span class="points" id="class-score">0</span>
+                    </div>
+                </div>
+
+                <div class="score-card robot-score">
+                    <span class="avatar">🤖</span>
+                    <div class="info">
+                        <span class="label">الروبوت</span>
+                        <span class="points" id="robot-score">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="title-box">
+                <h1 class="main-title">تحدّي روبو | الفصل ضد الروبوت</h1>
+                <span class="sub-title">قسمة الكسور عندما يكون أحد العددين عددًا صحيحًا (مسارات زائد)</span>
+            </div>
+
+            <div class="controls-bar">
+                <button class="icon-btn" id="sound-btn" onclick="toggleSound()" title="تشغيل/كتم الصوت">🔊</button>
+                <button class="icon-btn" onclick="resetGame()" title="إعادة تشغيل اللعبة">🔄</button>
+                <button class="icon-btn" onclick="toggleFullScreen()" title="شاشة كاملة">🖥️</button>
+                <a class="icon-btn" href="fraction-division.html" title="العودة لوحدة قسمة الكسور" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center">🏠</a>
+            </div>
+        </header>
+
+        <!-- Main Stage -->
+        <div class="main-stage">
+            <!-- Board Track Grid (20 Cards) -->
+            <div class="board-container">
+                <div class="board-grid" id="board-grid">
+                    <!-- Dynamic Generation of 20 Challenge Tiles -->
+                </div>
+            </div>
+
+            <div class="robot-stage">
+                <div class="robot-action-prompt" id="robot-prompt" onclick="robotSelectChallenge()">
+                    👇 اضغط على روبو لاختيار التحدي!
+                </div>
+
+                <div class="speech-bubble" id="speech-bubble">
+                    مرحباً بكم يا أبطال مختبر العصائر! 🍹 اضغطوا عليّ لنبدأ التحدي! 🤖🔥
+                </div>
+
+                <div class="robot-avatar-wrapper idle-bounce" id="robot-wrapper" onclick="robotSelectChallenge()">
+                    <svg class="robot-svg" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="100" cy="225" rx="40" ry="10" fill="#00C6FF" opacity="0.4" />
+                        <polygon points="80,210 120,210 100,230" fill="#FFD100" />
+                        
+                        <rect x="55" y="110" width="90" height="90" rx="25" fill="url(#bodyGrad)" stroke="#FFFFFF" stroke-width="4"/>
+                        <rect x="70" y="125" width="60" height="45" rx="12" fill="#2C3E50" />
+                        
+                        <circle cx="85" cy="147" r="6" fill="#00E676"/>
+                        <circle cx="100" cy="147" r="6" fill="#FFD100"/>
+                        <circle cx="115" cy="147" r="6" fill="#FF5E97"/>
+
+                        <rect x="90" y="95" width="20" height="18" fill="#B0BEC5" rx="4"/>
+
+                        <rect x="45" y="25" width="110" height="75" rx="28" fill="url(#headGrad)" stroke="#FFFFFF" stroke-width="4"/>
+                        <rect x="58" y="38" width="84" height="48" rx="18" fill="#1A237E"/>
+                        
+                        <g id="robot-eyes">
+                            <circle cx="82" cy="62" r="12" fill="#00E676"/>
+                            <circle cx="118" cy="62" r="12" fill="#00E676"/>
+                            <circle cx="85" cy="59" r="4" fill="#FFFFFF"/>
+                            <circle cx="121" cy="59" r="4" fill="#FFFFFF"/>
+                        </g>
+
+                        <path id="robot-mouth" d="M 85 75 Q 100 83 115 75" stroke="#00E676" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+                        <rect x="33" y="48" width="14" height="26" rx="6" fill="#FF7043"/>
+                        <rect x="153" y="48" width="14" height="26" rx="6" fill="#FF7043"/>
+
+                        <line x1="100" y1="25" x2="100" y2="8" stroke="#B0BEC5" stroke-width="5"/>
+                        <circle cx="100" cy="8" r="10" fill="#FF5E97" id="antenna-gem"/>
+
+                        <g id="left-arm">
+                            <path d="M 55 125 Q 30 140 25 165" stroke="#90A4AE" stroke-width="12" fill="none" stroke-linecap="round"/>
+                            <circle cx="25" cy="165" r="10" fill="#FF7043"/>
+                        </g>
+                        <g id="right-arm">
+                            <path d="M 145 125 Q 170 140 175 165" stroke="#90A4AE" stroke-width="12" fill="none" stroke-linecap="round"/>
+                            <circle cx="175" cy="165" r="10" fill="#FF7043"/>
+                        </g>
+
+                        <defs>
+                            <linearGradient id="headGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00C6FF"/>
+                                <stop offset="100%" stop-color="#0072FF"/>
+                            </linearGradient>
+                            <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#E0F7FA"/>
+                                <stop offset="100%" stop-color="#80DEEA"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <span>المتبقي من التحديات: <span id="remaining-count">20</span> / 20</span>
+            <span>مختبر العصائر - قسمة الكسور | الصف الرابع - مسارات زائد</span>
+        </footer>
+
+        <!-- Cinematic Intro Modal -->
+        <div class="modal-overlay active" id="intro-modal">
+            <div class="modal-card">
+                <div style="font-size: 60px; margin-bottom: 10px;">🍹🤖✨</div>
+                <h2 style="color: #FF7043; font-size: 28px; font-weight: 900; margin-bottom: 15px;">
+                    «تحدّي روبو في مختبر العصائر!»
+                </h2>
+                <div style="font-size: 18px; line-height: 1.6; color: #37474F; margin-bottom: 25px; background: #FFF9C4; padding: 20px; border-radius: 20px; border: 3px dashed #FBC02D;">
+                    «أهلاً بكم يا أبطال!<br>
+                    لقد تعلمت قسمة الكسور والتوزيع المتساوي ملء الأكواب معكم.<br>
+                    <strong>والآن أتحداكم في مختبر العصائر!</strong><br>
+                    هل أنتم مستعدون للتغلب عليّ؟»
+                </div>
+                <button class="btn-3d btn-green" onclick="startGame()">
+                    🚀 هيا نبدأ التحدي!
+                </button>
+            </div>
+        </div>
+
+        <!-- Question Pop-Up Modal -->
+        <div class="modal-overlay" id="question-modal">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <span class="modal-badge" id="modal-cat-badge">نوع التحدي</span>
+                    <span style="font-weight: 900; font-size: 18px; color: #78909C;" id="modal-q-num">تحدي #1</span>
+                </div>
+
+                <div class="question-text" id="modal-q-text">
+                    نص السؤال يظهر هنا...
+                </div>
+
+                <!-- MCQ Options Box -->
+                <div class="options-grid" id="modal-options">
+                    <!-- Dynamic Buttons -->
+                </div>
+
+                <!-- Teacher Open Question Evaluation Box -->
+                <div class="teacher-eval-box" id="teacher-box" style="display: none;">
+                    <div class="teacher-answer" id="teacher-key">
+                        🔑 الإجابة النموذجية للمعلم: ...
+                    </div>
+                    <div class="teacher-actions">
+                        <button class="btn-3d btn-green" onclick="submitAnswer(true)">
+                            ✓ إجابة صحيحة للفصل (+10)
+                        </button>
+                        <button class="btn-3d btn-red" onclick="submitAnswer(false)">
+                            ✗ إجابة خاطئة للروبوت (+10)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Result Screen Modal -->
+        <div class="modal-overlay" id="result-modal">
+            <div class="modal-card">
+                <div id="result-emoji" style="font-size: 70px; margin-bottom: 10px;">🏆</div>
+                <h2 id="result-title" style="font-size: 30px; font-weight: 900; margin-bottom: 15px;">
+                    نتيجة المباراة
+                </h2>
+                <div id="result-desc" style="font-size: 20px; color: #455A64; margin-bottom: 25px;">
+                    ...
+                </div>
+                <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 25px; font-size: 22px; font-weight: 900;">
+                    <span style="color: #00C6FF;">الفصل: <span id="final-class-score">0</span></span>
+                    <span style="color: #FF5E97;">الروبوت: <span id="final-robot-score">0</span></span>
+                </div>
+                <button class="btn-3d btn-yellow" onclick="resetGame()">
+                    🔄 العب من جديد
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* Web Audio API Sound Engine */
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'jump') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.25);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } else if (type === 'correct') {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.type = 'triangle';
+                    o.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    g.gain.setValueAtTime(0.2, now + idx * 0.08);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
+                    o.start(now + idx * 0.08);
+                    o.stop(now + idx * 0.08 + 0.3);
+                });
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.linearRampToValueAtTime(110, now + 0.35);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'fanfare') {
+                const notes = [261.63, 329.63, 392.00, 523.25];
+                notes.forEach((freq, idx) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.type = 'sine';
+                    o.frequency.setValueAtTime(freq, now + idx * 0.12);
+                    g.gain.setValueAtTime(0.25, now + idx * 0.12);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.5);
+                    o.start(now + idx * 0.12);
+                    o.stop(now + idx * 0.12 + 0.5);
+                });
+            } else if (type === 'tick') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, now);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.linearRampToValueAtTime(0.001, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-btn').innerText = soundEnabled ? '🔊' : '🔇';
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        /* 20 Exact Cards from Lesson Plan & Image Cards */
+        const QUESTION_BANK = [
+            {
+                id: 1,
+                cat: 'cat-notice',
+                catName: '🔍 لاحظ واكتشف',
+                text: 'ما ناتج القسمة التالي: 3/4 ÷ 3 = ؟',
+                type: 'mcq',
+                options: ['1/4', '3/12', '9/4', '1/3'],
+                correct: '1/4',
+                explanation: 'توزيع 3 أرباع على 3 أجزاء متساوية يعطي ربعاً واحداً (1/4).'
+            },
+            {
+                id: 2,
+                cat: 'cat-error',
+                catName: '❌ صَحِّح خطأً',
+                text: 'قال روبو إن الناتج الصحيح هو: 4/5 ÷ 2 = 4/10. هل كلامه صحيح؟',
+                type: 'mcq',
+                options: [
+                    'صحيحة! وتساوي 2/5 بعد اختزال الكسر',
+                    'خاطئة! الناتج الصحيح هو 8/5',
+                    'خاطئة! الناتج الصحيح هو 4/2',
+                    'خاطئة! الناتج الصحيح هو 1/2'
+                ],
+                correct: 'صحيحة! وتساوي 2/5 بعد اختزال الكسر',
+                explanation: 'الكسر 4/10 مكافئ تماماً للكسر 2/5، لذا الإجابة صحيحة ويمكن اختزالها.'
+            },
+            {
+                id: 3,
+                cat: 'cat-sort',
+                catName: '🧱 رتِّب وصنِّف',
+                text: 'أي تمرين قسمة يمثل توزيع 3/4 لتر من العصير على 3 أطفال بالتساوي؟',
+                type: 'mcq',
+                options: ['3/4 ÷ 3', '3 ÷ 3/4', '3/4 × 3', '3/4 + 3'],
+                correct: '3/4 ÷ 3',
+                explanation: 'نقسم كمية العصير الإجمالية (3/4 لتر) على عدد الأطفال (3).'
+            },
+            {
+                id: 4,
+                cat: 'cat-reason',
+                catName: '💡 فكِّر وأقْنِع',
+                text: 'لدينا 2 لتر من العصير وسعة كل كوب 1/4 لتر. كم كوباً نملأ؟ فسر إجابتك.',
+                type: 'open',
+                key: 'نملأ 8 أكواب! لأن كل لتر واحد يحتوي على 4 أرباع (4 أكواب)، وبالتالي 2 × 4 = 8 أكواب.',
+                explanation: '2 ÷ (1/4) = 8 أكواب.'
+            },
+            {
+                id: 5,
+                cat: 'cat-speed',
+                catName: '⚡ تحَدٍّ سريع',
+                text: 'ما ناتج القسمة: 2/3 ÷ 2 = ؟',
+                type: 'mcq',
+                options: ['1/3', '2/6', '4/3', '1/6'],
+                correct: '1/3',
+                explanation: 'ثلثان مقسومان على 2 يعطيان ثلثاً واحداً (1/3).'
+            },
+            {
+                id: 6,
+                cat: 'cat-notice',
+                catName: '🔍 لاحظ واكتشف',
+                text: 'ما ناتج القسمة: 6/7 ÷ 3 = ؟',
+                type: 'mcq',
+                options: ['2/7', '6/21', '18/7', '3/7'],
+                correct: '2/7',
+                explanation: 'نقسم البسط 6 على 3 فنحصل على 2/7.'
+            },
+            {
+                id: 7,
+                cat: 'cat-error',
+                catName: '❌ صَحِّح خطأً',
+                text: 'قالت سارة إن الناتج هو: 2 ÷ (1/4) = 1/8. هل هي صحيحة؟',
+                type: 'mcq',
+                options: [
+                    'خطأ! الناتج الصحيح هو 8 أكواب',
+                    'صحيحة! 2 ÷ (1/4) = 1/8',
+                    'خطأ! الناتج الصحيح هو 1/2',
+                    'خطأ! الناتج الصحيح هو 4'
+                ],
+                correct: 'خطأ! الناتج الصحيح هو 8 أكواب',
+                explanation: 'عند قسمة عدد صحيح على كسر وحدي، نبحث عن عدد الأرباع في الصحيحين (2 × 4 = 8).'
+            },
+            {
+                id: 8,
+                cat: 'cat-sort',
+                catName: '🧱 رتِّب وصنِّف',
+                text: 'أوجد ناتج القسمة: 3 ÷ (3/5) = ؟',
+                type: 'mcq',
+                options: ['5', '3/15', '9/5', '1/5'],
+                correct: '5',
+                explanation: '3 ÷ (3/5) = 3 × (5/3) = 5.'
+            },
+            {
+                id: 9,
+                cat: 'cat-reason',
+                catName: '💡 فكِّر وأقْنِع',
+                text: 'لدينا 3/4 لتر عصير نوزعه على 3 أطفال بالتساوي. كم يحصل كل طفل؟',
+                type: 'open',
+                key: 'يحصل كل طفل على 1/4 لتر (ربع لتر)، لأننا نقسم 3 أرباع على 3 أطفال بالتساوي.',
+                explanation: '3/4 ÷ 3 = 1/4 لتر.'
+            },
+            {
+                id: 10,
+                cat: 'cat-speed',
+                catName: '⚡ تحَدٍّ سريع',
+                text: 'ما ناتج القسمة: 5/6 ÷ 5 = ؟',
+                type: 'mcq',
+                options: ['1/6', '5/30', '25/6', '1/5'],
+                correct: '1/6',
+                explanation: '5 أسداس مقسومة على 5 تعطي سدساً واحداً (1/6).'
+            },
+            {
+                id: 11,
+                cat: 'cat-notice',
+                catName: '🔍 لاحظ واكتشف',
+                text: 'ما ناتج القسمة: 1/2 ÷ 4 = ؟',
+                type: 'mcq',
+                options: ['1/8', '2/4', '4/2', '1/4'],
+                correct: '1/8',
+                explanation: 'نصف مقسوم على 4 أجزاء متساوية يعطي ثمن (1/8).'
+            },
+            {
+                id: 12,
+                cat: 'cat-error',
+                catName: '❌ صَحِّح خطأً',
+                text: 'قال خالد إن الناتج هو: 3/8 ÷ 3 = 9/8. هل كلام خالد صحيح؟',
+                type: 'mcq',
+                options: [
+                    'خطأ! خالد ضرب الكسر بدلاً من قسمته، الناتج الصحيح هو 1/8',
+                    'صحيح! 3/8 ÷ 3 = 9/8',
+                    'خطأ! الناتج الصحيح هو 3/24',
+                    'خطأ! الناتج الصحيح هو 1'
+                ],
+                correct: 'خطأ! خالد ضرب الكسر بدلاً من قسمته، الناتج الصحيح هو 1/8',
+                explanation: '3/8 ÷ 3 = 1/8. قام خالد بضرب البسط 3 × 3 بالخطأ.'
+            },
+            {
+                id: 13,
+                cat: 'cat-sort',
+                catName: '🧱 رتِّب وصنِّف',
+                text: 'أوجد ناتج القسمة: 1/4 ÷ 2 = ؟',
+                type: 'mcq',
+                options: ['1/8', '2/4', '1/2', '1/16'],
+                correct: '1/8',
+                explanation: 'ربع مقسوم على 2 يعطي ثمن (1/8).'
+            },
+            {
+                id: 14,
+                cat: 'cat-reason',
+                catName: '💡 فكِّر وأقْنِع',
+                text: 'لدينا 4/5 لتر عصير نوزعه على طفلين بالتساوي. كم يحصل كل طفل؟',
+                type: 'open',
+                key: 'يحصل كل طفل على 2/5 لتر (خُمسين)، لأن 4 أخماس ÷ 2 = 2/5.',
+                explanation: '4/5 ÷ 2 = 2/5 لتر.'
+            },
+            {
+                id: 15,
+                cat: 'cat-speed',
+                catName: '⚡ تحَدٍّ سريع',
+                text: 'ما ناتج القسمة: 4/9 ÷ 2 = ؟',
+                type: 'mcq',
+                options: ['2/9', '4/18', '8/9', '1/9'],
+                correct: '2/9',
+                explanation: '4 اتساع مقسومة على 2 تعطي اتساعين (2/9).'
+            },
+            {
+                id: 16,
+                cat: 'cat-notice',
+                catName: '🔍 لاحظ واكتشف',
+                text: 'ما ناتج القسمة: 7/9 ÷ 7 = ؟',
+                type: 'mcq',
+                options: ['1/9', '7/63', '49/9', '1/7'],
+                correct: '1/9',
+                explanation: '7 اتساع مقسومة على 7 تعطي تسعاً واحداً (1/9).'
+            },
+            {
+                id: 17,
+                cat: 'cat-error',
+                catName: '❌ صَحِّح خطأً',
+                text: 'قالت ليلى إن الناتج هو: 1/3 ÷ 5 = 1/15. هل كلام ليلى صحيح؟',
+                type: 'mcq',
+                options: [
+                    'صحيحة! لأن تقسيم الثلث إلى 5 أجزاء يعطي أجزاء من 1/15',
+                    'خطأ! الناتج الصحيح هو 5/3',
+                    'خطأ! الناتج الصحيح هو 1/5',
+                    'خطأ! الناتج الصحيح هو 15'
+                ],
+                correct: 'صحيحة! لأن تقسيم الثلث إلى 5 أجزاء يعطي أجزاء من 1/15',
+                explanation: 'ليلى على حق، 1/3 ÷ 5 = 1/15.'
+            },
+            {
+                id: 18,
+                cat: 'cat-sort',
+                catName: '🧱 رتِّب وصنِّف',
+                text: 'أوجد ناتج القسمة: 1 ÷ (1/4) = ؟',
+                type: 'mcq',
+                options: ['4', '1/4', '1/2', '8'],
+                correct: '4',
+                explanation: 'الواحد الصحيح يحتوي على 4 أرباع، لذا 1 ÷ (1/4) = 4.'
+            },
+            {
+                id: 19,
+                cat: 'cat-reason',
+                catName: '💡 فكِّر وأقْنِع',
+                text: 'لدينا 3 لترات من العصير وسعة كل كوب 1/2 لتر. كم كوباً نملأ؟',
+                type: 'open',
+                key: 'نملأ 6 أكواب! لأن كل لتر واحد يحتوي على نصفين (كوبين)، وبالتالي 3 × 2 = 6 أكواب.',
+                explanation: '3 ÷ (1/2) = 6 أكواب.'
+            },
+            {
+                id: 20,
+                cat: 'cat-speed',
+                catName: '⚡ تحَدٍّ سريع',
+                text: 'ما ناتج القسمة: 2 ÷ (2/5) = ؟',
+                type: 'mcq',
+                options: ['5', '4/5', '2/5', '10'],
+                correct: '5',
+                explanation: '2 ÷ (2/5) = 2 × (5/2) = 5.'
+            }
+        ];
+
+        let classScore = 0;
+        let robotScore = 0;
+        let completedQuestions = [];
+        let currentQuestion = null;
+        let isSelecting = false;
+
+        function initGame() {
+            loadProgress();
+            renderBoard();
+            updateScores();
+        }
+
+        function startGame() {
+            playSound('fanfare');
+            document.getElementById('intro-modal').classList.remove('active');
+            setRobotExpression('neutral', 'هيا اضغطوا عليّ لنختار التحدي الأول في مختبر العصائر! 🍹');
+        }
+
+        function renderBoard() {
+            const grid = document.getElementById('board-grid');
+            grid.innerHTML = '';
+
+            QUESTION_BANK.forEach(q => {
+                const isDone = completedQuestions.includes(q.id);
+                const tile = document.createElement('div');
+                tile.className = `tile ${q.cat} ${isDone ? 'completed' : ''}`;
+                tile.id = `tile-${q.id}`;
+                tile.onclick = () => {
+                    if (!isDone && !isSelecting) {
+                        selectSpecificTile(q.id);
+                    }
+                };
+
+                let catEmoji = '❓';
+                if (q.cat === 'cat-notice') catEmoji = '🔍';
+                if (q.cat === 'cat-error') catEmoji = '❌';
+                if (q.cat === 'cat-sort') catEmoji = '🧱';
+                if (q.cat === 'cat-reason') catEmoji = '💡';
+                if (q.cat === 'cat-speed') catEmoji = '⚡';
+
+                tile.innerHTML = `
+                    <span class="num">${q.id}</span>
+                    <span class="cat-icon">${catEmoji}</span>
+                `;
+                grid.appendChild(tile);
+            });
+
+            document.getElementById('remaining-count').innerText = QUESTION_BANK.length - completedQuestions.length;
+        }
+
+        function setRobotExpression(state, speechText) {
+            const wrapper = document.getElementById('robot-wrapper');
+            const eyes = document.getElementById('robot-eyes');
+            const mouth = document.getElementById('robot-mouth');
+            const bubble = document.getElementById('speech-bubble');
+
+            if (speechText) {
+                bubble.innerHTML = speechText;
+            }
+
+            wrapper.className = 'robot-avatar-wrapper';
+
+            if (state === 'jump') {
+                wrapper.classList.add('jumping');
+                playSound('jump');
+            } else if (state === 'shocked') {
+                wrapper.classList.add('shocked');
+                eyes.innerHTML = `
+                    <text x="72" y="68" font-size="20" fill="#FF5E97">✖</text>
+                    <text x="108" y="68" font-size="20" fill="#FF5E97">✖</text>
+                `;
+                mouth.setAttribute('d', 'M 85 80 Q 100 68 115 80');
+            } else if (state === 'happy') {
+                wrapper.classList.add('happy-dance');
+                eyes.innerHTML = `
+                    <path d="M 72 65 Q 82 50 92 65" stroke="#00E676" stroke-width="4" fill="none"/>
+                    <path d="M 108 65 Q 118 50 128 65" stroke="#00E676" stroke-width="4" fill="none"/>
+                `;
+                mouth.setAttribute('d', 'M 82 72 Q 100 90 118 72');
+            } else {
+                wrapper.classList.add('idle-bounce');
+                eyes.innerHTML = `
+                    <circle cx="82" cy="62" r="12" fill="#00E676"/>
+                    <circle cx="118" cy="62" r="12" fill="#00E676"/>
+                    <circle cx="85" cy="59" r="4" fill="#FFFFFF"/>
+                    <circle cx="121" cy="59" r="4" fill="#FFFFFF"/>
+                `;
+                mouth.setAttribute('d', 'M 85 75 Q 100 83 115 75');
+            }
+        }
+
+        function robotSelectChallenge() {
+            if (isSelecting) return;
+
+            const available = QUESTION_BANK.filter(q => !completedQuestions.includes(q.id));
+
+            if (available.length === 0) {
+                showFinalResults();
+                return;
+            }
+
+            isSelecting = true;
+            setRobotExpression('jump', 'أنا أختار تحدي قسمة الكسور... 🎲');
+
+            let ticks = 0;
+            const maxTicks = 12;
+            const interval = setInterval(() => {
+                ticks++;
+                playSound('tick');
+
+                const randomTileIndex = Math.floor(Math.random() * available.length);
+                const chosenId = available[randomTileIndex].id;
+
+                document.querySelectorAll('.tile').forEach(t => t.classList.remove('active-target'));
+                const targetTile = document.getElementById(`tile-${chosenId}`);
+                if (targetTile) targetTile.classList.add('active-target');
+
+                if (ticks >= maxTicks) {
+                    clearInterval(interval);
+                    isSelecting = false;
+                    openQuestionModal(chosenId);
+                }
+            }, 100);
+        }
+
+        function selectSpecificTile(id) {
+            if (isSelecting) return;
+            document.querySelectorAll('.tile').forEach(t => t.classList.remove('active-target'));
+            const target = document.getElementById(`tile-${id}`);
+            if (target) target.classList.add('active-target');
+            openQuestionModal(id);
+        }
+
+        // دالة تحويل الكسر النصي إلى بسط ومقام منسق
+        function formatFractions(str) {
+            if (!str) return '';
+            return str.replace(/(\d+)\/(\d+)/g, '<span class="frac"><span class="num">$1</span><span class="den">$2</span></span>');
+        }
+
+        function openQuestionModal(qId) {
+            currentQuestion = QUESTION_BANK.find(q => q.id === qId);
+            if (!currentQuestion) return;
+
+            setRobotExpression('neutral', `أتحداكم في السؤال رقم (${currentQuestion.id})! 🍹🤖`);
+
+            document.getElementById('modal-cat-badge').innerText = currentQuestion.catName;
+            document.getElementById('modal-cat-badge').className = `modal-badge ${currentQuestion.cat}`;
+            document.getElementById('modal-q-num').innerText = `تحدي #${currentQuestion.id}`;
+            document.getElementById('modal-q-text').innerHTML = formatFractions(currentQuestion.text);
+
+            const optionsContainer = document.getElementById('modal-options');
+            const teacherBox = document.getElementById('teacher-box');
+
+            optionsContainer.innerHTML = '';
+
+            if (currentQuestion.type === 'mcq') {
+                teacherBox.style.display = 'none';
+                optionsContainer.style.display = 'grid';
+
+                currentQuestion.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerHTML = formatFractions(opt);
+                    btn.onclick = () => checkMCQAnswer(opt);
+                    optionsContainer.appendChild(btn);
+                });
+            } else {
+                optionsContainer.style.display = 'none';
+                teacherBox.style.display = 'block';
+                document.getElementById('teacher-key').innerHTML = `🔑 الإجابة النموذجية: ${formatFractions(currentQuestion.key)}`;
+            }
+
+            document.getElementById('question-modal').classList.add('active');
+        }
+
+        function checkMCQAnswer(selectedOpt) {
+            const isCorrect = (selectedOpt === currentQuestion.correct);
+            submitAnswer(isCorrect);
+        }
+
+        function submitAnswer(isClassCorrect) {
+            document.getElementById('question-modal').classList.remove('active');
+
+            if (!completedQuestions.includes(currentQuestion.id)) {
+                completedQuestions.push(currentQuestion.id);
+            }
+
+            if (isClassCorrect) {
+                classScore += 10;
+                playSound('correct');
+                triggerConfetti();
+                setRobotExpression('shocked', 'إجابة مذهلة! لقد هزمتموني في هذا التحدي! 😱💥');
+            } else {
+                robotScore += 10;
+                playSound('wrong');
+                setRobotExpression('happy', 'هاها! نقطة للروبوت في قسمة الكسور! 🤖👑');
+            }
+
+            saveProgress();
+            updateScores();
+            renderBoard();
+
+            setTimeout(() => {
+                if (completedQuestions.length >= QUESTION_BANK.length) {
+                    showFinalResults();
+                } else {
+                    setRobotExpression('neutral', 'اضغطوا عليّ مجدداً للتحدي التالي! 👇');
+                }
+            }, 2500);
+        }
+
+        function updateScores() {
+            document.getElementById('class-score').innerText = classScore;
+            document.getElementById('robot-score').innerText = robotScore;
+        }
+
+        function saveProgress() {
+            localStorage.setItem('robo_fraction_classScore', classScore);
+            localStorage.setItem('robo_fraction_robotScore', robotScore);
+            localStorage.setItem('robo_fraction_completed', JSON.stringify(completedQuestions));
+        }
+
+        function loadProgress() {
+            const savedClass = localStorage.getItem('robo_fraction_classScore');
+            const savedRobot = localStorage.getItem('robo_fraction_robotScore');
+            const savedComp = localStorage.getItem('robo_fraction_completed');
+
+            if (savedClass !== null) classScore = parseInt(savedClass, 10);
+            if (savedRobot !== null) robotScore = parseInt(savedRobot, 10);
+            if (savedComp !== null) completedQuestions = JSON.parse(savedComp);
+        }
+
+        function resetGame() {
+            localStorage.removeItem('robo_fraction_classScore');
+            localStorage.removeItem('robo_fraction_robotScore');
+            localStorage.removeItem('robo_fraction_completed');
+            classScore = 0;
+            robotScore = 0;
+            completedQuestions = [];
+            document.getElementById('result-modal').classList.remove('active');
+            renderBoard();
+            updateScores();
+            setRobotExpression('neutral', 'بدأنا مباراة جديدة في قسمة الكسور! اضغطوا عليّ لنبدأ! 🚀');
+        }
+
+        function showFinalResults() {
+            playSound('fanfare');
+            triggerConfetti();
+
+            document.getElementById('final-class-score').innerText = classScore;
+            document.getElementById('final-robot-score').innerText = robotScore;
+
+            const title = document.getElementById('result-title');
+            const desc = document.getElementById('result-desc');
+            const emoji = document.getElementById('result-emoji');
+
+            if (classScore > robotScore) {
+                emoji.innerText = '🏆🎉';
+                title.innerText = 'أحسنتم! الفصل هو الفائز!';
+                desc.innerText = 'لقد أثبتم أنكم أبطال قسمة الكسور ومختبر العصائر! عمل رائع يا عباقرة!';
+                setRobotExpression('shocked', 'لقد هزمتموني... أنتم أبطال قسمة الكسور! 👏');
+            } else if (robotScore > classScore) {
+                emoji.innerText = '🤖👑';
+                title.innerText = 'الروبوت العبقري هو الفائز!';
+                desc.innerText = 'حاولوا مرة أخرى وسوف تهزمون الروبوت في المرة القادمة!';
+                setRobotExpression('happy', 'هاها! أنا الروبوت الفائز في قسمة الكسور! 🤖✨');
+            } else {
+                emoji.innerText = '🌟🤝';
+                title.innerText = 'تعادل رائع!';
+                desc.innerText = 'منافسة قوية جداً! أنتم والروبوت متساوون في الإبداع والرياضيات!';
+                setRobotExpression('neutral', 'مباراة رائعة وتعادل مذهل! 🌟');
+            }
+
+            document.getElementById('result-modal').classList.add('active');
+        }
+
+        /* Canvas Confetti System */
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const pieces = [];
+            const colors = ['#00C6FF', '#FF5E97', '#FFD100', '#00E676', '#B388FF'];
+
+            for (let i = 0; i < 80; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 10 + 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedY: Math.random() * 4 + 2,
+                    speedX: Math.random() * 2 - 1,
+                    rotation: Math.random() * 360
+                });
+            }
+
+            let animationFrame;
+            let frameCount = 0;
+
+            function update() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += 4;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+                });
+
+                frameCount++;
+                if (frameCount < 150) {
+                    animationFrame = requestAnimationFrame(update);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    cancelAnimationFrame(animationFrame);
+                }
+            }
+
+            update();
+        }
+
+        window.onload = function() {
+            initGame();
+        };
+    </script>
+</body>
+</html>
