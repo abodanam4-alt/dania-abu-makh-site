@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مصنع العلب: المنشور وفرشه | موقع الأستاذة دانية أبو مخ</title>
+<meta name="description" content="عارضة هندسة للصف السادس: المنشور — أجزاؤه، تسميته حسب القاعدة، عدّ الرؤوس والأضلاع والسطوح واكتشاف النمط مع الروبوت. تُعرض في الصفحة وتُحمَّل بصيغة PowerPoint.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .deck{max-width:1000px;margin:0 auto}
+  .deck-stage{position:relative;background:#000;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;aspect-ratio:16/9}
+  .deck-stage img{width:100%;height:100%;display:block;object-fit:contain;background:#f5ffbd}
+  .deck-stage:fullscreen{border-radius:0;aspect-ratio:auto;width:100vw;height:100vh}
+  .deck-bar{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:16px}
+  .deck-bar button{font-family:inherit;font-weight:800;font-size:1rem;cursor:pointer;background:var(--card);color:var(--indigo);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:999px;padding:9px 22px}
+  .deck-bar button:hover{transform:translateY(-2px)}
+  .deck-bar .count{font-weight:900;color:var(--indigo);min-width:70px;text-align:center;direction:ltr}
+  .thumbs{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:18px}
+  .thumbs button{padding:0;border:3px solid transparent;border-radius:10px;overflow:hidden;cursor:pointer;background:none;opacity:.75}
+  .thumbs button.on{border-color:var(--indigo);opacity:1}
+  .thumbs img{width:100%;display:block}
+  @media(max-width:640px){.thumbs{grid-template-columns:repeat(5,1fr);gap:6px}.deck-bar button{padding:8px 14px}}
+  details.notes{max-width:760px;margin:22px auto 0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 20px}
+  details.notes summary{font-weight:800;color:var(--indigo);cursor:pointer}
+  details.notes li{margin:8px 0;line-height:1.7}
+  @media print{.site-header,.site-footer,.hero,.print-hide{display:none !important}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a class="brand" href="../index.html"><img class="school-logo" src="../assets/logo.jpeg" alt="شعار مدرسة الرازي"> موقع الأستاذة دانية أبو مخ</a>
+    <nav class="nav">
+      <a href="../index.html">الرئيسية</a>
+      <a href="../tarbiya/index.html">تربية السادس أ</a>
+      <a href="../math4/index.html">رياضيات الرابع</a>
+      <a href="index.html" class="active">رياضيات السادس</a>
+      <a href="../science/index.html">العلوم</a>
+      <a href="../computing/index.html">الحوسبة</a>
+      <a href="../quizzes/index.html">الاختبارات</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero hero-sm">
+  <div class="starfield"></div>
+  <div class="container hero-inner">
+    <span class="hero-eyebrow">📦 هندسة — الصف السادس</span>
+    <h1>مصنع العلب: <span>المنشور وفرشه</span></h1>
+    <p class="lead">من المجسم إلى النمط: نلاحظ، نعدّ، ونفسّر مع روبوت المصنع.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">🖥️ العارضة</span>
+      <h2>عارضة الدرس — 10 شرائح</h2>
+      <p>تنقّلي بالأزرار أو بالأسهم (⟵ التالي، ⟶ السابق)، أو افتحيها بملء الشاشة للعرض في الصف.</p>
+    </div>
+    <div class="deck" id="deck">
+      <div class="deck-stage" id="stage"><img id="slide" src="images/prism-slides/s1.jpg" alt="الشريحة 1"></div>
+      <div class="deck-bar">
+        <button type="button" id="prev">⟶ السابقة</button>
+        <span class="count" id="count">1 / 10</span>
+        <button type="button" id="next">التالية ⟵</button>
+        <button type="button" id="full">⛶ ملء الشاشة</button>
+      </div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+
+    <details class="notes">
+      <summary>ملاحظات المعلمة (من العارضة)</summary>
+      <ul>
+        <li><b>الشريحة 2:</b> استمعي إلى توقعات الطلاب دون تأكيد أي إجابة. يبقى سؤال الفرش مفتوحًا.</li>
+        <li><b>الشريحة 8:</b> اتركي الخانات فارغة ليتوقع الطلاب الأعداد قبل الكشف. اطلبي تفسيرًا قبل الانتقال إلى جدول الحل.</li>
+      </ul>
+    </details>
+  </div>
+</section>
+
+<section class="section section-alt print-hide">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">📥 للتحميل</span>
+      <h2>حمّلي العارضة</h2>
+    </div>
+    <a class="download-card" href="files/prism-factory.pptx" download="مصنع العلب - المنشور وفرشه.pptx" style="max-width:620px;margin:0 auto">
+      <div class="ic">📊</div>
+      <div><h4>العارضة بصيغة PowerPoint</h4><p>10 شرائح قابلة للتعديل، مع ملاحظات المعلمة</p></div>
+    </a>
+    <p style="text-align:center;margin-top:22px"><a href="index.html" style="color:var(--indigo);font-weight:800;text-decoration:underline">⟵ العودة لرياضيات السادس</a></p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-logos"><img src="../assets/signature.webp" alt="توقيع المعلمة دانية أبو مخ"></div>
+    الأستاذة دانية أبو مخ • معلّمة رياضيات
+  </div>
+</footer>
+
+<script>
+(function(){
+  var N=10, i=1, img=document.getElementById('slide'), cnt=document.getElementById('count'), th=document.getElementById('thumbs'), stage=document.getElementById('stage');
+  var titles=['الغلاف','تحدي المصنع','أهداف التعلم','نلاحظ المجسم','ما الذي يجعل المجسم منشورًا؟','نصنف حسب القاعدة','اكتشاف النمط','نتوقع قبل الكشف','نقارن توقعاتنا','نفسر النمط'];
+  for(var k=1;k<=N;k++){(function(k){var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','الشريحة '+k+': '+titles[k-1]);b.innerHTML='<img loading="lazy" src="images/prism-slides/s'+k+'.jpg" alt="">';b.onclick=function(){go(k)};th.appendChild(b)})(k)}
+  function go(n){i=Math.max(1,Math.min(N,n));img.src='images/prism-slides/s'+i+'.jpg';img.alt='الشريحة '+i+': '+titles[i-1];cnt.textContent=i+' / '+N;[].forEach.call(th.children,function(b,j){b.className=(j+1===i)?'on':''});}
+  document.getElementById('next').onclick=function(){go(i+1)};
+  document.getElementById('prev').onclick=function(){go(i-1)};
+  document.getElementById('full').onclick=function(){try{if(document.fullscreenElement){document.exitFullscreen()}else{stage.requestFullscreen()}}catch(e){}};
+  img.onclick=function(){go(i+1)};
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='PageDown'||e.key===' '){go(i+1);if(e.key===' ')e.preventDefault()}else if(e.key==='ArrowRight'||e.key==='PageUp'){go(i-1)}});
+  go(1);
+})();
+</script>
+<script src="../assets/effects.js" defer></script>
+</body>
+</html>
