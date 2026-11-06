@@ -58,7 +58,7 @@
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">🖥️ العارضة</span>
-      <h2>عارضة الدرس — 10 شرائح</h2>
+      <h2>عارضة الدرس — 15 شريحة</h2>
       <p>تنقّلي بالأزرار أو بالأسهم (⟵ التالي، ⟶ السابق)، أو افتحيها بملء الشاشة للعرض في الصف.</p>
     </div>
     <div class="deck" id="deck">
@@ -90,7 +90,7 @@
     </div>
     <a class="download-card" href="files/prism-factory.pptx" download="مصنع العلب - المنشور وفرشه.pptx" style="max-width:620px;margin:0 auto">
       <div class="ic">📊</div>
-      <div><h4>العارضة بصيغة PowerPoint</h4><p>10 شرائح قابلة للتعديل، مع ملاحظات المعلمة</p></div>
+      <div><h4>العارضة بصيغة PowerPoint</h4><p>15 شريحة قابلة للتعديل، مع ملاحظات المعلمة</p></div>
     </a>
     <p style="text-align:center;margin-top:22px"><a href="index.html" style="color:var(--indigo);font-weight:800;text-decoration:underline">⟵ العودة لرياضيات السادس</a></p>
   </div>
@@ -105,8 +105,8 @@
 
 <script>
 (function(){
-  var N=10, i=1, img=document.getElementById('slide'), cnt=document.getElementById('count'), th=document.getElementById('thumbs'), stage=document.getElementById('stage');
-  var titles=['الغلاف','تحدي المصنع','أهداف التعلم','نلاحظ المجسم','ما الذي يجعل المجسم منشورًا؟','نصنف حسب القاعدة','اكتشاف النمط','نتوقع قبل الكشف','نقارن توقعاتنا','نفسر النمط'];
+  var N=15, i=1, img=document.getElementById('slide'), cnt=document.getElementById('count'), th=document.getElementById('thumbs'), stage=document.getElementById('stage');
+  var titles=['الغلاف','تحدي المصنع','أهداف التعلم','نلاحظ المجسم','ما الذي يجعل المجسم منشورًا؟','نصنف حسب القاعدة','اكتشاف النمط','نتوقع قبل الكشف','نقارن توقعاتنا','نفسر النمط','الأضلاع: ثلاثة أضعاف القاعدة','السطوح: قاعدتان وسطوح جانبية','نلخص النمط','متى يكون الفرش صالحًا للطي؟','نختبر الفرش'];
   for(var k=1;k<=N;k++){(function(k){var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','الشريحة '+k+': '+titles[k-1]);b.innerHTML='<img loading="lazy" src="images/prism-slides/s'+k+'.jpg" alt="">';b.onclick=function(){go(k)};th.appendChild(b)})(k)}
   function go(n){i=Math.max(1,Math.min(N,n));img.src='images/prism-slides/s'+i+'.jpg';img.alt='الشريحة '+i+': '+titles[i-1];cnt.textContent=i+' / '+N;[].forEach.call(th.children,function(b,j){b.className=(j+1===i)?'on':''});}
   document.getElementById('next').onclick=function(){go(i+1)};
