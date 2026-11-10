@@ -9,6 +9,22 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
+<style>
+  .rbox{max-width:560px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 26px;text-align:center}
+  .rbox label{display:block;font-weight:800;color:var(--indigo);margin:14px 0 6px;text-align:right}
+  .rbox select,.rbox input{width:100%;padding:13px;border-radius:12px;border:1.5px solid var(--line);font:inherit;font-size:1.1rem;text-align:center;background:#fff;box-sizing:border-box}
+  .rbox input{letter-spacing:.2em;direction:ltr}
+  .rbox button{margin-top:18px;width:100%;padding:14px;border:none;border-radius:12px;background:var(--indigo);color:#fff;font:inherit;font-weight:800;font-size:1.05rem;cursor:pointer}
+  .rbox button:disabled{opacity:.6;cursor:wait}
+  .rmsg{margin-top:14px;font-weight:800;min-height:1.4em}
+  .rmsg.err{color:#c0392b}
+  .rres{max-width:900px;margin:26px auto 0;display:none}
+  .rres h3{text-align:center;color:var(--indigo);margin:0 0 14px}
+  .rres .acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+  .rres .acts a{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:999px;padding:10px 24px;font-weight:800;color:var(--indigo);text-decoration:none}
+  .rres iframe{width:100%;height:78vh;min-height:520px;border:1px solid var(--line);border-radius:12px;background:#fff}
+  @media print{.site-header,.site-footer,.hero,.print-hide{display:none !important}}
+</style>
 </head>
 <body>
 
@@ -36,7 +52,31 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section" id="my-report">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">🔐 تقريري الفردي</span>
+      <h2>اكتب رمزك لتفتح تقريرك</h2>
+      <p>اختر صفك، واكتب اسمك الأول (فقط) والرمز الخاص بك (رقم الطالب الذي استلمته). التقرير شخصي، فلا تشاركه مع غيرك.</p>
+    </div>
+    <form class="rbox" id="rform" autocomplete="off">
+      <label for="cls">الصف</label>
+      <select id="cls"><option value="6-1">السادس 1</option><option value="6-3">السادس 3</option></select>
+      <label for="fname">الاسم الأول</label>
+      <input id="fname" type="text" maxlength="30" placeholder="مثال: محمد" required style="letter-spacing:0;direction:rtl">
+      <label for="code">رمز الطالب</label>
+      <input id="code" type="text" inputmode="numeric" maxlength="12" placeholder="••••" required>
+      <button type="submit" id="rbtn">افتح تقريري</button>
+      <div class="rmsg" id="rmsg" role="status"></div>
+    </form>
+    <div class="rres" id="rres">
+      <h3 id="rname"></h3>
+      <div class="acts"><a href="#" id="ropen" target="_blank" rel="noopener">📄 فتح التقرير في صفحة جديدة</a><a href="#" id="rdl">⬇️ تحميل التقرير (PDF)</a></div>
+      <iframe id="rframe" title="التقرير الفردي"></iframe>
+    </div>
+  </div>
+</section>
+<section class="section section-alt" id="models">
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">📥 للتحميل</span>
@@ -61,11 +101,6 @@
     </a>
   </div>
 </section>
-<div class="coming-soon">
-  <div class="ic">🔐</div>
-  <h2>تقريري الفردي — قريبًا</h2>
-  <p>رح يكون لكل طالب رمز خاص فيه يفتح تقريره الشخصي عن نتيجته في المسح الصفي.</p>
-</div>
 <footer class="site-footer">
   <div class="container">
     <div class="footer-logos"><img src="../assets/signature.webp" alt="توقيع المعلمة دانية أبو مخ"></div>
@@ -73,6 +108,43 @@
   </div>
 </footer>
 
+<script>
+(function(){
+  var form=document.getElementById("rform"),msg=document.getElementById("rmsg"),btn=document.getElementById("rbtn"),res=document.getElementById("rres"),fails=0,lastUrl=null;
+  function ar2en(s){return s.replace(/[٠-٩]/g,function(d){return String(d.charCodeAt(0)-0x660)}).replace(/[۰-۹]/g,function(d){return String(d.charCodeAt(0)-0x6F0)}).replace(/\s+/g,"")}
+  function nm(s){return s.replace(/[ً-ْـ]/g,"").replace(/[أإآٱ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/\s+/g,"").toLowerCase()}
+  function hex(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ("0"+x.toString(16)).slice(-2)}).join("")}
+  function say(t,err){msg.textContent=t;msg.className="rmsg"+(err?" err":"")}
+  form.addEventListener("submit",async function(e){
+    e.preventDefault(); res.style.display="none";
+    var code=ar2en(document.getElementById("code").value),cls=document.getElementById("cls").value;
+    if(!code||!nm(document.getElementById("fname").value)){say("اكتب الاسم الأول والرمز.",true);return}
+    if(!window.crypto||!crypto.subtle){say("هذا المتصفح لا يدعم فتح التقارير. جرّب متصفحًا حديثًا.",true);return}
+    btn.disabled=true; say("جارٍ البحث عن تقريرك…");
+    try{
+      if(fails>=5){await new Promise(function(r){setTimeout(r,Math.min(30000,(fails-4)*3000))})}
+      var enc=new TextEncoder(),km=await crypto.subtle.importKey("raw",enc.encode(code+"|"+nm(document.getElementById("fname").value)),"PBKDF2",false,["deriveBits"]);
+      var bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:enc.encode("almadrasa-reports-v1|"+cls),iterations:600000,hash:"SHA-256"},km,384);
+      var id=hex(bits.slice(0,16)),key=await crypto.subtle.importKey("raw",bits.slice(16,48),"AES-GCM",false,["decrypt"]);
+      var r=await fetch("data/"+id+".bin",{cache:"no-store"});
+      if(!r.ok){throw new Error("nf")}
+      var buf=new Uint8Array(await r.arrayBuffer());
+      if(buf.length<40||(r.headers.get("content-type")||"").indexOf("text/html")===0){throw new Error("nf")}
+      var plain=new Uint8Array(await crypto.subtle.decrypt({name:"AES-GCM",iv:buf.slice(0,12)},key,buf.slice(12)));
+      var n=plain[0],name=new TextDecoder().decode(plain.slice(1,1+n)),pdf=plain.slice(1+n);
+      if(lastUrl)URL.revokeObjectURL(lastUrl);
+      lastUrl=URL.createObjectURL(new Blob([pdf],{type:"application/pdf"}));
+      document.getElementById("rname").textContent="تقرير "+name;
+      document.getElementById("ropen").href=lastUrl;
+      var dl=document.getElementById("rdl");dl.href=lastUrl;dl.setAttribute("download","تقرير "+name+".pdf");
+      document.getElementById("rframe").src=lastUrl;
+      res.style.display="block";fails=0;say("");
+      res.scrollIntoView({behavior:"smooth",block:"start"});
+    }catch(err){fails++;say("لم نجد تقريرًا بهذه البيانات. تأكّد من الصف والاسم الأول والرمز وحاول مرة أخرى.",true)}
+    btn.disabled=false;
+  });
+})();
+</script>
 <script src="../assets/effects.js" defer></script>
 </body>
 </html>
