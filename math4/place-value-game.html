@@ -105,11 +105,11 @@
     <div id="start-screen" class="card start-card">
       <div class="ic">🚀</div>
       <h2>جاهز نلعب؟</h2>
-      <p>4 مستويات تبدأ سهلة وتصعب تدريجيًا. اجمعي أكبر عدد من النجوم!</p>
+      <p>4 مستويات تبدأ سهلة وتصعب تدريجيًا. اجمع أكبر عدد من النجوم!</p>
       <ul class="rules-list">
-        <li>⭐ <span><b>المستوى 1 و2:</b> العدد الذي يسبق أو يأتي بعد عدد معيّن — انتبهي لحالات التبديل مثل 59999 → 60000.</span></li>
-        <li>⭐ <span><b>المستوى 3 و4:</b> جمع وطرح بدون تبديل — احسبي شفهيًا رقمًا رقمًا.</span></li>
-        <li>⭐ <span>لكِ محاولتان لكل سؤال، وبعدها بنكمل مع الحل الصحيح — المهم نتعلم!</span></li>
+        <li>⭐ <span><b>المستوى 1 و2:</b> العدد الذي يسبق أو يأتي بعد عدد معيّن — انتبه لحالات التبديل مثل 59999 → 60000.</span></li>
+        <li>⭐ <span><b>المستوى 3 و4:</b> جمع وطرح بدون تبديل — احسب شفهيًا رقمًا رقمًا.</span></li>
+        <li>⭐ <span>لك محاولتان لكل سؤال، وبعدها بنكمل مع الحل الصحيح — المهم نتعلم!</span></li>
       </ul>
       <button class="btn btn-gold" id="start-btn" style="font-size:1.05rem;padding:14px 34px">ابدأ اللعب 🎯</button>
     </div>
@@ -118,7 +118,7 @@
     <div id="question-screen" class="card hidden">
       <span id="level-tag" class="level-tag mint">المستوى 1 — العدد السابق والتالي</span>
       <div class="q-text" id="q-text">...</div>
-      <div class="q-sub" id="q-sub">اكتبي الجواب واضغطي إنتر أو تحقّق</div>
+      <div class="q-sub" id="q-sub">اكتب الجواب واضغط إنتر أو تحقّق</div>
       <input type="text" inputmode="numeric" id="q-input" class="q-input" placeholder="؟" autocomplete="off">
       <div class="q-actions">
         <button class="btn btn-gold" id="check-btn">تحقّق ✓</button>
@@ -130,7 +130,7 @@
     <!-- Level complete overlay -->
     <div id="level-complete" class="overlay hidden">
       <div class="big-ic">🎉</div>
-      <h2 id="lc-title">أحسنت! أنهيتِ المستوى</h2>
+      <h2 id="lc-title">أحسنت! أنهيت المستوى</h2>
       <div class="stars-row" id="lc-stars"></div>
       <p id="lc-sub" style="color:var(--ink-soft)"></p>
       <button class="btn btn-gold" id="lc-next-btn" style="font-size:1.02rem;padding:12px 30px;margin-top:10px">المستوى التالي ⟵</button>
@@ -139,7 +139,7 @@
     <!-- Final screen -->
     <div id="final-screen" class="overlay hidden">
       <div class="big-ic">🏆</div>
-      <h2 id="final-title">لقد أنهيتِ اللعبة!</h2>
+      <h2 id="final-title">لقد أنهيت اللعبة!</h2>
       <div class="stars-row" id="final-stars-visual" style="font-size:2.6rem">⭐</div>
       <p id="final-score" style="font-size:1.2rem;font-weight:800;color:var(--navy-950);margin:10px 0"></p>
       <p id="final-msg" style="color:var(--ink-soft);margin-bottom:18px"></p>
@@ -171,7 +171,7 @@
     const isNext = Math.random() < 0.5;
     return {
       question: isNext ? `ما العدد الذي يأتي بعد العدد ${fmt(n)}؟` : `ما العدد الذي يأتي قبل العدد ${fmt(n)}؟`,
-      sub: 'فكّري: خانة الآحاد فقط تتغيّر',
+      sub: 'فكّر: خانة الآحاد فقط تتغيّر',
       answer: isNext ? n + 1 : n - 1,
       dir: 'rtl'
     };
@@ -184,7 +184,7 @@
       const n = m * 10000 - 1;
       return {
         question: `ما العدد الذي يأتي بعد العدد ${fmt(n)}؟`,
-        sub: 'انتبهي! كل الخانات ممكن تتبدّل دفعة واحدة',
+        sub: 'انتبه! كل الخانات ممكن تتبدّل دفعة واحدة',
         answer: n + 1,
         dir: 'rtl'
       };
@@ -193,7 +193,7 @@
     const n = m * 10000;
     return {
       question: `ما العدد الذي يأتي قبل العدد ${fmt(n)}؟`,
-      sub: 'انتبهي! كل الخانات ممكن تتبدّل دفعة واحدة',
+      sub: 'انتبه! كل الخانات ممكن تتبدّل دفعة واحدة',
       answer: n - 1,
       dir: 'rtl'
     };
@@ -226,7 +226,7 @@
     const answer = isAdd ? A + B : A - B;
     return {
       question: `${fmt(A)} ${isAdd ? '+' : '−'} ${fmt(B)} = ?`,
-      sub: isAdd ? 'اجمعي كل خانة على حدة — بدون تبديل' : 'اطرحي كل خانة على حدة — بدون تبديل',
+      sub: isAdd ? 'اجمع كل خانة على حدة — بدون تبديل' : 'اطرح كل خانة على حدة — بدون تبديل',
       answer: answer,
       dir: 'ltr'
     };
@@ -234,7 +234,7 @@
 
   const LEVELS = [
     { name: 'العدد السابق والتالي', tag: 'مستوى 1 — العدد السابق والتالي', color: 'mint', icon: '🔢', gen: genSimplePrevNext, count: 5 },
-    { name: 'العدد السابق والتالي (تبديل)', tag: 'مستوى 2 — انتبهي للتبديل!', color: 'gold', icon: '🔁', gen: genTrickyPrevNext, count: 5 },
+    { name: 'العدد السابق والتالي (تبديل)', tag: 'مستوى 2 — انتبه للتبديل!', color: 'gold', icon: '🔁', gen: genTrickyPrevNext, count: 5 },
     { name: 'جمع وطرح بدون تبديل', tag: 'مستوى 3 — جمع وطرح (5 أرقام)', color: 'indigo', icon: '➕', gen: function () { return genNoRegroup(5); }, count: 5 },
     { name: 'تحدي الأرقام الكبيرة', tag: 'مستوى 4 — تحدي! (6 أرقام)', color: 'coral', icon: '🏆', gen: function () { return genNoRegroup(6); }, count: 5 }
   ];
@@ -326,7 +326,7 @@
       attempts++;
       if (attempts < 2) {
         qInput.classList.add('bad');
-        feedback.textContent = '🤔 قريب! جرّبي مرة أخرى';
+        feedback.textContent = '🤔 قريب! جرّب مرة أخرى';
         feedback.className = 'feedback bad';
         qInput.select();
       } else {
@@ -345,7 +345,7 @@
 
   function showLevelComplete() {
     const lit = levelStars;
-    document.getElementById('lc-title').textContent = '🎉 أحسنت! أنهيتِ ' + LEVELS[levelIndex].name;
+    document.getElementById('lc-title').textContent = '🎉 أحسنت! أنهيت ' + LEVELS[levelIndex].name;
     const starsRow = document.getElementById('lc-stars');
     starsRow.innerHTML = '';
     for (let i = 0; i < 5; i++) {
@@ -354,7 +354,7 @@
       if (i < lit) s.classList.add('lit');
       starsRow.appendChild(s);
     }
-    document.getElementById('lc-sub').textContent = 'حصلتِ على ' + lit + ' من 5 نجوم في هذا المستوى.';
+    document.getElementById('lc-sub').textContent = 'حصلت على ' + lit + ' من 5 نجوم في هذا المستوى.';
     const btn = document.getElementById('lc-next-btn');
     btn.textContent = (levelIndex < LEVELS.length - 1) ? 'المستوى التالي ⟵' : 'إنهاء اللعبة 🏁';
     questionScreen.classList.add('hidden');
@@ -365,9 +365,9 @@
   function showFinal() {
     const pct = totalStars / 20;
     let msg;
-    if (pct >= 0.9) msg = '🌟 مذهل! أنتِ بطلة/بطل الأعداد بكل جدارة!';
-    else if (pct >= 0.6) msg = '🎉 عمل رائع! استمري بالتمرين لتصلي للنجوم الكاملة.';
-    else msg = '💪 بداية جيدة! جرّبي مرة أخرى وستحصلين على نجوم أكثر.';
+    if (pct >= 0.9) msg = '🌟 مذهل! أنت بطل الأعداد بكل جدارة!';
+    else if (pct >= 0.6) msg = '🎉 عمل رائع! استمر بالتمرين لتصل للنجوم الكاملة.';
+    else msg = '💪 بداية جيدة! جرّب مرة أخرى وستحصل على نجوم أكثر.';
     document.getElementById('final-score').textContent = '⭐ ' + totalStars + ' / 20 نجمة';
     document.getElementById('final-msg').textContent = msg;
     topbar.classList.add('hidden');

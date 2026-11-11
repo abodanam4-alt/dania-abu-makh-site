@@ -95,7 +95,7 @@
     </div>
 
     <div class="board" id="board" style="--n:3"></div>
-    <p class="hint" id="hint">اضغطي على الخانة عندما يقول أحدنا «حدث لي هذا!» — ويشاركنا بإيجاز تجربته.</p>
+    <p class="hint" id="hint">اضغط على الخانة عندما يقول أحدنا «حدث لي هذا!» — ويشاركنا بإيجاز تجربته.</p>
   </div>
 </section>
 
@@ -232,7 +232,7 @@
 
   function onTile(i, el) {
     if (editMode) {
-      var v = window.prompt('اكتبي العبارة الجديدة لهذه الخانة:', tiles[i]);
+      var v = window.prompt('اكتب العبارة الجديدة لهذه الخانة:', tiles[i]);
       if (v && v.trim()) { tiles[i] = v.trim(); render(); }
       return;
     }
@@ -295,7 +295,7 @@
     editMode = !editMode;
     this.classList.toggle('on', editMode);
     boardEl.classList.toggle('edit-mode', editMode);
-    document.getElementById('hint').textContent = editMode ? 'وضع التعديل: اضغطي على أي خانة لتغيير عبارتها.' : 'اضغطي على الخانة عندما يقول أحدنا «حدث لي هذا!» — ويشاركنا بإيجاز تجربته.';
+    document.getElementById('hint').textContent = editMode ? 'وضع التعديل: اضغط على أي خانة لتغيير عبارتها.' : 'اضغط على الخانة عندما يقول أحدنا «حدث لي هذا!» — ويشاركنا بإيجاز تجربته.';
   });
   Array.prototype.forEach.call(document.querySelectorAll('[data-size]'), function (b) {
     b.addEventListener('click', function () {

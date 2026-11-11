@@ -131,22 +131,22 @@
     <!-- Start screen -->
     <div id="start-screen" class="card start-card">
       <div class="ic">🗺️</div>
-      <h2>هل أنتِ مستعدة للرحلة؟</h2>
+      <h2>هل أنت مستعد للرحلة؟</h2>
       <p>6 محطات في عالم الأعداد، تبدأ سهلة وتنتهي بتحدٍّ كبير. كل جواب صحيح = نجمة وخطوة للأمام!</p>
       <ul class="rules-list">
         <li>🍀 <span><b>قواسم الأعداد:</b> كم عددًا يقسم الرقم بدون باقٍ؟</span></li>
-        <li>🔍 <span><b>الأعداد الأولية:</b> احذري! بعض الأعداد تبدو أولية وما هي.</span></li>
+        <li>🔍 <span><b>الأعداد الأولية:</b> احذر! بعض الأعداد تبدو أولية وما هي.</span></li>
         <li>🌊 <span><b>المضاعفات:</b> والمضاعف المشترك الأصغر لعددين معًا.</span></li>
-        <li>🔥 <span>جاوبي صح من أول مرة عدة مرات متتالية وشوفي "المتتالية" تكبر!</span></li>
+        <li>🔥 <span>جاوب صح من أول مرة عدة مرات متتالية وشوف "المتتالية" تكبر!</span></li>
       </ul>
-      <button class="btn btn-gold" id="start-btn" style="font-size:1.05rem;padding:14px 34px">ابدئي المغامرة 🚀</button>
+      <button class="btn btn-gold" id="start-btn" style="font-size:1.05rem;padding:14px 34px">ابدأ المغامرة 🚀</button>
     </div>
 
     <!-- Question screen -->
     <div id="question-screen" class="card hidden">
       <span id="level-tag" class="level-tag mint">المحطة 1 — قواسم الأعداد</span>
       <div class="q-text" id="q-text">...</div>
-      <div class="q-sub" id="q-sub">اكتبي الجواب واضغطي إنتر أو تحقّق</div>
+      <div class="q-sub" id="q-sub">اكتب الجواب واضغط إنتر أو تحقّق</div>
 
       <div id="number-mode">
         <input type="text" inputmode="numeric" id="q-input" class="q-input" placeholder="؟" autocomplete="off">
@@ -169,7 +169,7 @@
     <!-- Level complete overlay -->
     <div id="level-complete" class="overlay hidden">
       <div class="big-ic">🎉</div>
-      <h2 id="lc-title">أحسنت! أنهيتِ المحطة</h2>
+      <h2 id="lc-title">أحسنت! أنهيت المحطة</h2>
       <div class="stars-row" id="lc-stars"></div>
       <p id="lc-sub" style="color:var(--ink-soft)"></p>
       <button class="btn btn-gold" id="lc-next-btn" style="font-size:1.02rem;padding:12px 30px;margin-top:10px">المحطة التالية ⟵</button>
@@ -178,11 +178,11 @@
     <!-- Final screen -->
     <div id="final-screen" class="overlay hidden">
       <div class="big-ic">🏆</div>
-      <h2>وصلتِ لنهاية الرحلة!</h2>
+      <h2>وصلت لنهاية الرحلة!</h2>
       <div class="rank-badge" id="rank-badge"></div>
       <p id="final-score" style="font-size:1.2rem;font-weight:800;color:var(--navy-950);margin:10px 0"></p>
       <p id="final-msg" style="color:var(--ink-soft);margin-bottom:18px"></p>
-      <button class="btn btn-gold" id="restart-btn" style="font-size:1.02rem;padding:12px 30px">🔁 ابدئي رحلة جديدة</button>
+      <button class="btn btn-gold" id="restart-btn" style="font-size:1.02rem;padding:12px 30px">🔁 ابدأ رحلة جديدة</button>
     </div>
 
   </div>
@@ -223,7 +223,7 @@
     return {
       mode: 'number',
       question: `كم قاسمًا (عاملًا) للعدد ${n}؟`,
-      sub: 'عدّي كل الأعداد التي تقسم العدد بدون باقٍ (لا تنسي 1 والعدد نفسه)',
+      sub: 'عدّ كل الأعداد التي تقسم العدد بدون باقٍ (لا تنسَ 1 والعدد نفسه)',
       answer: divisorCount(n)
     };
   }
@@ -253,8 +253,8 @@
     const idx = randInt(3, 9);
     return {
       mode: 'number',
-      question: `أوجدي المضاعف رقم ${idx} للعدد ${n}`,
-      sub: `اضربي: ${n} × ${idx}`,
+      question: `أوجد المضاعف رقم ${idx} للعدد ${n}`,
+      sub: `اضرب: ${n} × ${idx}`,
       answer: n * idx
     };
   }
@@ -268,14 +268,14 @@
       return {
         mode: 'number',
         question: `ما أصغر قاسم للعدد ${n} أكبر من 1؟`,
-        sub: 'ابحثي عن أصغر عدد (غير 1) يقسم العدد بدون باقٍ',
+        sub: 'ابحث عن أصغر عدد (غير 1) يقسم العدد بدون باقٍ',
         answer: smallestPrimeFactor(n)
       };
     }
     return {
       mode: 'number',
       question: `ما أكبر قاسم للعدد ${n} غير العدد نفسه؟`,
-      sub: 'قسّمي العدد على أصغر قاسم له (غير 1) لتحصلي عليه',
+      sub: 'قسّم العدد على أصغر قاسم له (غير 1) لتحصل عليه',
       answer: n / smallestPrimeFactor(n)
     };
   }
@@ -466,7 +466,7 @@
       if (attempts < 2) {
         qInput.classList.add('bad');
         feedback.className = 'feedback bad';
-        feedback.textContent = '🤔 قريب! جرّبي مرة أخرى';
+        feedback.textContent = '🤔 قريب! جرّب مرة أخرى';
         qInput.select();
       } else {
         qInput.classList.remove('bad');
@@ -494,7 +494,7 @@
       btnEl.disabled = true;
       if (attempts < 2) {
         feedback.className = 'feedback bad';
-        feedback.textContent = '🤔 قريب! جرّبي الخيار الآخر';
+        feedback.textContent = '🤔 قريب! جرّب الخيار الآخر';
       } else {
         buttons.forEach(function (b) { b.disabled = true; if (currentQ.choices.find(c => c.value === currentQ.answer).label === b.textContent) b.classList.add('correct'); });
         onWrongFinal(null);
@@ -525,7 +525,7 @@
 
   function showLevelComplete() {
     const lit = levelStars;
-    document.getElementById('lc-title').textContent = '🎉 أحسنت! أنهيتِ ' + LEVELS[levelIndex].name;
+    document.getElementById('lc-title').textContent = '🎉 أحسنت! أنهيت ' + LEVELS[levelIndex].name;
     const starsRow = document.getElementById('lc-stars');
     starsRow.innerHTML = '';
     for (let i = 0; i < 5; i++) {
@@ -534,7 +534,7 @@
       if (i < lit) s.classList.add('lit');
       starsRow.appendChild(s);
     }
-    document.getElementById('lc-sub').textContent = 'حصلتِ على ' + lit + ' من 5 نجوم في هذه المحطة.';
+    document.getElementById('lc-sub').textContent = 'حصلت على ' + lit + ' من 5 نجوم في هذه المحطة.';
     const btn = document.getElementById('lc-next-btn');
     btn.textContent = (levelIndex < LEVELS.length - 1) ? 'المحطة التالية ⟵' : 'إنهاء الرحلة 🏁';
     questionScreen.classList.add('hidden');
@@ -545,9 +545,9 @@
   function showFinal() {
     const pct = totalStars / 30;
     let rank, msg;
-    if (pct >= 0.9) { rank = '🥇 خبيرة الأعداد'; msg = '🌟 أداء استثنائي! أتقنتِ القواسم والمضاعفات والأعداد الأولية.'; }
-    else if (pct >= 0.65) { rank = '🥈 مستكشفة واعدة'; msg = '🎉 عمل رائع! كمان شوي تمرين وبتوصلي للمستوى الذهبي.'; }
-    else { rank = '🥉 مستكشفة مبتدئة'; msg = '💪 بداية جيدة! جرّبي الرحلة مرة أخرى وشوفي شو رح تحققي.'; }
+    if (pct >= 0.9) { rank = '🥇 خبيرة الأعداد'; msg = '🌟 أداء استثنائي! أتقنت القواسم والمضاعفات والأعداد الأولية.'; }
+    else if (pct >= 0.65) { rank = '🥈 مستكشفة واعدة'; msg = '🎉 عمل رائع! كمان شوي تمرين وبتوصل للمستوى الذهبي.'; }
+    else { rank = '🥉 مستكشفة مبتدئة'; msg = '💪 بداية جيدة! جرّب الرحلة مرة أخرى وشوف شو رح تحقق.'; }
     document.getElementById('rank-badge').textContent = rank;
     document.getElementById('final-score').textContent = '⭐ ' + totalStars + ' / 30 نجمة';
     document.getElementById('final-msg').textContent = msg;

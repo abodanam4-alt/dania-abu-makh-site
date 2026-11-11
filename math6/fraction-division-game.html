@@ -134,10 +134,10 @@
       <ul class="rules-list">
         <li>🧪 <span><b>نوزّع:</b> كسر من اللتر ÷ عدد من الأطفال — كم يحصل كل طفل؟</span></li>
         <li>🥤 <span><b>نملأ:</b> عدد من اللترات ÷ سعة الكوب (كسر) — كم كوبًا نملأ؟</span></li>
-        <li>💡 <span>زر «ارسم لي» يُظهر رسمًا يساعدك. جرّبي أولًا بدونه لتحصلي على «متتالية» 🔥</span></li>
-        <li>✅ <span>لكِ محاولتان لكل سؤال. الناتج غير المختزل مقبول، لكننا نذكّرك بالاختزال.</span></li>
+        <li>💡 <span>زر «ارسم لي» يُظهر رسمًا يساعدك. جرّب أولًا بدونه لتحصل على «متتالية» 🔥</span></li>
+        <li>✅ <span>لك محاولتان لكل سؤال. الناتج غير المختزل مقبول، لكننا نذكّرك بالاختزال.</span></li>
       </ul>
-      <button class="btn btn-gold" id="start-btn" style="font-size:1.05rem;padding:14px 34px">ابدئي التجربة 🚀</button>
+      <button class="btn btn-gold" id="start-btn" style="font-size:1.05rem;padding:14px 34px">ابدأ التجربة 🚀</button>
     </div>
 
     <div id="question-screen" class="card hidden">
@@ -179,7 +179,7 @@
 
     <div id="final-screen" class="overlay hidden">
       <div class="big-ic">🏆</div>
-      <h2>أنهيتِ تجارب المختبر!</h2>
+      <h2>أنهيت تجارب المختبر!</h2>
       <div class="rank-badge" id="rank-badge"></div>
       <p id="final-score" style="font-size:1.2rem;font-weight:800;color:var(--navy-950);margin:10px 0"></p>
       <p id="final-msg" style="color:var(--ink-soft);margin-bottom:18px"></p>
@@ -231,8 +231,8 @@
     var k = pick([2, 3]), m = ri(1, 2), n = k * m, d = ri(n + 1, 10);
     return { key: 'D1:' + n + '/' + d + ':' + k, mode: 'frac', unit: 'لتر',
       html: 'لدينا ' + F(n, d) + ' لتر عصير نوزعه على ' + kidsText(k) + ' بالتساوي. كم يحصل كل طفل؟',
-      sub: 'اكتبي نصيب كل طفل ككسر', answer: [m, d], viz: vizDistribute(n, d, k),
-      hint: 'وزّعي الأجزاء الملوّنة (' + n + ') على ' + kidsText(k) + ': كل طفل يأخذ ' + m + ' من الأجزاء.', meta: { t: 'dist', n: n, d: d, k: k } };
+      sub: 'اكتب نصيب كل طفل ككسر', answer: [m, d], viz: vizDistribute(n, d, k),
+      hint: 'وزّع الأجزاء الملوّنة (' + n + ') على ' + kidsText(k) + ': كل طفل يأخذ ' + m + ' من الأجزاء.', meta: { t: 'dist', n: n, d: d, k: k } };
   }
   function genCups() { // L ÷ 1/d
     var L = ri(2, 5), d = pick([2, 3, 4, 5, 6, 8]);
@@ -246,7 +246,7 @@
     if (Math.random() < 0.45) { var q = ri(1, 3); a = k * q; if (a >= b) { b = a + ri(1, 4); } }
     return { key: 'D3:' + a + '/' + b + ':' + k, mode: 'frac', unit: 'لتر',
       html: 'لدينا ' + F(a, b) + ' لتر عصير نوزعه على ' + kidsText(k) + ' بالتساوي. كم يحصل كل طفل؟',
-      sub: 'اكتبي الناتج ككسر (ويفضّل اختزاله)', answer: [a, b * k], viz: vizDistribute(a, b, k),
+      sub: 'اكتب الناتج ككسر (ويفضّل اختزاله)', answer: [a, b * k], viz: vizDistribute(a, b, k),
       hint: 'نقسم كل جزء إلى ' + k + ' أجزاء أصغر، فيصير المقام ' + b + ' × ' + k + ' = ' + (b * k) + '.', meta: { t: 'dist', n: a, d: b, k: k } };
   }
   function genError() { // true / false statement
@@ -258,8 +258,8 @@
       truth = shown[0] * right[1] === shown[1] * right[0];
       eq = F(a, b) + ' ÷ ' + k + ' = ' + F(shown[0], shown[1]);
       return { key: 'E1:' + a + '/' + b + ':' + k + ':' + shown.join('/'), mode: 'choice', answer: truth,
-        html: 'قال طالب: ' + EQ(eq) + '. هل إجابته صحيحة؟', sub: 'فكّري: هل نصيب الطفل يصغر أم يكبر عند القسمة؟',
-        hint: 'تحققي بالضرب: الناتج × ' + k + ' يجب أن يعطي ' + F(a, b) + '.', meta: { t: 'err1', a: a, b: b, k: k, shown: shown } };
+        html: 'قال طالب: ' + EQ(eq) + '. هل إجابته صحيحة؟', sub: 'فكّر: هل نصيب الطفل يصغر أم يكبر عند القسمة؟',
+        hint: 'تحقق بالضرب: الناتج × ' + k + ' يجب أن يعطي ' + F(a, b) + '.', meta: { t: 'err1', a: a, b: b, k: k, shown: shown } };
     }
     if (kind === 2) { // L ÷ 1/d = L*d
       var L = ri(2, 6), d = ri(2, 6), shown2;
@@ -267,7 +267,7 @@
       if (shown2[0] * 1 === L * d * shown2[1]) { truth = true; }
       eq = L + ' ÷ ' + F(1, d) + ' = ' + (shown2[1] === 1 ? shown2[0] : F(shown2[0], shown2[1]));
       return { key: 'E2:' + L + ':' + d + ':' + shown2.join('/'), mode: 'choice', answer: truth,
-        html: 'قال طالب: ' + EQ(eq) + '. هل إجابته صحيحة؟', sub: 'فكّري: كم كوبًا سعته ' + F(1, d) + ' لتر نملأ من ' + litersText(L) + '؟',
+        html: 'قال طالب: ' + EQ(eq) + '. هل إجابته صحيحة؟', sub: 'فكّر: كم كوبًا سعته ' + F(1, d) + ' لتر نملأ من ' + litersText(L) + '؟',
         hint: 'في كل لتر ' + d + ' أكواب، إذن في ' + L + ' لترات: ' + (L * d) + ' أكواب.', meta: { t: 'err2', L: L, d: d, shown: shown2 } };
     }
     // kind 3: equivalent unreduced is true
@@ -292,7 +292,7 @@
     { name: 'نوزّع بالتساوي', tag: 'المحطة 1 — نوزّع بالتساوي', icon: '🧪', color: 'mint', gen: genDistribute },
     { name: 'كم كوبًا نملأ؟', tag: 'المحطة 2 — كم كوبًا نملأ؟', icon: '🥤', color: 'gold', gen: genCups },
     { name: 'نوزّع ونختزل', tag: 'المحطة 3 — نوزّع ونختزل', icon: '⚗️', color: 'indigo', gen: genReduce },
-    { name: 'اكتشف الخطأ', tag: 'المحطة 4 — اكتشفي الخطأ', icon: '🔍', color: 'purple', gen: genError },
+    { name: 'اكتشف الخطأ', tag: 'المحطة 4 — اكتشف الخطأ', icon: '🔍', color: 'purple', gen: genError },
     { name: 'التحدي الأخير', tag: 'المحطة 5 — التحدي الأخير!', icon: '🏆', color: 'coral', gen: genBoss }
   ];
 
@@ -393,7 +393,7 @@
     attempts++;
     if (btn) { btn.classList.add('wrong'); btn.disabled = true; }
     if (attempts < 2) {
-      fb.className = 'feedback bad'; fb.textContent = '🤔 قريب! جرّبي مرة أخرى' + (cur.mode === 'frac' ? ' — واستعيني بزر «ارسم لي»' : '');
+      fb.className = 'feedback bad'; fb.textContent = '🤔 قريب! جرّب مرة أخرى' + (cur.mode === 'frac' ? ' — واستعن بزر «ارسم لي»' : '');
       if (cur.mode === 'frac') { inNum.classList.add('bad'); inDen.classList.add('bad'); inNum.select(); }
       if (cur.mode === 'num') { inOne.classList.add('bad'); inOne.select(); }
     } else { finish(false); }
@@ -402,7 +402,7 @@
   function check() {
     if (cur.mode === 'frac') {
       var n = parseInt(inNum.value.replace(/[,\s]/g, ''), 10), d = parseInt(inDen.value.replace(/[,\s]/g, ''), 10);
-      if (isNaN(n) || isNaN(d)) { fb.className = 'feedback bad'; fb.textContent = 'اكتبي البسط والمقام معًا.'; return; }
+      if (isNaN(n) || isNaN(d)) { fb.className = 'feedback bad'; fb.textContent = 'اكتب البسط والمقام معًا.'; return; }
       submit([n, d]);
     } else if (cur.mode === 'num') {
       var v = parseInt(inOne.value.replace(/[,\s]/g, ''), 10); if (isNaN(v)) { inOne.focus(); return; }
@@ -411,18 +411,18 @@
   }
 
   function levelDone() {
-    $('lc-title').textContent = '🎉 أحسنتِ! أنهيتِ «' + LEVELS[li].name + '»';
+    $('lc-title').textContent = '🎉 أحسنت! أنهيت «' + LEVELS[li].name + '»';
     var row = $('lc-stars'); row.innerHTML = '';
     for (var i = 0; i < 5; i++) { var s = document.createElement('span'); s.textContent = '⭐'; if (i < levelStars) s.className = 'lit'; row.appendChild(s); }
-    $('lc-sub').textContent = 'حصلتِ على ' + levelStars + ' من 5 نجوم.';
+    $('lc-sub').textContent = 'حصلت على ' + levelStars + ' من 5 نجوم.';
     $('lc-next').textContent = li < LEVELS.length - 1 ? 'المحطة التالية ⟵' : 'إنهاء التجارب 🏁';
     qS.classList.add('hidden'); dots.classList.add('hidden'); lc.classList.remove('hidden');
   }
   function showFinal() {
     var p = stars / 25, rank, msg;
-    if (p >= 0.9) { rank = '🥇 عالمة العصائر'; msg = '🌟 أتقنتِ قسمة الكسور بالتوزيع والقياس!'; }
-    else if (p >= 0.65) { rank = '🥈 مساعدة مختبر ماهرة'; msg = '🎉 عمل رائع! تدرّبي أكثر لتصلي للنجوم الكاملة.'; }
-    else { rank = '🥉 متدرّبة في المختبر'; msg = '💪 بداية جيدة! جرّبي تجارب جديدة واستعيني بالرسم.'; }
+    if (p >= 0.9) { rank = '🥇 عالمة العصائر'; msg = '🌟 أتقنت قسمة الكسور بالتوزيع والقياس!'; }
+    else if (p >= 0.65) { rank = '🥈 مساعدة مختبر ماهرة'; msg = '🎉 عمل رائع! تدرّب أكثر لتصل للنجوم الكاملة.'; }
+    else { rank = '🥉 متدرّبة في المختبر'; msg = '💪 بداية جيدة! جرّب تجارب جديدة واستعن بالرسم.'; }
     $('rank-badge').textContent = rank; $('final-score').textContent = '⭐ ' + stars + ' / 25 نجمة'; $('final-msg').textContent = msg;
     topbar.classList.add('hidden'); strip.classList.add('hidden'); lc.classList.add('hidden'); fin.classList.remove('hidden');
   }
