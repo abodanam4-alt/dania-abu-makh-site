@@ -201,6 +201,7 @@
       </div>
       <div class="feedback" id="feedback"></div>
       <div id="solution" class="solution hidden"></div>
+      <div style="margin-top:18px;padding-top:14px;border-top:1px dashed var(--line)"><button class="btn btn-ghost" id="skip-btn" style="font-size:.9rem">⏭ انتقل إلى المحطة التالية</button></div>
     </div>
 
     <div id="level-complete" class="overlay hidden">
@@ -363,11 +364,12 @@
   }
   function stagesFor(mode) { return mode === 'area' ? ['answer'] : mode === 'cancel' ? ['cancel', 'answer'] : mode === 'mixed' ? ['convert', 'cancel', 'answer'] : ['answer']; }
   function startQuestion() {
-    S.q = S.qs[S.qi]; S.attempts = 0; S.clean = true; S.hint = false; S.locked = false;
+    S.qid = (S.qid || 0) + 1; S.q = S.qs[S.qi]; S.attempts = 0; S.clean = true; S.hint = false; S.locked = false;
     S.stages = stagesFor(STATIONS[S.si].mode); S.stage = S.stages[0];
     S.cur = { n1: S.q.ai.n, d1: S.q.ai.d, n2: S.q.bi.n, d2: S.q.bi.d };
     S.hist = { n1: [], d1: [], n2: [], d2: [] }; S.sel = null; S.hl = null; S.wrongTaps = 0; S.showDmg = false;
     show('solution', false); show('next-btn', false); say('');
+    $('skip-btn').textContent = S.si === STATIONS.length - 1 ? '⏭ إنهاء اللعبة وعرض النتيجة' : '⏭ انتقل إلى المحطة التالية';
     $('level-tag').textContent = 'المحطة ' + (S.si + 1) + ' • سؤال ' + (S.qi + 1) + ' من ' + PER;
     $('level-tag').className = 'level-tag ' + STATIONS[S.si].tag;
     ['in-w', 'in-n', 'in-d'].forEach(function (i) { $(i).value = ''; $(i).disabled = false; });
@@ -427,7 +429,7 @@
         if (o.n === correct.n && o.d === correct.d) {
           b.classList.add('correct'); Array.prototype.forEach.call(row.children, function (x) { x.disabled = true; });
           say('أحسنت! ' + mixedHtml(a) + ' = ' + frac(correct.n, correct.d) + ' ✅', 'ok');
-          setTimeout(function () { S.stage = 'cancel'; say(''); render(); }, 900);
+          var tok = S.qid; setTimeout(function () { if (tok !== S.qid) return; S.stage = 'cancel'; say(''); render(); }, 900);
         } else {
           b.classList.add('wrong'); b.disabled = true; S.clean = false; shakeEl(b);
           say('ليس هذا. تذكّر: العدد الصحيح × المقام + البسط، والمقام يبقى كما هو.', 'bad');
@@ -569,6 +571,7 @@
     if (!correct) { /* show the right answer in the feedback too */ say('الإجابة الصحيحة: ' + resultHtml(S.q.ans.n, S.q.ans.d) + ' ' + S.q.unit, 'bad'); }
     $('next-btn').textContent = S.qi === PER - 1 ? (S.si === STATIONS.length - 1 ? 'النتيجة 🏆' : 'أنهيت المحطة ⟵') : 'التالي ⟵';
     show('next-btn', true); updateTop();
+    setTimeout(function () { try { $('next-btn').scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }); } catch (e) {} }, 120);
   }
   function next() {
     if (S.qi < PER - 1) { S.qi++; startQuestion(); return; }
@@ -583,6 +586,7 @@
     for (var i = 0; i < PER; i++) { var sp = document.createElement('span'); sp.textContent = '⭐'; row.appendChild(sp); (function (e, on, d) { setTimeout(function () { if (on) e.classList.add('lit'); }, 150 * d); })(sp, i < S.stStars, i + 1); }
     $('lc-sub').textContent = S.stStars + ' من ' + PER + ' نجوم. ' + (S.stStars >= 4 ? 'أداء ممتاز!' : S.stStars >= 2 ? 'جيد، تابع!' : 'المحطة القادمة فرصة جديدة!');
     S.si++; updateTop();
+    setTimeout(function () { try { $('level-complete').scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }); } catch (e) {} }, 120);
   }
   function finish() {
     ['topbar', 'field', 'map-strip', 'progress-dots'].forEach(function (i) { show(i, i === 'field'); });
@@ -598,6 +602,12 @@
   $('start-btn').addEventListener('click', function () { newGame(); buildField(); startStation(); });
   $('lc-next').addEventListener('click', startStation);
   $('restart-btn').addEventListener('click', function () { show('final-screen', false); show('start-screen', true); });
+  $('skip-btn').addEventListener('click', function () {
+    if (!window.confirm('هل تريد تخطّي ما تبقّى من هذه المحطة؟')) return;
+    S.qid++; show('question-screen', false);
+    if (S.si === STATIONS.length - 1) { finish(); return; }
+    S.si++; startStation();
+  });
   $('check-btn').addEventListener('click', check);
   $('done-btn').addEventListener('click', doneCancel);
   $('hint-btn').addEventListener('click', hint);
