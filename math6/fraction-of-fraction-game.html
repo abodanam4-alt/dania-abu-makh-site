@@ -364,7 +364,7 @@
   }
   function stagesFor(mode) { return mode === 'area' ? ['answer'] : mode === 'cancel' ? ['cancel', 'answer'] : mode === 'mixed' ? ['convert', 'cancel', 'answer'] : ['answer']; }
   function startQuestion() {
-    S.qid = (S.qid || 0) + 1; S.q = S.qs[S.qi]; S.attempts = 0; S.clean = true; S.hint = false; S.locked = false;
+    S.qid = (S.qid || 0) + 1; S.q = S.qs[S.qi]; S.attempts = 0; S.clean = true; S.hint = false; S.locked = false; S.afterConvert = false;
     S.stages = stagesFor(STATIONS[S.si].mode); S.stage = S.stages[0];
     S.cur = { n1: S.q.ai.n, d1: S.q.ai.d, n2: S.q.bi.n, d2: S.q.bi.d };
     S.hist = { n1: [], d1: [], n2: [], d2: [] }; S.sel = null; S.hl = null; S.wrongTaps = 0; S.showDmg = false;
@@ -429,7 +429,7 @@
         if (o.n === correct.n && o.d === correct.d) {
           b.classList.add('correct'); Array.prototype.forEach.call(row.children, function (x) { x.disabled = true; });
           say('أحسنت! ' + mixedHtml(a) + ' = ' + frac(correct.n, correct.d) + ' ✅', 'ok');
-          var tok = S.qid; setTimeout(function () { if (tok !== S.qid) return; S.stage = 'cancel'; say(''); render(); }, 900);
+          S.afterConvert = true; $('next-btn').textContent = 'الخطوة التالية: الاختزال ⟵'; show('next-btn', true); show('hint-btn', false);
         } else {
           b.classList.add('wrong'); b.disabled = true; S.clean = false; shakeEl(b);
           say('ليس هذا. تذكّر: العدد الصحيح × المقام + البسط، والمقام يبقى كما هو.', 'bad');
@@ -574,6 +574,7 @@
     setTimeout(function () { try { $('next-btn').scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }); } catch (e) {} }, 120);
   }
   function next() {
+    if (S.afterConvert) { S.afterConvert = false; S.stage = 'cancel'; say(''); show('next-btn', false); render(); return; }
     if (S.qi < PER - 1) { S.qi++; startQuestion(); return; }
     stationEnd();
   }
