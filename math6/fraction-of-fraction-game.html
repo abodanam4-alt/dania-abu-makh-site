@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة مزرعة القمح | موقع الأستاذة دانية أبو مخ</title>
+<meta name="description" content="لعبة تفاعلية للصف السادس: ضرب الكسور — كسر من كسر، الاختزال قبل الضرب، وضرب عدد مخلوط في كسر. 4 محطات على شكل مزرعة.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BE%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .game-shell{max-width:680px;margin:0 auto}
+  .game-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .level-pill{background:var(--navy-950);color:#fff;font-weight:800;font-size:.85rem;padding:8px 18px;border-radius:999px}
+  .counters{display:flex;gap:8px;flex-wrap:wrap}
+  .star-counter{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);font-weight:800;padding:8px 16px;border-radius:999px;font-size:.95rem}
+  .star-counter .n{color:#d97706;font-size:1.05rem}
+  .streak-badge{background:linear-gradient(135deg,#ff6b4a,#ffc93c);color:#fff;font-weight:800;padding:8px 14px;border-radius:999px;font-size:.9rem;display:none;box-shadow:0 6px 16px rgba(255,107,74,.4)}
+  .streak-badge.show{display:block}
+  @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.4) rotate(-8deg)}100%{transform:scale(1)}}
+  .pop{animation:pop .45s ease}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+  .shake{animation:shake .35s ease}
+
+  .field{display:flex;justify-content:center;gap:2px;flex-wrap:wrap;margin-bottom:12px;direction:ltr;background:linear-gradient(180deg,#e9f8ee,#d6f0de);border:1px solid #bfe6cc;border-radius:14px;padding:8px 10px}
+  .field span{font-size:1.15rem;filter:grayscale(1);opacity:.45;transition:.3s}
+  .field span.grown{filter:none;opacity:1;animation:pop .45s ease}
+  .map-strip{display:flex;align-items:center;justify-content:center;margin-bottom:12px;gap:2px}
+  .map-strip .isle{width:38px;height:38px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;transition:.25s;opacity:.4;filter:grayscale(1)}
+  .map-strip .isle.done{background:var(--mint-bg);opacity:1;filter:none}
+  .map-strip .isle.active{background:var(--gold);opacity:1;filter:none;transform:scale(1.25);box-shadow:0 0 0 4px rgba(255,201,60,.3)}
+  .map-strip .line{width:18px;height:3px;background:var(--line);flex-shrink:0}
+  .map-strip .line.done{background:var(--mint)}
+  .progress-dots{display:flex;justify-content:center;gap:8px;margin-bottom:18px}
+  .progress-dots .dot{width:12px;height:12px;border-radius:50%;background:var(--line);transition:.25s}
+  .progress-dots .dot.done{background:var(--mint)}
+  .progress-dots .dot.active{background:var(--indigo);transform:scale(1.3)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:28px 22px;text-align:center}
+  .start-card .ic{font-size:3rem;margin-bottom:6px}
+  .start-card h2{font-size:1.4rem;margin-bottom:10px}
+  .start-card p{color:var(--ink-soft);margin-bottom:6px}
+  .rules-list{text-align:right;max-width:470px;margin:18px auto;display:flex;flex-direction:column;gap:10px;padding:0}
+  .rules-list li{display:flex;gap:10px;align-items:flex-start;color:var(--ink-soft);font-size:.94rem;list-style:none}
+  .rules-list li b{color:var(--navy-950)}
+  @keyframes rain{0%{transform:translateY(-6px);opacity:.2}50%{opacity:1}100%{transform:translateY(6px);opacity:.2}}
+  .rainy{display:inline-block;animation:rain 1.6s ease-in-out infinite}
+
+  .level-tag{display:inline-block;font-weight:800;font-size:.82rem;color:#fff;padding:6px 16px;border-radius:999px;margin-bottom:14px}
+  .level-tag.mint{background:var(--mint)}.level-tag.gold{background:#d97706}.level-tag.indigo{background:var(--indigo)}.level-tag.coral{background:var(--coral)}
+
+  .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 4px;line-height:1.1;font-weight:900}
+  .frac .num{border-bottom:2.5px solid currentColor;padding:0 6px 2px}
+  .frac .den{padding:2px 6px 0}
+  .mixed{display:inline-flex;align-items:center;vertical-align:middle;gap:1px;direction:ltr;unicode-bidi:isolate}
+  .mixed .w{font-size:1.25em;margin-left:2px}
+  .eqi{display:inline-block;white-space:nowrap;unicode-bidi:isolate;direction:ltr;font-weight:900;color:var(--indigo);margin:0 3px}
+  .q-text{font-size:1.15rem;font-weight:800;color:var(--navy-950);line-height:2.2;margin-bottom:8px}
+  .q-sub{color:var(--ink-soft);font-size:.9rem;margin-bottom:14px;min-height:1.3em}
+
+  .viz{background:linear-gradient(180deg,#fff8e6,#fff);border:1.5px dashed #f2b705;border-radius:16px;padding:14px;margin:0 auto 16px;max-width:520px}
+  .viz .cap{font-size:.82rem;font-weight:800;color:#9a6a00;margin-bottom:8px;line-height:1.9}
+  .area{display:grid;gap:3px;margin:8px auto;max-width:300px;direction:ltr}
+  .area i{height:26px;border-radius:6px;background:#fff;border:2px solid #cfd4e6;display:block}
+  .area i.land{background:linear-gradient(180deg,#ffe27a,#f5bf1c);border-color:#d99b00}
+  .area i.dmg{background:linear-gradient(180deg,#ff8a7a,#ee4b37);border-color:#c0301f}
+  .legend{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;font-size:.78rem;font-weight:800;color:var(--ink-soft)}
+  .legend b{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:middle;margin-left:5px}
+
+  .expr{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:6px auto 12px;direction:ltr;font-size:1.9rem}
+  .expr .times{font-weight:900;color:var(--indigo);font-size:1.7rem}
+  .nb{font-family:'Cairo',sans-serif;font-weight:900;font-size:1.7rem;min-width:62px;min-height:52px;border-radius:14px;border:2.5px solid var(--line);background:var(--bg);color:var(--navy-950);cursor:pointer;transition:.18s;padding:2px 8px;line-height:1.2}
+  .nb:hover{border-color:var(--indigo);transform:translateY(-2px)}
+  .nb.sel{border-color:#d97706;background:#fff3cf;box-shadow:0 0 0 4px rgba(255,201,60,.35)}
+  .nb.hl{animation:hlp 1s ease-in-out infinite}
+  @keyframes hlp{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.6)}50%{box-shadow:0 0 0 8px rgba(99,102,241,0)}}
+  .nb s{color:#c0392b;font-size:.62em;margin-right:6px;opacity:.8}
+  .nb b{color:var(--navy-950)}.nb.chg b{color:#1a8a56}
+  .nb.static{cursor:default;pointer-events:none}
+  .expr .frac .num,.expr .frac .den{padding:4px 4px}
+  .expr .frac .num{border-bottom-width:3px}
+
+  .ans-row{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;direction:ltr}
+  .frac-input{display:inline-flex;flex-direction:column;align-items:center}
+  .frac-input input,.w-input{width:92px;text-align:center;font-size:1.4rem;font-weight:800;padding:8px;border-radius:12px;border:2px solid var(--line);outline:none;font-family:'Cairo',sans-serif;direction:ltr}
+  .w-input{width:84px}
+  .frac-input .bar-line{width:92px;height:3px;background:var(--navy-950);margin:5px 0;border-radius:2px}
+  .frac-input input:focus,.w-input:focus{border-color:var(--indigo)}
+  .ans-row.ok input{border-color:var(--mint);background:var(--mint-bg)}
+  .ans-row.bad input{border-color:var(--coral);background:var(--coral-bg)}
+  .unit{font-weight:800;color:var(--ink-soft);direction:rtl}
+  .eq-sign{font-size:1.6rem;font-weight:900;color:var(--indigo)}
+
+  .choice-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+  .choice-btn{background:var(--bg);border:2px solid var(--line);border-radius:16px;padding:14px 26px;font-family:'Cairo',sans-serif;font-weight:800;font-size:1.3rem;color:var(--navy-950);cursor:pointer;transition:.2s;min-width:110px}
+  .choice-btn:hover{border-color:var(--indigo);transform:translateY(-2px)}
+  .choice-btn.correct{border-color:var(--mint);background:var(--mint-bg)}
+  .choice-btn.wrong{border-color:var(--coral);background:var(--coral-bg)}
+  .choice-btn:disabled{cursor:default;transform:none}
+
+  .q-actions{margin-top:16px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .btn-ghost{background:var(--card);border:1.5px solid var(--line);color:var(--navy-950)}
+  .feedback{margin-top:12px;font-weight:800;font-size:1rem;min-height:1.4em;line-height:2}
+  .feedback.ok{color:#1a8a56}.feedback.bad{color:#c0392b}.feedback.info{color:#4f46e5}
+  .solution{margin:14px auto 0;max-width:520px;text-align:right;background:#f4f6ff;border:1.5px solid #d9defa;border-radius:14px;padding:12px 16px;line-height:2.3;font-size:.95rem}
+  .solution .t{font-weight:900;color:var(--indigo);margin-bottom:2px;display:block}
+
+  .overlay{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:36px 22px;text-align:center}
+  .overlay .big-ic{font-size:3.4rem;margin-bottom:8px}
+  .stars-row{display:flex;justify-content:center;gap:6px;margin:16px 0;font-size:2rem}
+  .stars-row span{opacity:.25;transition:.3s}.stars-row span.lit{opacity:1;animation:pop .45s ease}
+  .rank-badge{display:inline-block;font-size:1.2rem;font-weight:900;padding:10px 22px;border-radius:999px;margin:10px 0;background:linear-gradient(135deg,var(--gold),#ffdd7a);color:var(--navy-950)}
+  .hidden{display:none !important}
+  .fx{position:fixed;z-index:60;font-size:1.5rem;pointer-events:none;animation:fx 1s ease-out forwards}
+  @keyframes fx{to{transform:translate(var(--dx),var(--dy)) rotate(40deg);opacity:0}}
+  @media(max-width:520px){.expr{font-size:1.5rem;gap:8px}.nb{min-width:52px;font-size:1.4rem}.q-text{font-size:1.05rem}.card{padding:22px 14px}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a class="brand" href="../index.html"><img class="school-logo" src="../assets/logo.jpeg" alt="شعار مدرسة الرازي"> موقع الأستاذة دانية أبو مخ</a>
+    <nav class="nav">
+      <a href="../index.html">الرئيسية</a>
+      <a href="../tarbiya/index.html">تربية السادس أ</a>
+      <a href="../math4/index.html">رياضيات الرابع</a>
+      <a href="index.html" class="active">رياضيات السادس</a>
+      <a href="../science/index.html">العلوم</a>
+      <a href="../computing/index.html">الحوسبة</a>
+      <a href="../quizzes/index.html">الاختبارات</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero hero-sm">
+  <div class="starfield"></div>
+  <div class="container hero-inner">
+    <span class="hero-eyebrow">🌾 لعبة تفاعلية</span>
+    <h1>مزرعة <span>القمح</span></h1>
+    <p class="lead">ضرب الكسور: كسر من كسر، الاختزال قبل الضرب، والعدد المخلوط — 4 محطات.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container game-shell">
+
+    <div id="topbar" class="game-topbar hidden">
+      <span id="level-pill" class="level-pill">🌾 المحطة 1</span>
+      <div class="counters">
+        <span id="streak-badge" class="streak-badge">🔥 <span id="streak-count">0</span></span>
+        <span id="star-counter" class="star-counter">⭐ <span class="n" id="star-count">0</span> / 20</span>
+      </div>
+    </div>
+    <div id="field" class="field hidden" aria-label="حقل ينمو مع كل نجمة"></div>
+    <div id="map-strip" class="map-strip hidden"></div>
+    <div id="progress-dots" class="progress-dots hidden"></div>
+
+    <div id="start-screen" class="card start-card">
+      <div class="ic"><span class="rainy">⛈️</span> 🌾</div>
+      <h2>أنقذ محصول القمح!</h2>
+      <p>الأمطار الغزيرة أتلفت جزءًا من المزرعة. ساعد الفلاح في حساب ما تلف. كل جواب صحيح يُنبت سنبلة في الحقل!</p>
+      <ul class="rules-list">
+        <li>🌾 <span><b>كسر من كسر:</b> «جزء من جزء» يعني أن نضرب الكسرين.</span></li>
+        <li>✂️ <span><b>اختزل قبل أن تضرب:</b> اضغط على بسط ومقام بينهما عامل مشترك فيُختزلان معًا. تجده بالقُطر!</span></li>
+        <li>🛒 <span><b>العدد المخلوط:</b> نحوّله أولًا إلى كسر غير حقيقي ثم نضرب.</span></li>
+        <li>💡 <span>زر «ساعدني» يلمّح لك، لكن جرّب أولًا بدونه لتحصل على «متتالية» 🔥</span></li>
+        <li>✅ <span>لك محاولتان في كل سؤال. اكتب الناتج في أبسط صورة.</span></li>
+      </ul>
+      <button class="btn btn-gold" id="start-btn" style="font-size:1.05rem;padding:14px 34px">ابدأ المهمة 🚜</button>
+    </div>
+
+    <div id="question-screen" class="card hidden">
+      <span id="level-tag" class="level-tag mint">المحطة 1</span>
+      <div class="q-text" id="q-text"></div>
+      <div class="q-sub" id="q-sub"></div>
+      <div id="viz-slot"></div>
+      <div id="cancel-box" class="hidden"></div>
+
+      <div id="mode-choice" class="hidden"><div class="choice-row" id="choice-row"></div></div>
+
+      <div id="mode-answer" class="hidden">
+        <div class="ans-row" id="ans-row">
+          <input type="text" inputmode="numeric" id="in-w" class="w-input" placeholder="صحيح" autocomplete="off" aria-label="العدد الصحيح (اختياري)">
+          <div class="frac-input">
+            <input type="text" inputmode="numeric" id="in-n" placeholder="البسط" autocomplete="off">
+            <div class="bar-line"></div>
+            <input type="text" inputmode="numeric" id="in-d" placeholder="المقام" autocomplete="off">
+          </div>
+          <span class="unit" id="unit"></span>
+        </div>
+        <div class="q-sub" style="margin-top:8px;margin-bottom:0;font-size:.8rem">الخانة اليسرى للعدد الصحيح، وهي اختيارية.</div>
+      </div>
+
+      <div class="q-actions">
+        <button class="btn btn-gold hidden" id="check-btn">تحقّق ✓</button>
+        <button class="btn btn-gold hidden" id="done-btn">لا اختزال آخر ✔ — جاهز للضرب</button>
+        <button class="btn btn-ghost" id="hint-btn">💡 ساعدني</button>
+        <button class="btn btn-gold hidden" id="next-btn">التالي ⟵</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div id="solution" class="solution hidden"></div>
+    </div>
+
+    <div id="level-complete" class="overlay hidden">
+      <div class="big-ic">🎉</div>
+      <h2 id="lc-title"></h2>
+      <div class="stars-row" id="lc-stars"></div>
+      <p id="lc-sub" style="color:var(--ink-soft)"></p>
+      <button class="btn btn-gold" id="lc-next" style="font-size:1.02rem;padding:12px 30px;margin-top:10px">المحطة التالية ⟵</button>
+    </div>
+
+    <div id="final-screen" class="overlay hidden">
+      <div class="big-ic">🏆</div>
+      <h2>أنقذت المحصول!</h2>
+      <div class="rank-badge" id="rank-badge"></div>
+      <p id="final-score" style="font-size:1.2rem;font-weight:800;color:var(--navy-950);margin:10px 0"></p>
+      <p id="final-msg" style="color:var(--ink-soft);margin-bottom:18px"></p>
+      <button class="btn btn-gold" id="restart-btn" style="font-size:1.02rem;padding:12px 30px">🔁 مزرعة جديدة</button>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-logos"><img src="../assets/signature.webp" alt="توقيع المعلمة دانية أبو مخ"></div>
+    الأستاذة دانية أبو مخ • معلّمة رياضيات
+  </div>
+</footer>
+
+<script src="../assets/effects.js" defer></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var gcd = function (a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; };
+  var shuffle = function (a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; };
+  var toEn = function (s) { return String(s).replace(/[٠-٩]/g, function (d) { return d.charCodeAt(0) - 0x660; }).replace(/[^0-9]/g, ''); };
+
+  /* ---------- fraction helpers ---------- */
+  function frac(n, d) { return '<span class="frac"><span class="num">' + n + '</span><span class="den">' + d + '</span></span>'; }
+  function mixedHtml(x) { return x.w ? '<span class="mixed"><b class="w">' + x.w + '</b>' + frac(x.n, x.d) + '</span>' : frac(x.n, x.d); }
+  function improper(x) { return { n: x.w * x.d + x.n, d: x.d }; }
+  function resultHtml(n, d) {
+    if (d === 1) return '<b>' + n + '</b>';
+    if (n > d) { var w = Math.floor(n / d), r = n % d; return frac(n, d) + ' = ' + mixedHtml({ w: w, n: r, d: d }); }
+    return frac(n, d);
+  }
+  function F(a) { return a.length === 3 ? { w: a[0], n: a[1], d: a[2] } : { w: 0, n: a[0], d: a[1] }; }
+
+  /* ---------- question pools ---------- */
+  function Q(text, a, b, unit) { return { text: text, a: F(a), b: F(b), unit: unit || '' }; }
+  var LAND = 'زرع فلّاح {A} أرضه قمحًا. بسبب الأمطار الغزيرة تلف {B} الجزء المزروع بالقمح. أي جزء من الأرض كلها تلف؟';
+  var POOLS = {
+    1: [
+      Q(LAND, [1, 2], [1, 2]), Q(LAND, [2, 3], [1, 2]), Q(LAND, [3, 4], [1, 3]), Q(LAND, [3, 5], [1, 2]),
+      Q('في بستان، {A} الأشجار زيتون، و{B} أشجار الزيتون قديمة. أي جزء من أشجار البستان زيتون قديم؟', [1, 2], [1, 3]),
+      Q('في بستان، {A} الأشجار زيتون، و{B} أشجار الزيتون قديمة. أي جزء من أشجار البستان زيتون قديم؟', [3, 4], [1, 2]),
+      Q('بقي من البيتزا {A} منها. أكل سامي {B} الباقي. أي جزء من البيتزا كلها أكل سامي؟', [2, 3], [3, 4]),
+      Q('بقي من البيتزا {A} منها. أكل سامي {B} الباقي. أي جزء من البيتزا كلها أكل سامي؟', [1, 4], [2, 3]),
+      Q('{A} طلاب الصف يحبون الرياضة، و{B} هؤلاء الطلاب يلعبون كرة القدم. أي جزء من الصف يلعب كرة القدم؟', [2, 5], [1, 2]),
+      Q('{A} مساحة الحديقة ورود، و{B} الورود حمراء. أي جزء من الحديقة ورود حمراء؟', [3, 4], [2, 3])
+    ],
+    2: [
+      Q('مع لينا {A} كيلوغرام من الجبنة. استعملت {B} هذه الكمية في الفطائر. كم كيلوغرامًا استعملت؟', [3, 4], [8, 9], 'كغ'),
+      Q('ملأ نادر {A} الخزّان ماءً، ثم نزل {B} ما في الخزّان. أي جزء من الخزّان نزل؟', [5, 6], [3, 10]),
+      Q('قطعة أرض مساحتها {A} دونم، زُرع {B} مساحتها خسًّا. كم دونمًا زُرع خسًّا؟', [4, 5], [15, 16], 'دونم'),
+      Q('قطع نجّار {A} متر من الخشب، واستعمل {B} القطعة في صنع رفّ. كم مترًا استعمل؟', [7, 8], [4, 21], 'متر'),
+      Q('في صندوق {A} كيلوغرام من التفاح، وبيع {B} ما في الصندوق. كم كيلوغرامًا بيع؟', [6, 7], [14, 15], 'كغ'),
+      Q('مدّة الحصّة {A} ساعة، وقضى الطلاب {B} هذه المدّة في اللعب التعليمي. كم ساعةً قضوا في اللعب؟', [9, 10], [5, 6], 'ساعة'),
+      Q('عند سلمى {A} لتر عصير، وشربت {B} الكمية. كم لترًا شربت؟', [2, 3], [9, 10], 'لتر'),
+      Q('حبل طوله {A} متر، وقُصّ منه {B} طوله. كم مترًا قُصّ؟', [5, 12], [8, 15], 'متر')
+    ],
+    3: [
+      Q('يحتاج الخبّاز {A} كيلوغرام من الطحين لعجنة واحدة. اليوم صنع {B} العجنة فقط. كم كيلوغرامًا استعمل؟', [1, 1, 2], [2, 3], 'كغ'),
+      Q('في إناء {A} لتر عصير. شرب الأولاد {B} العصير. كم لترًا شربوا؟', [2, 1, 3], [3, 4], 'لتر'),
+      Q('طول شريط {A} متر، وقصّت رنا {B} طوله. كم مترًا قصّت؟', [3, 1, 2], [2, 5], 'متر'),
+      Q('مع علي {A} كيلوغرام من الزيتون، وباع {B} الكمية. كم كيلوغرامًا باع؟', [1, 1, 4], [4, 5], 'كغ'),
+      Q('قطع سامر {A} كيلومتر بالدراجة، و{B} المسافة كانت صعودًا. كم كيلومترًا صعد؟', [2, 1, 2], [4, 5], 'كم'),
+      Q('في الخزّان {A} لتر ماء، واستُعمل {B} الماء. كم لترًا استُعمل؟', [1, 2, 3], [3, 10], 'لتر'),
+      Q('تحتاج الوصفة {A} كوب سكر، ونريد {B} الوصفة فقط. كم كوبًا نحتاج؟', [2, 1, 4], [2, 3], 'كوب'),
+      Q('كيس أرز وزنه {A} كيلوغرام، واستعمل الطبّاخ {B} ما فيه. كم كيلوغرامًا استعمل؟', [3, 1, 3], [3, 5], 'كغ'),
+      Q('قطعة قماش طولها {A} متر، واستُعمل {B} طولها لصنع وشاح. كم مترًا استُعمل؟', [1, 1, 3], [3, 8], 'متر'),
+      Q('جرّة فيها {A} لتر زيت، وسُكب منها {B} الكمية. كم لترًا سُكب؟', [4, 1, 2], [2, 9], 'لتر')
+    ],
+    4: [
+      Q('مزرعة مساحتها {A} دونم، وزُرع {B} مساحتها طماطم. كم دونمًا زُرع طماطم؟', [3, 3, 5], [5, 6], 'دونم'),
+      Q('يحتاج مشروع الصف {A} متر من الشريط، وقد جهّزنا {B} المطلوب. كم مترًا جهّزنا؟', [2, 2, 5], [5, 8], 'متر'),
+      Q('وزن بطّيخة {A} كيلوغرام، وأكلنا {B} وزنها. كم كيلوغرامًا أكلنا؟', [1, 7, 8], [4, 5], 'كغ'),
+      Q('قطع دبّاب {A} كيلومتر، و{B} المسافة كانت على طريق ترابي. كم كيلومترًا كانت ترابية؟', [4, 2, 3], [3, 7], 'كم'),
+      Q('في صندوق {A} لتر عصير، وشرب الضيوف {B} ما فيه. كم لترًا شربوا؟', [3, 3, 4], [8, 15], 'لتر'),
+      Q('{A} ساعة هي مدّة الرحلة، وكان {B} الوقت على الطريق السريع. كم ساعةً على الطريق السريع؟', [5, 9], [2, 1, 4], 'ساعة'),
+      Q('طول مستطيل {A} متر، وعرضه {B} طوله. كم مترًا عرضه؟', [2, 2, 3], [9, 16], 'متر'),
+      Q('مع تاجر {A} كيلوغرام من اللوز، وباع {B} ما معه. كم كيلوغرامًا باع؟', [3, 1, 2], [6, 7], 'كغ'),
+      Q('اشترى سليم {A} كيلوغرام من الكرز، واشترى أخوه {B} هذه الكمية. كم كيلوغرامًا اشترى الأخ؟', [7, 10], [1, 2, 3], 'كغ')
+    ]
+  };
+  var STATIONS = [
+    { icon: '🌾', name: 'الحقل', tag: 'mint', mode: 'area', sub: 'كسر من كسر: نضرب الكسرين. اضغط «ساعدني» لترى الرسم.' },
+    { icon: '🚜', name: 'المزرعة', tag: 'gold', mode: 'cancel', sub: 'اختزل قبل الضرب: اضغط على بسط ومقام لهما عامل مشترك.' },
+    { icon: '🛒', name: 'السوق', tag: 'indigo', mode: 'mixed', sub: 'عدد مخلوط × كسر: حوّل أولًا، ثم اختزل، ثم اضرب.' },
+    { icon: '🏆', name: 'تحدّي المزارع', tag: 'coral', mode: 'free', sub: 'تحدٍّ بلا خطوات مساعدة: خطّط وحلّ بنفسك!' }
+  ];
+  var PER = 5, TOTAL = STATIONS.length * PER;
+
+  /* ---------- state ---------- */
+  var S = null;
+  function prep(q) {
+    var ai = improper(q.a), bi = improper(q.b), n = ai.n * bi.n, d = ai.d * bi.d, g = gcd(n, d);
+    return { text: q.text, a: q.a, b: q.b, ai: ai, bi: bi, unit: q.unit, ans: { n: n / g, d: d / g } };
+  }
+  function newGame() {
+    S = { si: 0, qi: 0, stars: 0, stStars: 0, streak: 0, qs: [], stage: '', attempts: 0, clean: true, hint: false, q: null, cur: null, hist: null, sel: null, hl: null, wrongTaps: 0, locked: false };
+  }
+
+  /* ---------- UI helpers ---------- */
+  function show(id, on) { $(id).classList.toggle('hidden', !on); }
+  function say(msg, cls) { var f = $('feedback'); f.className = 'feedback ' + (cls || ''); f.innerHTML = msg; }
+  function popEl(el) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+  function shakeEl(el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function burst(el, emojis) {
+    if (reduce) return;
+    var r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    for (var i = 0; i < 10; i++) {
+      var s = document.createElement('span'); s.className = 'fx'; s.textContent = emojis[i % emojis.length];
+      s.style.left = x + 'px'; s.style.top = y + 'px';
+      s.style.setProperty('--dx', (Math.random() * 260 - 130) + 'px'); s.style.setProperty('--dy', (-70 - Math.random() * 150) + 'px');
+      document.body.appendChild(s); (function (e) { setTimeout(function () { e.remove(); }, 1000); })(s);
+    }
+  }
+  function buildField() {
+    var f = $('field'); f.innerHTML = '';
+    for (var i = 0; i < TOTAL; i++) { var sp = document.createElement('span'); sp.textContent = '🌾'; f.appendChild(sp); }
+  }
+  function refreshField() { var k = $('field').children; for (var i = 0; i < k.length; i++) k[i].classList.toggle('grown', i < S.stars); }
+  function buildMap() {
+    var m = $('map-strip'); m.innerHTML = '';
+    STATIONS.forEach(function (s, i) {
+      var d = document.createElement('div'); d.className = 'isle' + (i < S.si ? ' done' : i === S.si ? ' active' : ''); d.textContent = s.icon; m.appendChild(d);
+      if (i < STATIONS.length - 1) { var l = document.createElement('div'); l.className = 'line' + (i < S.si ? ' done' : ''); m.appendChild(l); }
+    });
+  }
+  function buildDots() {
+    var p = $('progress-dots'); p.innerHTML = '';
+    for (var i = 0; i < PER; i++) { var d = document.createElement('div'); d.className = 'dot' + (i < S.qi ? ' done' : i === S.qi ? ' active' : ''); p.appendChild(d); }
+  }
+  function updateTop() {
+    $('star-count').textContent = S.stars; $('streak-count').textContent = S.streak;
+    $('streak-badge').classList.toggle('show', S.streak >= 2);
+    $('level-pill').textContent = STATIONS[S.si].icon + ' المحطة ' + (S.si + 1) + ': ' + STATIONS[S.si].name;
+    refreshField(); buildMap(); buildDots();
+  }
+
+  /* ---------- flow ---------- */
+  function startStation() {
+    S.qs = shuffle(POOLS[S.si + 1]).slice(0, PER).map(prep); S.qi = 0; S.stStars = 0;
+    ['start-screen', 'level-complete', 'final-screen'].forEach(function (i) { show(i, false); });
+    ['topbar', 'field', 'map-strip', 'progress-dots', 'question-screen'].forEach(function (i) { show(i, true); });
+    startQuestion();
+  }
+  function stagesFor(mode) { return mode === 'area' ? ['answer'] : mode === 'cancel' ? ['cancel', 'answer'] : mode === 'mixed' ? ['convert', 'cancel', 'answer'] : ['answer']; }
+  function startQuestion() {
+    S.q = S.qs[S.qi]; S.attempts = 0; S.clean = true; S.hint = false; S.locked = false;
+    S.stages = stagesFor(STATIONS[S.si].mode); S.stage = S.stages[0];
+    S.cur = { n1: S.q.ai.n, d1: S.q.ai.d, n2: S.q.bi.n, d2: S.q.bi.d };
+    S.hist = { n1: [], d1: [], n2: [], d2: [] }; S.sel = null; S.hl = null; S.wrongTaps = 0; S.showDmg = false;
+    show('solution', false); show('next-btn', false); say('');
+    $('level-tag').textContent = 'المحطة ' + (S.si + 1) + ' • سؤال ' + (S.qi + 1) + ' من ' + PER;
+    $('level-tag').className = 'level-tag ' + STATIONS[S.si].tag;
+    ['in-w', 'in-n', 'in-d'].forEach(function (i) { $(i).value = ''; $(i).disabled = false; });
+    $('ans-row').className = 'ans-row';
+    updateTop(); render();
+  }
+  function qTextHtml() { return S.q.text.replace('{A}', mixedHtml(S.q.a)).replace('{B}', mixedHtml(S.q.b)); }
+
+  function render() {
+    var mode = STATIONS[S.si].mode, q = S.q;
+    $('q-text').innerHTML = qTextHtml();
+    show('mode-choice', false); show('mode-answer', false); show('cancel-box', false);
+    show('check-btn', false); show('done-btn', false); show('hint-btn', !S.locked);
+    $('viz-slot').innerHTML = '';
+    if (S.stage === 'convert') {
+      $('q-sub').textContent = 'الخطوة 1: حوّل العدد المخلوط إلى كسر غير حقيقي. أيّ كسر يساويه؟';
+      show('mode-choice', true); renderConvert();
+    } else if (S.stage === 'cancel') {
+      $('q-sub').textContent = mode === 'mixed' ? 'الخطوة 2: اختزل قبل الضرب. اضغط على بسط ثم على مقام بينهما عامل مشترك.' : 'الخطوة 1: اختزل قبل الضرب. اضغط على بسط ثم على مقام بينهما عامل مشترك (غالبًا بالقُطر).';
+      show('cancel-box', true); show('done-btn', true); renderCancel();
+    } else {
+      var stepNo = mode === 'mixed' ? 3 : mode === 'cancel' ? 2 : 0;
+      $('q-sub').textContent = mode === 'free' ? STATIONS[S.si].sub : (stepNo ? 'الخطوة ' + stepNo + ': اضرب البسطين معًا والمقامين معًا، واكتب الناتج.' : STATIONS[S.si].sub);
+      show('mode-answer', true); show('check-btn', true);
+      $('unit').textContent = q.unit;
+      if (mode === 'area') $('viz-slot').innerHTML = areaViz();
+      else if (mode !== 'free') $('viz-slot').innerHTML = '<div class="expr">' + frac(S.cur.n1, S.cur.d1) + '<span class="times">×</span>' + frac(S.cur.n2, S.cur.d2) + '</div>';
+      setTimeout(function () { if (!S.locked) $('in-n').focus({ preventScroll: true }); }, 50);
+    }
+  }
+
+  /* ---------- area model (station 1) ---------- */
+  function areaViz() {
+    var q = S.q, cols = q.a.d, rows = q.b.d, cells = '';
+    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
+      var cls = c < q.a.n ? (S.showDmg && r < q.b.n ? 'dmg' : 'land') : '';
+      cells += '<i class="' + cls + '"></i>';
+    }
+    var cap = S.showDmg
+      ? 'الأصفر: ' + frac(q.a.n, q.a.d) + ' من الكل، والأحمر: ' + frac(q.b.n, q.b.d) + ' من الأصفر. عدّ المربعات الحمراء من كل المربعات.'
+      : 'الأصفر: ' + frac(q.a.n, q.a.d) + ' من الكل. اضغط «ساعدني» لترى ' + frac(q.b.n, q.b.d) + ' من الأصفر.';
+    return '<div class="viz"><div class="cap">' + cap + '</div><div class="area" style="grid-template-columns:repeat(' + cols + ',1fr)">' + cells + '</div>' +
+      '<div class="legend"><span><b style="background:#f5bf1c"></b>الجزء الأول</span>' + (S.showDmg ? '<span><b style="background:#ee4b37"></b>الجزء المطلوب</span>' : '') + '<span><b style="background:#fff;border:2px solid #cfd4e6"></b>الباقي</span></div></div>';
+  }
+
+  /* ---------- convert (station 3, step 1) ---------- */
+  function renderConvert() {
+    var a = S.q.a, correct = S.q.ai, opts = [{ n: correct.n, d: correct.d }];
+    var w1 = { n: a.w + a.n, d: a.d }, w2 = { n: a.w * a.n + a.d, d: a.d }, w3 = { n: correct.n + 1, d: a.d };
+    [w1, w2, w3].forEach(function (o) { if (!opts.some(function (x) { return x.n === o.n && x.d === o.d; })) opts.push(o); });
+    opts = shuffle(opts).slice(0, 3);
+    if (!opts.some(function (x) { return x.n === correct.n; })) opts[0] = { n: correct.n, d: correct.d };
+    var row = $('choice-row'); row.innerHTML = '';
+    shuffle(opts).forEach(function (o) {
+      var b = document.createElement('button'); b.className = 'choice-btn'; b.innerHTML = mixedHtml(a) + ' = ' + frac(o.n, o.d);
+      b.addEventListener('click', function () {
+        if (o.n === correct.n && o.d === correct.d) {
+          b.classList.add('correct'); Array.prototype.forEach.call(row.children, function (x) { x.disabled = true; });
+          say('أحسنت! ' + mixedHtml(a) + ' = ' + frac(correct.n, correct.d) + ' ✅', 'ok');
+          setTimeout(function () { S.stage = 'cancel'; say(''); render(); }, 900);
+        } else {
+          b.classList.add('wrong'); b.disabled = true; S.clean = false; shakeEl(b);
+          say('ليس هذا. تذكّر: العدد الصحيح × المقام + البسط، والمقام يبقى كما هو.', 'bad');
+        }
+      });
+      row.appendChild(b);
+    });
+  }
+
+  /* ---------- cancel widget (stations 2-3) ---------- */
+  var KEYS = ['n1', 'd1', 'n2', 'd2'];
+  function reduciblePairs() {
+    var out = [];
+    [['n1', 'd1'], ['n1', 'd2'], ['n2', 'd1'], ['n2', 'd2']].forEach(function (p) { var g = gcd(S.cur[p[0]], S.cur[p[1]]); if (g > 1) out.push({ a: p[0], b: p[1], g: g }); });
+    return out;
+  }
+  function renderCancel() {
+    var box = $('cancel-box');
+    function nb(k) {
+      var hs = S.hist[k].map(function (h) { return '<s>' + h + '</s>'; }).join('');
+      var cls = 'nb' + (S.sel === k ? ' sel' : '') + (S.hl && S.hl.indexOf(k) >= 0 ? ' hl' : '') + (S.hist[k].length ? ' chg' : '');
+      return '<button class="' + cls + '" data-k="' + k + '" aria-label="' + (k[0] === 'n' ? 'بسط ' : 'مقام ') + S.cur[k] + '">' + hs + '<b>' + S.cur[k] + '</b></button>';
+    }
+    box.innerHTML = '<div class="expr"><span class="frac"><span class="num">' + nb('n1') + '</span><span class="den">' + nb('d1') + '</span></span><span class="times">×</span><span class="frac"><span class="num">' + nb('n2') + '</span><span class="den">' + nb('d2') + '</span></span></div>';
+    Array.prototype.forEach.call(box.querySelectorAll('.nb'), function (b) { b.addEventListener('click', function () { tap(b.getAttribute('data-k')); }); });
+  }
+  function tap(k) {
+    if (S.sel === null) { S.sel = k; S.hl = null; renderCancel(); return; }
+    if (S.sel === k) { S.sel = null; renderCancel(); return; }
+    var a = S.sel, b = k; S.sel = null;
+    if (a[0] === b[0]) { S.clean = false; say('اختر <b>بسطًا</b> ثم <b>مقامًا</b> (واحدًا من كل نوع).', 'bad'); renderCancel(); shakeEl($('cancel-box')); return; }
+    var g = gcd(S.cur[a], S.cur[b]);
+    if (g > 1) {
+      S.hist[a].push(S.cur[a]); S.hist[b].push(S.cur[b]); S.cur[a] /= g; S.cur[b] /= g; S.hl = null;
+      say('رائع! قسمنا ' + S.hist[a][S.hist[a].length - 1] + ' و ' + S.hist[b][S.hist[b].length - 1] + ' على ' + g + ' ✂️', 'ok');
+      renderCancel();
+    } else {
+      S.clean = false; S.wrongTaps++;
+      say('لا عامل مشترك بين ' + S.cur[a] + ' و ' + S.cur[b] + '. جرّب عددين آخرين.', 'bad');
+      if (S.wrongTaps >= 3) { var p = reduciblePairs()[0]; if (p) S.hl = [p.a, p.b]; }
+      renderCancel(); shakeEl($('cancel-box'));
+    }
+  }
+  function doneCancel() {
+    var left = reduciblePairs();
+    if (left.length) {
+      S.clean = false; S.hl = [left[0].a, left[0].b]; renderCancel();
+      say('انتبه! ما زال هناك عددان يمكن اختزالهما قبل الضرب. 🔍', 'bad'); shakeEl($('cancel-box')); return;
+    }
+    S.stage = 'answer'; say(''); render();
+  }
+
+  /* ---------- hints ---------- */
+  function hint() {
+    if (S.locked) return;
+    S.hint = true; S.clean = false;
+    var mode = STATIONS[S.si].mode, q = S.q;
+    if (S.stage === 'convert') { say('💡 ' + q.a.w + ' × ' + q.a.d + ' + ' + q.a.n + ' = ' + (q.a.w * q.a.d + q.a.n) + ' فوق المقام ' + q.a.d + '.', 'info'); return; }
+    if (S.stage === 'cancel') {
+      var p = reduciblePairs()[0];
+      if (p) { S.hl = [p.a, p.b]; renderCancel(); say('💡 ' + S.cur[p.a] + ' و ' + S.cur[p.b] + ' يقبلان القسمة على ' + p.g + '. اضغط عليهما!', 'info'); }
+      else say('💡 لا اختزال آخر. اضغط «جاهز للضرب».', 'info');
+      return;
+    }
+    if (mode === 'area') { S.showDmg = true; $('viz-slot').innerHTML = areaViz(); say('💡 الناتج = عدد المربعات الحمراء ÷ عدد كل المربعات. ثم اختزله.', 'info'); return; }
+    if (mode === 'free') {
+      var steps = [];
+      if (q.a.w || q.b.w) steps.push('حوّل العدد المخلوط إلى كسر غير حقيقي');
+      steps.push('اختزل قطريًا قبل الضرب'); steps.push('اضرب البسطين والمقامين');
+      say('💡 الخطوات: ' + steps.join(' ← ') + '.', 'info'); return;
+    }
+    say('💡 البسط × البسط = ' + (S.cur.n1 * S.cur.n2) + '، والمقام × المقام = ' + (S.cur.d1 * S.cur.d2) + '.', 'info');
+  }
+
+  /* ---------- answer check ---------- */
+  function readAnswer() {
+    var w = toEn($('in-w').value), n = toEn($('in-n').value), d = toEn($('in-d').value);
+    if (!w && !n && !d) return { err: 'اكتب إجابتك أولًا.' };
+    if (!n && !d) return { v: { n: +w, d: 1 }, simple: true };
+    if (!n || !d) return { err: 'اكتب البسط والمقام معًا.' };
+    var N = +n, D = +d; if (D === 0) return { err: 'المقام لا يكون صفرًا.' };
+    var W = w ? +w : 0, val = { n: W * D + N, d: D };
+    var simple = gcd(N, D) === 1 && (w ? N < D : true);
+    return { v: val, simple: simple, g: gcd(N, D) };
+  }
+  function check() {
+    if (S.locked) return;
+    var r = readAnswer(); if (r.err) { say(r.err, 'bad'); return; }
+    S.attempts++;
+    var a = S.q.ans, ok = r.v.n * a.d === a.n * r.v.d;
+    if (ok) {
+      $('ans-row').className = 'ans-row ok';
+      var first = S.attempts === 1 && S.clean;
+      S.stars++; S.stStars++;
+      if (first) S.streak++; else S.streak = 0;
+      var msg = first ? pick(['ممتاز! أنقذت جزءًا من المحصول! 🌾', 'إجابة دقيقة! 🎯', 'عمل رائع! 🌟']) : 'صحيح! 🌾';
+      if (!r.simple) msg += ' <br>لكن اكتبه في أبسط صورة دائمًا: ' + resultHtml(a.n, a.d);
+      if (S.streak >= 3) msg += ' <br>🔥 متتالية ' + S.streak + '!';
+      say(msg, 'ok'); burst($('check-btn'), ['🌾', '⭐', '✨']);
+      popEl($('star-counter')); endQuestion(true);
+    } else if (S.attempts >= 2) {
+      $('ans-row').className = 'ans-row bad'; S.streak = 0;
+      say('لا بأس! لنتعلّم من الحل.', 'bad'); endQuestion(false);
+    } else {
+      $('ans-row').className = 'ans-row bad'; shakeEl($('ans-row'));
+      say(nudge(r), 'bad');
+    }
+  }
+  function nudge() {
+    var m = STATIONS[S.si].mode;
+    if (m === 'area') return 'ليس بعد. «كسر من كسر» يعني أن نضرب الكسرين: البسط × البسط والمقام × المقام. لك محاولة أخرى.';
+    return 'ليس بعد. اضرب البسطين معًا والمقامين معًا، ثم تأكّد من الحساب. لك محاولة أخرى.';
+  }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+  /* ---------- worked solution ---------- */
+  function solution() {
+    var q = S.q, c = { n1: q.ai.n, d1: q.ai.d, n2: q.bi.n, d2: q.bi.d }, lines = [];
+    if (q.a.w) lines.push('<span class="eqi">' + mixedHtml(q.a) + ' = ' + frac(q.ai.n, q.ai.d) + '</span>');
+    if (q.b.w) lines.push('<span class="eqi">' + mixedHtml(q.b) + ' = ' + frac(q.bi.n, q.bi.d) + '</span>');
+    lines.push('<span class="eqi">' + frac(c.n1, c.d1) + ' × ' + frac(c.n2, c.d2) + '</span>');
+    var pairs = [['n1', 'd1'], ['n1', 'd2'], ['n2', 'd1'], ['n2', 'd2']], guard = 0, did = true;
+    while (did && guard++ < 8) {
+      did = false;
+      for (var i = 0; i < pairs.length; i++) {
+        var p = pairs[i], g = gcd(c[p[0]], c[p[1]]);
+        if (g > 1) { lines.push('نختزل ' + c[p[0]] + ' مع ' + c[p[1]] + ' (÷' + g + ')'); c[p[0]] /= g; c[p[1]] /= g; did = true; break; }
+      }
+    }
+    lines.push('<span class="eqi">' + frac(c.n1, c.d1) + ' × ' + frac(c.n2, c.d2) + ' = ' + frac(q.ans.n, q.ans.d) + '</span>');
+    if (q.ans.d === 1) lines[lines.length - 1] = '<span class="eqi">' + frac(c.n1, c.d1) + ' × ' + frac(c.n2, c.d2) + ' = ' + q.ans.n + '</span>';
+    else if (q.ans.n > q.ans.d) lines.push('<span class="eqi">' + frac(q.ans.n, q.ans.d) + ' = ' + mixedHtml({ w: Math.floor(q.ans.n / q.ans.d), n: q.ans.n % q.ans.d, d: q.ans.d }) + '</span>');
+    return '<span class="t">الحل:</span>' + lines.join('<br>') + (q.unit ? '<br>الجواب: ' + resultHtml(q.ans.n, q.ans.d) + ' ' + q.unit : '');
+  }
+  function endQuestion(correct) {
+    S.locked = true; show('check-btn', false); show('hint-btn', false);
+    ['in-w', 'in-n', 'in-d'].forEach(function (i) { $(i).disabled = true; });
+    var sol = $('solution'); sol.innerHTML = solution(); show('solution', true);
+    if (!correct) { /* show the right answer in the feedback too */ say('الإجابة الصحيحة: ' + resultHtml(S.q.ans.n, S.q.ans.d) + ' ' + S.q.unit, 'bad'); }
+    $('next-btn').textContent = S.qi === PER - 1 ? (S.si === STATIONS.length - 1 ? 'النتيجة 🏆' : 'أنهيت المحطة ⟵') : 'التالي ⟵';
+    show('next-btn', true); updateTop();
+  }
+  function next() {
+    if (S.qi < PER - 1) { S.qi++; startQuestion(); return; }
+    stationEnd();
+  }
+  function stationEnd() {
+    show('question-screen', false);
+    if (S.si === STATIONS.length - 1) { finish(); return; }
+    show('level-complete', true);
+    $('lc-title').textContent = 'أنهيت محطة «' + STATIONS[S.si].name + '»!';
+    var row = $('lc-stars'); row.innerHTML = '';
+    for (var i = 0; i < PER; i++) { var sp = document.createElement('span'); sp.textContent = '⭐'; row.appendChild(sp); (function (e, on, d) { setTimeout(function () { if (on) e.classList.add('lit'); }, 150 * d); })(sp, i < S.stStars, i + 1); }
+    $('lc-sub').textContent = S.stStars + ' من ' + PER + ' نجوم. ' + (S.stStars >= 4 ? 'أداء ممتاز!' : S.stStars >= 2 ? 'جيد، تابع!' : 'المحطة القادمة فرصة جديدة!');
+    S.si++; updateTop();
+  }
+  function finish() {
+    ['topbar', 'field', 'map-strip', 'progress-dots'].forEach(function (i) { show(i, i === 'field'); });
+    show('final-screen', true);
+    var s = S.stars, rank = s >= 19 ? '👑 ملك القمح' : s >= 14 ? '🌾 مزارع ماهر' : s >= 8 ? '🚜 مزارع نشيط' : '🌱 مزارع مبتدئ';
+    $('rank-badge').textContent = rank; $('final-score').textContent = '⭐ ' + s + ' من ' + TOTAL;
+    $('final-msg').textContent = s >= 19 ? 'محصول كامل ولم يضع شيء! أنت خبير في ضرب الكسور.' : s >= 14 ? 'أداء رائع! عُد إلى الأسئلة التي أخطأت فيها وستصبح ملكًا للقمح.' : s >= 8 ? 'بداية جيدة. العب مرة أخرى واستعمل الاختزال قبل الضرب.' : 'لا بأس! كل مزارع يبدأ بنبتة صغيرة. العب مرة أخرى واستعن بزر «ساعدني».';
+    burst($('rank-badge'), ['🌾', '⭐', '🎉', '👑']);
+  }
+
+  if (location.hash === "#debug") window.__S = function () { return S; };
+  /* ---------- wire up ---------- */
+  $('start-btn').addEventListener('click', function () { newGame(); buildField(); startStation(); });
+  $('lc-next').addEventListener('click', startStation);
+  $('restart-btn').addEventListener('click', function () { show('final-screen', false); show('start-screen', true); });
+  $('check-btn').addEventListener('click', check);
+  $('done-btn').addEventListener('click', doneCancel);
+  $('hint-btn').addEventListener('click', hint);
+  $('next-btn').addEventListener('click', next);
+  ['in-w', 'in-n', 'in-d'].forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') check(); }); });
+})();
+</script>
+</body>
+</html>
