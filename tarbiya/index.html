@@ -7,6 +7,20 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
+<style>
+.hero-video{padding:56px 0 64px}
+.hero-split{position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;max-width:1000px}
+.hero-split .hero-text{text-align:right}
+.hero-split .hero h1,.hero-video h1{font-size:2.3rem;line-height:1.35}
+.hero-video p.lead{margin:0}
+.hero-video .hero-actions{justify-content:flex-start;margin-top:26px}
+.video-hint{margin-top:22px;color:#aab0e8;font-size:.92rem;font-weight:600}
+.hero-video-box{display:flex;justify-content:center;position:relative}
+.hero-video-box::before{content:"";position:absolute;inset:8% 6%;background:radial-gradient(circle,rgba(255,201,60,.35),rgba(99,102,241,.25) 55%,transparent 72%);filter:blur(34px);z-index:0}
+.phone{position:relative;z-index:1;width:100%;max-width:300px;padding:10px;border-radius:34px;background:linear-gradient(160deg,#2b315f,#11143a);border:2px solid rgba(255,255,255,.18);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 6px rgba(255,201,60,.12)}
+.phone video{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:25px;background:#000}
+@media(max-width:820px){.hero-split{grid-template-columns:1fr;gap:34px}.hero-split .hero-text{text-align:center}.hero-video .hero-actions{justify-content:center}.hero-video h1{font-size:1.8rem}.video-hint{display:none}.hero-video-box{order:2}}
+</style>
 </head>
 <body>
 
@@ -25,21 +39,25 @@
   </div>
 </header>
 
-<section class="hero">
+<section class="hero hero-video">
   <div class="starfield"></div>
-  <div class="container hero-inner">
-    <span class="hero-eyebrow">🧭 تربية السادس أ</span>
-    <h1>أهلًا فيكم يا طاقم <span>السادس أ</span> 👋</h1>
-    <p class="lead">كل ما يتعلّق بأول أسبوع إلنا سوا — قوانين صفّنا وكيف بدنا نبنيها.</p>
-  </div>
-</section>
-
-<section class="section" id="class-video" style="padding-bottom:0">
-  <div class="container">
-    <div class="native-video" style="max-width:340px;margin:0 auto">
-      <video controls preload="metadata" playsinline>
-        <source src="videos/class-6a.mp4" type="video/mp4">
-      </video>
+  <div class="container hero-split">
+    <div class="hero-text">
+      <span class="hero-eyebrow">🧭 تربية السادس أ</span>
+      <h1>أهلًا فيكم يا طاقم <span>السادس أ</span> 👋</h1>
+      <p class="lead">كل ما يتعلّق بأول أسبوع إلنا سوا — قوانين صفّنا وكيف بدنا نبنيها.</p>
+      <div class="hero-actions">
+        <a href="lesson1.html" class="btn btn-gold">🔍 الدرس الأول</a>
+        <a href="constitution.html" class="btn btn-outline">📜 دستور الحصة</a>
+      </div>
+      <p class="video-hint">▶ شاهد فيديو السادس أ</p>
+    </div>
+    <div class="hero-video-box" id="class-video">
+      <div class="phone">
+        <video controls preload="metadata" playsinline aria-label="فيديو السادس أ">
+          <source src="videos/class-6a.mp4#t=0.1" type="video/mp4">
+        </video>
+      </div>
     </div>
   </div>
 </section>
@@ -51,10 +69,6 @@
       <h2>طلاب السادس أ</h2>
     </div>
     <div id="student-carousel" class="carousel-host" aria-label="معرض صور دوّار لطلاب الصف"></div>
-    <div class="hero-actions" style="margin-top:28px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-      <a href="lesson1.html" class="btn btn-gold">🔍 الدرس الأول</a>
-      <a href="constitution.html" class="btn btn-outline">📜 دستور الحصة</a>
-    </div>
   </div>
 </section>
 
